@@ -1,4 +1,4 @@
-module Icons exposing (..)
+module Theme.Icons exposing (..)
 
 import Css exposing (..)
 import Html.Styled as S
@@ -15,10 +15,19 @@ injuriesIcon size =
         []
 
 
+yogaIcon : Float -> S.Html msg
+yogaIcon size =
+    S.img
+        [ A.src "yoga.png"
+        , A.css
+            [ iconStyle size ]
+        ]
+        []
+
+
 iconStyle : Float -> Style
 iconStyle size =
     batch
         [ width (px size)
         , margin (px 0)
         ]
-

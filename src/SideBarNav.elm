@@ -1,11 +1,11 @@
 module SideBarNav exposing (..)
 
-import Colors exposing (..)
+import Theme.Colors exposing (..)
 import Css exposing (..)
 import Css.Transitions exposing (transition)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
-import Icons as I
+import Theme.Icons as I
 
 
 type Msg

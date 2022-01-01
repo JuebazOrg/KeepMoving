@@ -1,4 +1,4 @@
-module Fonts exposing (..)
+module Theme.Fonts exposing (..)
 
 import Css exposing (..)
 

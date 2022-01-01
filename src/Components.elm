@@ -1,9 +1,9 @@
 module Components exposing (..)
 
-import Colors exposing (..)
+import Theme.Colors exposing (..)
 import Css exposing (..)
 import Css.Transitions exposing (transition)
-import Fonts as F
+import Theme.Fonts as F
 import Html.Styled as S
 import Html.Styled.Attributes as A
 

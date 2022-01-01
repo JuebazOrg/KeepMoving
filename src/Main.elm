@@ -1,15 +1,16 @@
 module Main exposing (..)
 
 import Browser
-import Colors exposing (..)
-import Components exposing (avatarPlaceHolder, box, tag)
+import Components exposing (avatarPlaceHolder)
 import Css exposing (..)
-import Fonts as F
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Injuries exposing (Injury, Msg, view)
 import Mock.InjuryMock as M
 import SideBarNav exposing (Msg, viewSideNav)
+import Theme.Colors exposing (..)
+import Theme.Fonts as F
+import Theme.Icons as I
 
 
 type alias Model =
@@ -35,7 +36,7 @@ update msg model =
 viewHeader : Html Msg
 viewHeader =
     div [ A.css [ backgroundColor white, padding2 (px 10) (px 20), displayFlex, justifyContent spaceBetween, F.title ] ]
-        [ h2 [ A.css [ color cyanDark, margin (px 0) ] ] [ text "Keep \n Tracking" ], avatarPlaceHolder 30 "JB" ]
+        [ h2 [ A.css [ color cyanDark, margin (px 0), displayFlex, alignItems center ] ] [ I.yogaIcon 45, text "Keep \n Moving" ], avatarPlaceHolder 30 "JB" ]
 
 
 view : Model -> Html Msg

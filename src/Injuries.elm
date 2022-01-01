@@ -1,9 +1,9 @@
 module Injuries exposing (..)
 
-import Colors exposing (..)
+import Theme.Colors exposing (..)
 import Components exposing (blueButton, box, tag)
 import Css exposing (..)
-import Fonts as F
+import Theme.Fonts as F
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 
