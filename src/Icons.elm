@@ -1,8 +1,6 @@
 module Icons exposing (..)
 
-import Colors as C
 import Css exposing (..)
-import Css.Transitions exposing (transition)
 import Html.Styled as S
 import Html.Styled.Attributes as A
 

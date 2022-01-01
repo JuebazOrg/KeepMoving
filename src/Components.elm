@@ -1,6 +1,5 @@
 module Components exposing (..)
 
-import Color exposing (yellow)
 import Colors exposing (..)
 import Css exposing (..)
 import Css.Transitions exposing (transition)
@@ -77,8 +76,8 @@ bleuLightButton text =
     buttonConstructor cyanLight cyan cyanDark text
 
 
-bleuButton : String -> S.Html msg
-bleuButton text =
+blueButton : String -> S.Html msg
+blueButton text =
     buttonConstructor cyanMedium cyanDark white text
 
 

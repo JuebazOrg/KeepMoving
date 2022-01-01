@@ -2,7 +2,6 @@ module Colors exposing (..)
 
 import Css exposing (..)
 
-
 cyanLight : Color
 cyanLight =
     hex "F0F8FA"

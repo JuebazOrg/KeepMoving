@@ -1,6 +1,5 @@
 module Fonts exposing (..)
 
-import Colors as C
 import Css exposing (..)
 
 
