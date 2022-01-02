@@ -1,11 +1,11 @@
 module Components exposing (..)
 
-import Theme.Colors exposing (..)
 import Css exposing (..)
 import Css.Transitions exposing (transition)
-import Theme.Fonts as F
 import Html.Styled as S
 import Html.Styled.Attributes as A
+import Theme.Colors exposing (..)
+import Theme.Fonts as F
 
 
 box : Color -> Style
@@ -53,32 +53,22 @@ buttonConstructor primaryColor hoverColor textColor text =
 
 primaryLightButton : String -> S.Html msg
 primaryLightButton text =
-    buttonConstructor orangeLight orange orangeDark text
+    buttonConstructor primaryLighter primaryLight primaryDarker text
 
 
 primaryButton : String -> S.Html msg
 primaryButton text =
-    buttonConstructor orangeMedium orangeDark white text
+    buttonConstructor primary primaryDarker white text
 
 
-greenLightButton : String -> S.Html msg
-greenLightButton text =
-    buttonConstructor greenLight green greenDark text
+secondaryLightButton : String -> S.Html msg
+secondaryLightButton text =
+    buttonConstructor secondaryLighter secondaryLight secondaryDarker text
 
 
-greenButton : String -> S.Html msg
-greenButton text =
-    buttonConstructor greenMedium greenDark white text
-
-
-bleuLightButton : String -> S.Html msg
-bleuLightButton text =
-    buttonConstructor cyanLight cyan cyanDark text
-
-
-blueButton : String -> S.Html msg
-blueButton text =
-    buttonConstructor cyanMedium cyanDark white text
+secondaryButton : String -> S.Html msg
+secondaryButton text =
+    buttonConstructor secondary secondaryDarker secondaryDarkest text
 
 
 rounded : Float -> Style
@@ -92,7 +82,7 @@ rounded size =
 
 avatarPlaceHolder : Float -> String -> S.Html msg
 avatarPlaceHolder size initial =
-    S.div [ A.css [ buttonStyle white cyanLight cyanDark, rounded size, displayFlex, alignItems center, justifyContent center, F.accentuate ] ] [ S.text initial ]
+    S.div [ A.css [ buttonStyle white primaryLighter primaryDarker, rounded size, displayFlex, alignItems center, justifyContent center, F.accentuate ] ] [ S.text initial ]
 
 
 tag : Color -> Style
