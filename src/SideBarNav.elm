@@ -1,10 +1,10 @@
 module SideBarNav exposing (..)
 
-import Theme.Colors exposing (..)
 import Css exposing (..)
 import Css.Transitions exposing (transition)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
+import Theme.Colors exposing (..)
 import Theme.Icons as I
 
 
@@ -15,7 +15,7 @@ type Msg
 menuItem : String -> Html Msg
 menuItem title =
     div [ A.css [ menuItemStyle ] ]
-        [ span [ A.css [ paddingRight (px 10) ] ] [ I.injuriesIcon 35 ]
+        [ span [ A.css [ paddingRight (px 10) ] ] [ I.staticIcon I.addIcon 35 primary ]
         , text title
         ]
 

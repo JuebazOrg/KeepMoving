@@ -6,6 +6,7 @@ import Html.Styled as S
 import Html.Styled.Attributes as A
 import Theme.Colors exposing (..)
 import Theme.Fonts as F
+import Theme.Icons as I
 
 
 box : Color -> Style
@@ -29,10 +30,12 @@ buttonStyle : Color -> Color -> Color -> Style
 buttonStyle primaryColor hoverColor textColor =
     batch
         [ backgroundColor primaryColor
-        , boxShadow5 (px 0) (px 4) (px 8) (px 0) (rgba 0 0 0 0.2)
+        , boxShadow5 (px 0) (px 4) (px 8) (px 0) (rgba 0 0 0 0.4)
         , borderRadius (px 6)
         , padding (px 8)
         , color textColor
+        , displayFlex
+        , alignItems center
         , hover
             [ backgroundColor hoverColor
             ]
@@ -40,6 +43,19 @@ buttonStyle primaryColor hoverColor textColor =
             [ Css.Transitions.backgroundColor 300
             ]
         ]
+
+
+iconButtonConstructor : I.Icon msg -> Float -> Color -> Color -> Color -> String -> S.Html msg
+iconButtonConstructor iconName size primaryColor hoverColor textColor text =
+    let
+        icon =
+            I.dynamicIcon iconName size primaryLight primaryLighter
+    in
+    S.div
+        [ A.css
+            [ buttonStyle primaryColor hoverColor textColor ]
+        ]
+        [ icon, S.text text ]
 
 
 buttonConstructor : Color -> Color -> Color -> String -> S.Html msg

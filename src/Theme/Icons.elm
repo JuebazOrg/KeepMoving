@@ -1,22 +1,17 @@
-module Theme.Icons exposing (..)
+module Theme.Icons exposing (Icon, addIcon, dynamicIcon, staticIcon, yogaIcon)
 
 import Css exposing (..)
+import Css.Transitions exposing (transition)
 import Html.Styled as S
 import Html.Styled.Attributes as A
 import Material.Icons as Filled
-import Material.Icons.Types exposing (Coloring(..))
-import Svg.Attributes exposing (from)
+import Material.Icons.Types exposing (Coloring(..), Icon)
 import Svg.Styled exposing (fromUnstyled, svg)
-import Theme.Colors exposing (primary)
+import Theme.Colors exposing (primary, primaryLight, white)
 
 
-injuriesIcon : Float -> S.Html msg
-injuriesIcon size =
-    S.div [ A.css [ height (px size), maxWidth (px size) ] ]
-        [ svg
-            []
-            [ fromUnstyled <| Filled.offline_bolt (Basics.round size) Inherit ]
-        ]
+type alias Icon msg =
+    Material.Icons.Types.Icon msg
 
 
 yogaIcon : Float -> S.Html msg
@@ -24,14 +19,51 @@ yogaIcon size =
     S.img
         [ A.src "yoga.png"
         , A.css
-            [ iconStyle size ]
+            [ width (px size), margin (px 0) ]
         ]
         []
 
 
-iconStyle : Float -> Style
-iconStyle size =
+addIcon : Icon msg
+addIcon =
+    Filled.add_circle
+
+
+dynamicIcon : Icon msg -> Float -> Color -> Color -> S.Html msg
+dynamicIcon icon size color hoverColor =
+    S.div [ A.css [ height (px size), maxWidth (px size), dynamicIconStyle color hoverColor ] ]
+        [ svg
+            []
+            [ fromUnstyled <| icon (Basics.round size) Inherit ]
+        ]
+
+
+staticIcon : Icon msg -> Float -> Color -> S.Html msg
+staticIcon icon size color =
+    S.div [ A.css [ height (px size), maxWidth (px size), iconStyle color ] ]
+        [ svg
+            []
+            [ fromUnstyled <| icon (Basics.round size) Inherit ]
+        ]
+
+
+iconStyle : Color -> Style
+iconStyle colorValue =
     batch
-        [ width (px size)
+        [ color colorValue
         , margin (px 0)
+        ]
+
+
+dynamicIconStyle : Color -> Color -> Style
+dynamicIconStyle colorValue hoverColor =
+    batch
+        [ color colorValue
+        , margin (px 0)
+        , hover
+            [ color hoverColor
+            ]
+        , transition
+            [ Css.Transitions.color 300
+            ]
         ]

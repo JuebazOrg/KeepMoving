@@ -1,12 +1,12 @@
 module Injuries exposing (..)
 
-import Components exposing ( box, tag)
+import Components exposing (box, iconButtonConstructor, secondaryButton, tag)
 import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Theme.Colors exposing (..)
 import Theme.Fonts as F
-import Components exposing (secondaryButton)
+import Theme.Icons as I
 
 
 type alias Injury =
@@ -54,7 +54,7 @@ view model =
 
 addInjuryBtn : Html Msg
 addInjuryBtn =
-    div [ A.css [ maxWidth fitContent ] ] [ secondaryButton "add" ]
+    iconButtonConstructor I.addIcon 30 primaryDark primaryDarker white "injuries"
 
 
 viewInjury : Injury -> Html Msg
