@@ -1,10 +1,10 @@
 module BulmaComponents exposing (..)
 
 import Bulma.Styled.CDN exposing (..)
-import Bulma.Styled.Elements exposing (Icon, button, buttonModifiers, icon, tag, tagModifiers)
+import Bulma.Styled.Elements exposing (Icon, button, buttonModifiers, tagModifiers)
 import Bulma.Styled.Modifiers exposing (..)
-import Css exposing (fitContent, maxWidth)
-import Html.Styled as S exposing (i)
+import Css exposing (fitContent, maxWidth, ms)
+import Html.Styled as S
 import Html.Styled.Attributes as A
 
 
@@ -24,42 +24,32 @@ tag messages =
 
 button : ButtonProps msg -> List (S.Html msg) -> S.Html msg
 button buttonProps messages =
-    let
-        buttonProps2 =
-            { buttonModifiers
-                | color = buttonProps.color
-                , rounded = buttonProps.rounded
-                , inverted = buttonProps.inverted
-                , iconLeft = buttonProps.iconLeft
-                , iconRight = buttonProps.iconRight
-            } 
-    in
     Bulma.Styled.Elements.button
-        buttonProps2
+        buttonProps
         []
         messages
 
 
 type alias ButtonProps msg =
-    { outlined : Bool
-    , inverted : Bool
-    , rounded : Bool
-    , color : Color
-    , iconLeft : Maybe ( Size, List (S.Attribute msg), IconBody msg )
-    , iconRight : Maybe ( Size, List (S.Attribute msg), IconBody msg )
-    }
+    Bulma.Styled.Elements.ButtonModifiers msg
+
+
+defaultProps : ButtonProps ms
+defaultProps =
+    buttonModifiers
 
 
 type alias IconBody msg =
     S.Html msg
 
 
-defaultButtonProps : ButtonProps msg
-defaultButtonProps =
-    { outlined = False
-    , inverted = False
-    , rounded = True
-    , color = Bulma.Styled.Modifiers.primary
-    , iconLeft = Nothing
-    , iconRight = Nothing
-    }
+
+-- defaultButtonProps : ButtonProps msg
+-- defaultButtonProps =
+--     { outlined = False
+--     , inverted = False
+--     , rounded = True
+--     , color = Bulma.Styled.Modifiers.primary
+--     , iconLeft = Nothing
+--     , iconRight = Nothing
+--     }
