@@ -82,3 +82,6 @@ black =
 white : Color
 white =
     hex "ffffff"
+
+grey : Color
+grey = hex "787878"

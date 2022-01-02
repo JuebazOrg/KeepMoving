@@ -1,21 +1,35 @@
 module Injuries exposing (..)
 
-import Theme.Colors exposing (..)
 import Components exposing (blueButton, box, tag)
 import Css exposing (..)
-import Theme.Fonts as F
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
+import Theme.Colors exposing (..)
+import Theme.Fonts as F
 
 
 type alias Injury =
     { description : String
     , region : Region
+    , location : String
     }
 
 
-type alias Region =
-    String
+type Region
+    = Leg Side
+    | Arm Side
+    | Neck
+    | Hands Side
+    | Wrist Side
+    | UpperBack
+    | MiddleBack
+    | LowerBack
+    | Feet Side
+
+
+type Side
+    = Right
+    | Left
 
 
 type alias Model =
@@ -45,6 +59,53 @@ addInjuryBtn =
 viewInjury : Injury -> Html Msg
 viewInjury injury =
     div [ A.css [ box white, maxWidth fitContent, F.primary, marginBottom (px 16) ] ]
-        [ span [ A.css [ F.accentuate, color cyanDark, tag cyanLight ] ] [ text injury.region ]
+        [ span [ A.css [ F.accentuate, color cyanDark, tag cyanLight ] ]
+            [ text <| fromRegion injury.region ]
+        , span
+            [ A.css [ F.primary, color grey, alignSelf flexStart, paddingTop (px 5) ] ]
+            [ text injury.location ]
         , p [] [ text injury.description ]
         ]
+
+
+fromSide : Side -> String
+fromSide side =
+    case side of
+        Right ->
+            "right"
+
+        Left ->
+            "left"
+
+
+fromRegion : Region -> String
+fromRegion region =
+    case region of
+        Leg side ->
+            fromSide side
+                ++ " "
+                ++ "Leg"
+
+        Arm side ->
+            fromSide side ++ " " ++ "leg"
+
+        Neck ->
+            "neck"
+
+        Hands side ->
+            fromSide side ++ " " ++ "hands"
+
+        Wrist side ->
+            fromSide side ++ " " ++ " " ++ "wrist"
+
+        UpperBack ->
+            "upper back"
+
+        MiddleBack ->
+            "middle back"
+
+        LowerBack ->
+            "lower back"
+
+        Feet side ->
+            fromSide side ++ " " ++ "foot"
