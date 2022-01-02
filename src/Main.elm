@@ -36,7 +36,7 @@ update msg model =
 viewHeader : Html Msg
 viewHeader =
     div [ A.css [ backgroundColor white, padding2 (px 10) (px 20), displayFlex, justifyContent spaceBetween, F.title ] ]
-        [ h2 [ A.css [ color cyanDark, margin (px 0), displayFlex, alignItems center ] ] [ I.yogaIcon 45, text "Keep \n Moving" ], avatarPlaceHolder 30 "JB" ]
+        [ h2 [ A.css [ color primaryDark, margin (px 0), displayFlex, alignItems center ] ] [ I.yogaIcon 45, text "Keep \n Moving" ], avatarPlaceHolder 30 "JB" ]
 
 
 view : Model -> Html Msg
@@ -46,7 +46,7 @@ view model =
         , div [ A.css [ displayFlex, flex (int 1) ] ]
             [ map SideBarNavMsg viewSideNav
             , div
-                [ A.css [ backgroundColor cyanLight, flex (int 6), padding (px 20) ] ]
+                [ A.css [ backgroundColor primaryLightest, flex (int 6), padding (px 20) ] ]
                 [ map InjuriesMsg (Injuries.view model.injuries) ]
             ]
         ]

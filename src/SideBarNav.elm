@@ -30,7 +30,7 @@ menuItemStyle =
         , displayFlex
         , alignItems center
         , hover
-            [ backgroundColor cyan
+            [ backgroundColor primaryLight
             , color white
             ]
         , transition

@@ -1,11 +1,12 @@
 module Injuries exposing (..)
 
-import Components exposing (blueButton, box, tag)
+import Components exposing ( box, tag)
 import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Theme.Colors exposing (..)
 import Theme.Fonts as F
+import Components exposing (secondaryButton)
 
 
 type alias Injury =
@@ -53,13 +54,13 @@ view model =
 
 addInjuryBtn : Html Msg
 addInjuryBtn =
-    div [ A.css [ maxWidth fitContent ] ] [ blueButton "add" ]
+    div [ A.css [ maxWidth fitContent ] ] [ secondaryButton "add" ]
 
 
 viewInjury : Injury -> Html Msg
 viewInjury injury =
     div [ A.css [ box white, maxWidth fitContent, F.primary, marginBottom (px 16) ] ]
-        [ span [ A.css [ F.accentuate, color cyanDark, tag cyanLight ] ]
+        [ span [ A.css [ F.accentuate, color primaryDark, tag primaryLighter ] ]
             [ text <| fromRegion injury.region ]
         , span
             [ A.css [ F.primary, color grey, alignSelf flexStart, paddingTop (px 5) ] ]
