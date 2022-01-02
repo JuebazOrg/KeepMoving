@@ -107,6 +107,6 @@ avatarPlaceHolder size initial =
 tag : String -> BM.Size -> BM.Color -> S.Html msg
 tag content sizeValue colorValue =
     Bulma.Styled.Elements.tag { tagModifiers | color = colorValue, size = sizeValue }
-        [A.css [maxWidth fitContent]]
+        [ A.css [ maxWidth fitContent ] ]
         [ S.text content
         ]

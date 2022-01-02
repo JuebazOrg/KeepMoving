@@ -1,14 +1,13 @@
 module Injuries exposing (..)
 
-import Bulma.Styled.CDN exposing (..)
-import Bulma.Styled.Elements exposing (button, buttonModifiers, icon)
+import Bulma.Styled.Elements as B
 import Bulma.Styled.Modifiers as BM
-import Components exposing (box, iconButtonConstructor, secondaryButton, tag)
+import BulmaComponents exposing (button, defaultButtonProps, icon, tag)
+import Components exposing (box, iconButtonConstructor, secondaryButton)
 import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
-import Theme.Colors exposing (..)
-import Theme.Fonts as F
+import Theme.Colors as C
 import Theme.Icons as I
 
 
@@ -58,21 +57,21 @@ view model =
 addInjuryBtn : Html Msg
 addInjuryBtn =
     let
-        icon =
-            Bulma.Styled.Elements.icon BM.standard [] [ i [ A.class "fa fa-reply" ] [] ]
+        myIcon =
+            Just ( BM.standard, [], icon BM.standard [] [ i [ A.class "fa fa-reply" ] [] ] )
 
-        buttonModif =
-            { buttonModifiers | color = BM.dark, iconLeft = Just ( BM.small, [], icon ) }
+        buttonProps =
+            { defaultButtonProps | color = BM.primary, inverted = True, iconLeft = myIcon }
     in
-    Bulma.Styled.Elements.button buttonModif [] [ text "injuries" ]
+    BulmaComponents.button defaultButtonProps [ text "injuries" ]
 
 
 viewInjury : Injury -> Html Msg
 viewInjury injury =
-    div [ A.css [ box white, maxWidth fitContent, F.primary, marginBottom (px 16) ] ]
-        [ tag (fromRegion injury.region) BM.standard BM.primary
+    div [ A.css [ box C.white, maxWidth fitContent, marginBottom (px 16) ] ]
+        [ tag [ text (fromRegion injury.region) ]
         , span
-            [ A.css [ F.primary, color grey, alignSelf flexStart, paddingTop (px 5) ] ]
+            [ A.css [ color C.grey, alignSelf flexStart, paddingTop (px 5) ] ]
             [ text injury.location ]
         , p [] [ text injury.description ]
         ]
