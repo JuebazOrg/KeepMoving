@@ -1,6 +1,7 @@
 module Main exposing (..)
 
 import Browser
+import Bulma.Styled.CDN exposing (..)
 import Components exposing (avatarPlaceHolder)
 import Css exposing (..)
 import Html.Styled exposing (..)
@@ -44,12 +45,22 @@ view model =
     div [ A.css [ displayFlex, flexDirection column, height (vh 100) ] ]
         [ viewHeader
         , div [ A.css [ displayFlex, flex (int 1) ] ]
-            [ map SideBarNavMsg viewSideNav
+            [ stylesheet
+            , fontAwesomeCDN
+            , map SideBarNavMsg viewSideNav
             , div
                 [ A.css [ backgroundColor primaryLightest, flex (int 6), padding (px 20) ] ]
                 [ map InjuriesMsg (Injuries.view model.injuries) ]
             ]
         ]
+
+
+fontAwesomeCDN =
+    node "link"
+        [ A.rel "stylesheet"
+        , A.href "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+        ]
+        []
 
 
 

@@ -1,5 +1,8 @@
 module Injuries exposing (..)
 
+import Bulma.Styled.CDN exposing (..)
+import Bulma.Styled.Elements exposing (button, buttonModifiers, icon)
+import Bulma.Styled.Modifiers as BM
 import Components exposing (box, iconButtonConstructor, secondaryButton, tag)
 import Css exposing (..)
 import Html.Styled exposing (..)
@@ -54,14 +57,20 @@ view model =
 
 addInjuryBtn : Html Msg
 addInjuryBtn =
-    iconButtonConstructor I.addIcon 30 primaryDark primaryDarker white "injuries"
+    let
+        icon =
+            Bulma.Styled.Elements.icon BM.standard [] [ i [ A.class "fa fa-reply" ] [] ]
+
+        buttonModif =
+            { buttonModifiers | color = BM.dark, iconLeft = Just ( BM.small, [], icon ) }
+    in
+    Bulma.Styled.Elements.button buttonModif [] [ text "injuries" ]
 
 
 viewInjury : Injury -> Html Msg
 viewInjury injury =
     div [ A.css [ box white, maxWidth fitContent, F.primary, marginBottom (px 16) ] ]
-        [ span [ A.css [ F.accentuate, color primaryDark, tag primaryLighter ] ]
-            [ text <| fromRegion injury.region ]
+        [ tag (fromRegion injury.region) BM.standard BM.primary
         , span
             [ A.css [ F.primary, color grey, alignSelf flexStart, paddingTop (px 5) ] ]
             [ text injury.location ]

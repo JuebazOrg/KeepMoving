@@ -1,5 +1,8 @@
 module Components exposing (..)
 
+import Bulma.Styled.CDN exposing (..)
+import Bulma.Styled.Elements exposing (icon, tag, tagModifiers)
+import Bulma.Styled.Modifiers as BM
 import Css exposing (..)
 import Css.Transitions exposing (transition)
 import Html.Styled as S
@@ -101,11 +104,9 @@ avatarPlaceHolder size initial =
     S.div [ A.css [ buttonStyle white primaryLighter primaryDarker, rounded size, displayFlex, alignItems center, justifyContent center, F.accentuate ] ] [ S.text initial ]
 
 
-tag : Color -> Style
-tag backgroundValue =
-    batch
-        [ borderRadius (px 7)
-        , backgroundColor backgroundValue
-        , padding (px 3)
-        , maxWidth fitContent
+tag : String -> BM.Size -> BM.Color -> S.Html msg
+tag content sizeValue colorValue =
+    Bulma.Styled.Elements.tag { tagModifiers | color = colorValue, size = sizeValue }
+        [A.css [maxWidth fitContent]]
+        [ S.text content
         ]
