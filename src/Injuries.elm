@@ -1,8 +1,8 @@
 module Injuries exposing (..)
 
+import Bulma.BulmaElements exposing (button, defaultProps, icon, tag)
+import Bulma.Card exposing (..)
 import Bulma.Styled.Modifiers as BM
-import BulmaComponents exposing (button, defaultProps, icon, tag)
-import Card exposing (..)
 import Components exposing (box, iconButtonConstructor, secondaryButton)
 import Css exposing (..)
 import Html.Styled exposing (..)
@@ -58,12 +58,12 @@ addInjuryBtn : Html Msg
 addInjuryBtn =
     let
         myIcon =
-            Just ( BM.standard, [], icon BM.standard [] [ i [ A.class "fa fa-reply" ] [] ] )
+            Just ( BM.standard, [], icon BM.standard [] [ i [ A.class I.add ] [] ] )
 
         buttonProps =
             { defaultProps | color = BM.primary, inverted = True, iconLeft = myIcon }
     in
-    BulmaComponents.button buttonProps [ text "injuries" ]
+    Bulma.BulmaElements.button buttonProps [] [ text "injuries" ]
 
 
 

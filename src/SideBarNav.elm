@@ -15,7 +15,7 @@ type Msg
 menuItem : String -> Html Msg
 menuItem title =
     div [ A.css [ menuItemStyle ] ]
-        [ span [ A.css [ paddingRight (px 10) ] ] [ I.staticIcon I.addIcon 35 primary ]
+        [ span [ A.css [ paddingRight (px 10) ] ] []
         , text title
         ]
 

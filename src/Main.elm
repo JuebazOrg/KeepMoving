@@ -3,6 +3,7 @@ module Main exposing (..)
 import Browser
 import Bulma.Styled.CDN exposing (..)
 import Components exposing (avatarPlaceHolder)
+import ComponentsV2 exposing (roundButton)
 import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
@@ -37,7 +38,7 @@ update msg model =
 viewHeader : Html Msg
 viewHeader =
     div [ A.css [ backgroundColor white, padding2 (px 10) (px 20), displayFlex, justifyContent spaceBetween, F.title ] ]
-        [ h2 [ A.css [ color primaryDark, margin (px 0), displayFlex, alignItems center ] ] [ I.yogaIcon 45, text "Keep \n Moving" ], avatarPlaceHolder 30 "JB" ]
+        [ h2 [ A.css [ color primaryDark, margin (px 0), displayFlex, alignItems center ] ] [ I.yogaIcon 45, text "Keep \n Moving" ], roundButton 40 [ text "JB" ] ]
 
 
 view : Model -> Html Msg

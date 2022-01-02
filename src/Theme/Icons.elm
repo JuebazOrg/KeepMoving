@@ -1,4 +1,4 @@
-module Theme.Icons exposing (Icon, addIcon, dynamicIcon, staticIcon, yogaIcon)
+module Theme.Icons exposing (Icon, add, dynamicIcon, staticIcon, yogaIcon)
 
 import Css exposing (..)
 import Css.Transitions exposing (transition)
@@ -24,11 +24,6 @@ yogaIcon size =
         []
 
 
-addIcon : Icon msg
-addIcon =
-    Filled.add_circle
-
-
 dynamicIcon : Icon msg -> Float -> Color -> Color -> S.Html msg
 dynamicIcon icon size color hoverColor =
     S.div [ A.css [ height (px size), maxWidth (px size), dynamicIconStyle color hoverColor ] ]
@@ -39,20 +34,13 @@ dynamicIcon icon size color hoverColor =
 
 
 staticIcon : Icon msg -> Float -> Color -> S.Html msg
-staticIcon icon size color =
-    S.div [ A.css [ height (px size), maxWidth (px size), iconStyle color ] ]
+staticIcon icon size colorValue =
+    S.div [ A.css [ height (px size), maxWidth (px size), color colorValue, margin (px 0) ] ]
         [ svg
             []
             [ fromUnstyled <| icon (Basics.round size) Inherit ]
         ]
 
-
-iconStyle : Color -> Style
-iconStyle colorValue =
-    batch
-        [ color colorValue
-        , margin (px 0)
-        ]
 
 
 dynamicIconStyle : Color -> Color -> Style
@@ -67,3 +55,8 @@ dynamicIconStyle colorValue hoverColor =
             [ Css.Transitions.color 300
             ]
         ]
+
+
+add : String
+add =
+    "fa fa-plus"
