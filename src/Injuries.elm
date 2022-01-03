@@ -1,11 +1,12 @@
 module Injuries exposing (..)
 
-import AddInjury exposing (myModal)
 import Components.Card exposing (..)
 import Components.Components as C
+import Components.Modal exposing (modal, modalBody, modalCardTitle, modalHead)
 import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
+import Html.Styled.Events exposing (onClick)
 import Theme.Icons as I
 
 
@@ -34,28 +35,47 @@ type Side
 
 
 type alias Model =
-    List Injury
+    { injuries : List Injury, addInjuryModalOpen : Bool }
+
+
+init : List Injury -> Model
+init injuriesList =
+    { injuries = injuriesList, addInjuryModalOpen = False }
 
 
 type Msg
-    = Noop
+    = OpenModal
+    | CloseModal
+
+
+update : Model -> Msg -> Model
+update model msg =
+    case msg of
+        OpenModal ->
+            { model | addInjuryModalOpen = True }
+
+        CloseModal ->
+            { model | addInjuryModalOpen = False }
 
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ div [ A.css [ displayFlex, justifyContent spaceBetween, marginBottom (px 10) ] ] [ C.h3Title [ A.css [ margin (px 0) ] ] [ text "Injuries" ], addInjuryBtn ]
-        , div [ A.css [ displayFlex, flexDirection column, width (px 500) ] ] <|
-            List.map
-                (\i -> viewInjury i)
-                model
-        , myModal
-        ]
+    if model.addInjuryModalOpen then
+       myModal
+      
+    else
+        div []
+            [ div [ A.css [ displayFlex, justifyContent spaceBetween, marginBottom (px 10) ] ] [ C.h3Title [ A.css [ margin (px 0) ] ] [ text "Injuries" ], addInjuryBtn ]
+            , div [ A.css [ displayFlex, flexDirection column, width (px 500) ] ] <|
+                List.map
+                    (\i -> viewInjury i)
+                    model.injuries
+            ]
 
 
 addInjuryBtn : Html Msg
 addInjuryBtn =
-    C.addButton [ text "Injury" ]
+    C.addButton [ onClick OpenModal ] [ text "Injury" ]
 
 
 viewInjury : Injury -> Html Msg
@@ -79,6 +99,17 @@ viewInjury injury =
                 ]
             ]
         , cardContent [] [ text injury.description ]
+        ]
+
+
+myModal : Html Msg
+myModal =
+    modal
+        []
+        [ modalHead [] [ modalCardTitle [ A.css [ displayFlex, justifyContent spaceBetween ] ] [ text "New injury" ], C.closeButton [ onClick CloseModal ] [] ]
+        , modalBody []
+            [ text "Anything can go here!"
+            ]
         ]
 
 

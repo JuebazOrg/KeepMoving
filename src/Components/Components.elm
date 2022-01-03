@@ -18,8 +18,8 @@ roundButton size messages =
     button buttonP [ A.css [ width (px size), height (px size), borderRadius (px size) ] ] messages
 
 
-addButton : List (S.Html msg) -> S.Html msg
-addButton messages =
+addButton : List (S.Attribute msg) -> List (S.Html msg) -> S.Html msg
+addButton attributes messages =
     let
         myIcon =
             Just ( BM.standard, [], icon [] [ S.i [ A.class I.add ] [] ] )
@@ -27,11 +27,11 @@ addButton messages =
         buttonProps =
             { defaultButtonProps | color = BM.primary, inverted = True, iconLeft = myIcon }
     in
-    Components.BulmaElements.button buttonProps [] messages
+    Components.BulmaElements.button buttonProps attributes messages
 
 
-closeButton : List (S.Html msg) -> S.Html msg
-closeButton messages =
+closeButton : List (S.Attribute msg) -> List (S.Html msg) -> S.Html msg
+closeButton attributes messages =
     let
         myIcon =
             Just ( BM.standard, [], icon [] [ S.i [ A.class I.close ] [] ] )
@@ -39,7 +39,7 @@ closeButton messages =
         buttonProps =
             { defaultButtonProps | color = BM.primary, iconLeft = myIcon, rounded = True }
     in
-    Components.BulmaElements.button buttonProps [] messages
+    Components.BulmaElements.button buttonProps attributes messages
 
 
 primaryTag : List (S.Html msg) -> S.Html msg
