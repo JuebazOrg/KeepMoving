@@ -1,7 +1,8 @@
 module Main exposing (..)
 
 import Browser
-import Components exposing (avatarPlaceHolder)
+import Bulma.Styled.CDN exposing (..)
+import Components.Components exposing (h4Title, roundButton)
 import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
@@ -35,8 +36,13 @@ update msg model =
 
 viewHeader : Html Msg
 viewHeader =
-    div [ A.css [ backgroundColor white, padding2 (px 10) (px 20), displayFlex, justifyContent spaceBetween, F.title ] ]
-        [ h2 [ A.css [ color primaryDark, margin (px 0), displayFlex, alignItems center ] ] [ I.yogaIcon 45, text "Keep \n Moving" ], avatarPlaceHolder 30 "JB" ]
+    div [ A.css [ backgroundColor white, padding2 (px 10) (px 20), displayFlex, justifyContent spaceBetween, alignItems center ] ]
+        [ div [ A.css [ displayFlex, alignItems center ] ]
+            [ I.yogaIcon 45, h4Title [] [ text "Keep Moving" ] ]
+        , div
+            []
+            [ roundButton 45 [ text "JB" ] ]
+        ]
 
 
 view : Model -> Html Msg
@@ -44,12 +50,22 @@ view model =
     div [ A.css [ displayFlex, flexDirection column, height (vh 100) ] ]
         [ viewHeader
         , div [ A.css [ displayFlex, flex (int 1) ] ]
-            [ map SideBarNavMsg viewSideNav
+            [ stylesheet
+            , fontAwesomeCDN
+            , map SideBarNavMsg viewSideNav
             , div
                 [ A.css [ backgroundColor primaryLightest, flex (int 6), padding (px 20) ] ]
                 [ map InjuriesMsg (Injuries.view model.injuries) ]
             ]
         ]
+
+
+fontAwesomeCDN =
+    node "link"
+        [ A.rel "stylesheet"
+        , A.href "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+        ]
+        []
 
 
 

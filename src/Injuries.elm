@@ -1,12 +1,11 @@
 module Injuries exposing (..)
 
-import Components exposing ( box, tag)
+import Components.Card exposing (..)
+import Components.Components as C
 import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
-import Theme.Colors exposing (..)
-import Theme.Fonts as F
-import Components exposing (secondaryButton)
+import Theme.Icons as I
 
 
 type alias Injury =
@@ -44,8 +43,8 @@ type Msg
 view : Model -> Html Msg
 view model =
     div []
-        [ div [ A.css [ displayFlex, justifyContent spaceBetween, marginBottom (px 10) ] ] [ h2 [ A.css [ margin (px 0) ] ] [ text "Injuries" ], addInjuryBtn ]
-        , div [] <|
+        [ div [ A.css [ displayFlex, justifyContent spaceBetween, marginBottom (px 10) ] ] [ C.h3Title [ A.css [ margin (px 0) ] ] [ text "Injuries" ], addInjuryBtn ]
+        , div [ A.css [ displayFlex, flexDirection column, width (px 500) ] ] <|
             List.map
                 (\i -> viewInjury i)
                 model
@@ -54,18 +53,30 @@ view model =
 
 addInjuryBtn : Html Msg
 addInjuryBtn =
-    div [ A.css [ maxWidth fitContent ] ] [ secondaryButton "add" ]
+    C.addButton [ text "Injury" ]
 
 
 viewInjury : Injury -> Html Msg
 viewInjury injury =
-    div [ A.css [ box white, maxWidth fitContent, F.primary, marginBottom (px 16) ] ]
-        [ span [ A.css [ F.accentuate, color primaryDark, tag primaryLighter ] ]
-            [ text <| fromRegion injury.region ]
-        , span
-            [ A.css [ F.primary, color grey, alignSelf flexStart, paddingTop (px 5) ] ]
-            [ text injury.location ]
-        , p [] [ text injury.description ]
+    card [ A.css [ borderRadius (px 5), margin (px 20) ] ]
+        [ cardHeader []
+            [ cardTitle []
+                [ span [ A.css [ paddingRight (px 7) ] ] [ text <| injury.location ]
+                , C.primaryTag [ text <| fromRegion injury.region ]
+                ]
+            , cardIcon []
+                [ C.icon
+                    []
+                    [ i [ A.class I.calendar ] []
+                    ]
+                , span [] [ text "30 Jan 2020" ]
+                , C.icon
+                    [ A.css [ paddingLeft (px 5) ] ]
+                    [ i [ A.class I.edit ] []
+                    ]
+                ]
+            ]
+        , cardContent [] [ text injury.description ]
         ]
 
 

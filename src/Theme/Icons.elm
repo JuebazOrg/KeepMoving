@@ -1,18 +1,15 @@
-module Theme.Icons exposing (..)
+module Theme.Icons exposing (Icon, add, calendar, dynamicIcon, edit, staticIcon, yogaIcon)
 
 import Css exposing (..)
+import Css.Transitions exposing (transition)
 import Html.Styled as S
 import Html.Styled.Attributes as A
+import Material.Icons.Types exposing (Coloring(..), Icon)
+import Svg.Styled exposing (fromUnstyled, svg)
 
 
-injuriesIcon : Float -> S.Html msg
-injuriesIcon size =
-    S.img
-        [ A.src "injury.png"
-        , A.css
-            [ iconStyle size ]
-        ]
-        []
+type alias Icon msg =
+    Material.Icons.Types.Icon msg
 
 
 yogaIcon : Float -> S.Html msg
@@ -20,14 +17,53 @@ yogaIcon size =
     S.img
         [ A.src "yoga.png"
         , A.css
-            [ iconStyle size ]
+            [ width (px size), margin (px 0) ]
         ]
         []
 
 
-iconStyle : Float -> Style
-iconStyle size =
-    batch
-        [ width (px size)
-        , margin (px 0)
+dynamicIcon : Icon msg -> Float -> Color -> Color -> S.Html msg
+dynamicIcon icon size color hoverColor =
+    S.div [ A.css [ height (px size), maxWidth (px size), dynamicIconStyle color hoverColor ] ]
+        [ svg
+            []
+            [ fromUnstyled <| icon (Basics.round size) Inherit ]
         ]
+
+
+staticIcon : Icon msg -> Float -> Color -> S.Html msg
+staticIcon icon size colorValue =
+    S.div [ A.css [ height (px size), maxWidth (px size), color colorValue, margin (px 0) ] ]
+        [ svg
+            []
+            [ fromUnstyled <| icon (Basics.round size) Inherit ]
+        ]
+
+
+dynamicIconStyle : Color -> Color -> Style
+dynamicIconStyle colorValue hoverColor =
+    batch
+        [ color colorValue
+        , margin (px 0)
+        , hover
+            [ color hoverColor
+            ]
+        , transition
+            [ Css.Transitions.color 300
+            ]
+        ]
+
+
+add : String
+add =
+    "fa fa-plus"
+
+
+edit : String
+edit =
+    "fa fa-pencil"
+
+
+calendar : String
+calendar =
+    "fa fa-calendar"
