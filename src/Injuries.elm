@@ -1,37 +1,22 @@
 module Injuries exposing (..)
 
 import Components.Card exposing (..)
-import Components.Components as C
+import Components.Elements as C
+import Components.Form exposing (anOption, controlInput, controlLabel, controlSelect, controlTextArea, defaultControlInputProps, defaultTextAreaProps, field, selectDefaultProps)
 import Components.Modal exposing (modal, modalBody, modalCardTitle, modalHead)
 import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick)
+import Regions exposing (BodyRegion, bodyRegionToString, bodyRegions, fromRegion)
 import Theme.Icons as I
 
 
 type alias Injury =
     { description : String
-    , region : Region
+    , region : BodyRegion
     , location : String
     }
-
-
-type Region
-    = Leg Side
-    | Arm Side
-    | Neck
-    | Hands Side
-    | Wrist Side
-    | UpperBack
-    | MiddleBack
-    | LowerBack
-    | Feet Side
-
-
-type Side
-    = Right
-    | Left
 
 
 type alias Model =
@@ -61,8 +46,8 @@ update model msg =
 view : Model -> Html Msg
 view model =
     if model.addInjuryModalOpen then
-       myModal
-      
+        myModal
+
     else
         div []
             [ div [ A.css [ displayFlex, justifyContent spaceBetween, marginBottom (px 10) ] ] [ C.h3Title [ A.css [ margin (px 0) ] ] [ text "Injuries" ], addInjuryBtn ]
@@ -84,7 +69,7 @@ viewInjury injury =
         [ cardHeader []
             [ cardTitle []
                 [ span [ A.css [ paddingRight (px 7) ] ] [ text <| injury.location ]
-                , C.primaryTag [ text <| fromRegion injury.region ]
+                , C.primaryTag [ text <| bodyRegionToString injury.region ]
                 ]
             , cardIcon []
                 [ C.icon
@@ -104,53 +89,49 @@ viewInjury injury =
 
 myModal : Html Msg
 myModal =
+    let
+        locationInput =
+            field []
+                [ controlLabel [] [ text "location" ]
+                , controlInput defaultControlInputProps [] [] []
+                ]
+
+        myTextArea =
+            field []
+                [ controlLabel [] [ text "description" ]
+                , controlTextArea
+                    defaultTextAreaProps
+                    []
+                    []
+                    []
+                ]
+
+        regionsDropDown =
+            let
+                regionOptions =
+                    bodyRegions
+                        |> List.map (\b -> b.region)
+                        |> List.map fromRegion
+                        |> List.map (\r -> ( r, "" ))
+                        |> List.map anOption
+            in
+            controlSelect selectDefaultProps [] [] regionOptions
+
+        sidesDropDown =
+            let
+                sideOptions =
+                    [ "left", "right" ]
+                        |> List.map (\r -> ( r, "" ))
+                        |> List.map anOption
+            in
+            controlSelect selectDefaultProps [] [] sideOptions
+    in
     modal
         []
         [ modalHead [] [ modalCardTitle [ A.css [ displayFlex, justifyContent spaceBetween ] ] [ text "New injury" ], C.closeButton [ onClick CloseModal ] [] ]
         , modalBody []
-            [ text "Anything can go here!"
+            [ locationInput
+            , myTextArea
+            , div [ A.css [ displayFlex] ] [ regionsDropDown, sidesDropDown ]
             ]
         ]
-
-
-fromSide : Side -> String
-fromSide side =
-    case side of
-        Right ->
-            "right"
-
-        Left ->
-            "left"
-
-
-fromRegion : Region -> String
-fromRegion region =
-    case region of
-        Leg side ->
-            fromSide side
-                ++ " "
-                ++ "Leg"
-
-        Arm side ->
-            fromSide side ++ " " ++ "leg"
-
-        Neck ->
-            "neck"
-
-        Hands side ->
-            fromSide side ++ " " ++ "hands"
-
-        Wrist side ->
-            fromSide side ++ " " ++ " " ++ "wrist"
-
-        UpperBack ->
-            "upper back"
-
-        MiddleBack ->
-            "middle back"
-
-        LowerBack ->
-            "lower back"
-
-        Feet side ->
-            fromSide side ++ " " ++ "foot"

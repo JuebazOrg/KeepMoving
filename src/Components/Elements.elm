@@ -1,4 +1,4 @@
-module Components.Components exposing (..)
+module Components.Elements exposing (..)
 
 import Bulma.Styled.Elements as BE
 import Bulma.Styled.Modifiers as BM
@@ -25,7 +25,7 @@ addButton attributes messages =
             Just ( BM.standard, [], icon [] [ S.i [ A.class I.add ] [] ] )
 
         buttonProps =
-            { defaultButtonProps | color = BM.primary, inverted = True, iconLeft = myIcon }
+            { defaultButtonProps | color = BM.primary, iconLeft = myIcon }
     in
     Components.BulmaElements.button buttonProps attributes messages
 

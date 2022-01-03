@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Browser
 import Bulma.Styled.CDN exposing (..)
-import Components.Components exposing (h4Title, roundButton)
+import Components.Elements exposing (h4Title, roundButton)
 import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
