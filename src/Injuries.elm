@@ -1,14 +1,10 @@
 module Injuries exposing (..)
 
-import Bulma.BulmaElements exposing (button, defaultProps, icon, tag)
-import Bulma.Card exposing (..)
-import Bulma.Styled.Modifiers as BM
-import Components exposing (box, iconButtonConstructor, secondaryButton)
+import Components.Card exposing (..)
+import Components.Components as C
 import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
-import Theme.Colors as C
-import Theme.Icons as I
 
 
 type alias Injury =
@@ -46,8 +42,8 @@ type Msg
 view : Model -> Html Msg
 view model =
     div []
-        [ div [ A.css [ displayFlex, justifyContent spaceBetween, marginBottom (px 10) ] ] [ h2 [ A.css [ margin (px 0) ] ] [ text "Injuries" ], addInjuryBtn ]
-        , div [] <|
+        [ div [ A.css [ displayFlex, justifyContent spaceBetween, marginBottom (px 10) ] ] [ C.h3Title [ A.css [ margin (px 0) ] ] [ text "Injuries" ], addInjuryBtn ]
+        , div [ A.css [ displayFlex, flexDirection column, width (px 500) ] ] <|
             List.map
                 (\i -> viewInjury i)
                 model
@@ -56,14 +52,7 @@ view model =
 
 addInjuryBtn : Html Msg
 addInjuryBtn =
-    let
-        myIcon =
-            Just ( BM.standard, [], icon BM.standard [] [ i [ A.class I.add ] [] ] )
-
-        buttonProps =
-            { defaultProps | color = BM.primary, inverted = True, iconLeft = myIcon }
-    in
-    Bulma.BulmaElements.button buttonProps [] [ text "injuries" ]
+    C.addButton [ text "Injury" ]
 
 
 
@@ -80,7 +69,26 @@ addInjuryBtn =
 
 viewInjury : Injury -> Html Msg
 viewInjury injury =
-    card [ A.css [ borderRadius (px 5), margin (px 20) ] ] [ tag [ text "injury" ] ]
+    card [ A.css [ borderRadius (px 5), margin (px 20) ] ]
+        [ cardHeader []
+            [ cardTitle []
+                [ span [ A.css [ paddingRight (px 7) ] ] [ text <| injury.location ]
+                , C.primaryTag [ text <| fromRegion injury.region ]
+                ]
+            , cardIcon []
+                [ C.icon
+                    []
+                    [ i [ A.class "fa fa-calendar" ] []
+                    ]
+                , span [] [ text "30 Jan 2020" ]
+                ]
+            ]
+        , cardContent [] [ text injury.description ]
+        , cardFooter []
+            [ cardFooterItemLink [] [ text "Edit" ]
+            , cardFooterItemLink [] [ text "Delete" ]
+            ]
+        ]
 
 
 fromSide : Side -> String

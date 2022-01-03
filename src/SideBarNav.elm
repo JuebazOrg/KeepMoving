@@ -1,8 +1,10 @@
 module SideBarNav exposing (..)
 
+import Components.Components as C
+import Components.Menu exposing (menu, menuLabel, menuList, menuListItemLink)
 import Css exposing (..)
 import Css.Transitions exposing (transition)
-import Html.Styled exposing (..)
+import Html.Styled exposing (Html, div, i, span, text)
 import Html.Styled.Attributes as A
 import Theme.Colors exposing (..)
 import Theme.Icons as I
@@ -40,12 +42,41 @@ menuItemStyle =
         ]
 
 
-viewSideNav : Html Msg
+
+-- viewSideNav : Html msg
+-- viewSideNav =
+--     menu [A.css [padding (px 7)]]
+--         [ BC.menuLabel [] [ text "General" ]
+--         , BC.menuList []
+--             [ BC.menuListItemLink False [] [ text "Dashboard" ]
+--             , BC.menuListItemLink False [] [ text "Customers" ]
+--             ]
+--         , BC.menuLabel [] [ text "Administration" ]
+--         , BC.menuList []
+--             [ BC.menuListItem []
+--                 [ BC.menuListItemLink False [] [ text "Team Settings" ]
+--                 ]
+--             , BC.menuListItem []
+--                 [ BC.menuListItemLink True [] [ text "Manage Your Team" ]
+--                 , BC.menuList []
+--                     [ BC.menuListItemLink False [] [ text "Members" ]
+--                     ]
+--                 ]
+--             ]
+--         ]
+
+
+viewSideNav : Html msg
 viewSideNav =
-    div [ A.css [ backgroundColor white, flex (int 1) ] ]
-        [ div []
-            [ menuItem "option A"
-            , menuItem "option B"
-            , menuItem "option C"
+    menu [ A.css [ padding (px 20) ] ]
+        [ menuLabel [] [ text "General" ]
+        , menuList []
+            [ menuListItemLink False [] [ C.icon [] [ i [ A.class I.add ] [] ], text "Dashboard" ]
+            , menuListItemLink False [] [ text "Customers" ]
+            ]
+        , menuLabel [] [ text "Admin" ]
+        , menuList []
+            [ menuListItemLink False [] [ text "Dashboard" ]
+            , menuListItemLink False [] [ text "Customers" ]
             ]
         ]

@@ -1,4 +1,4 @@
-module Bulma.BulmaElements exposing (..)
+module Components.BulmaElements exposing (..)
 
 import Bulma.Styled.CDN exposing (..)
 import Bulma.Styled.Elements exposing (Icon, button, buttonModifiers, tagModifiers)
@@ -8,16 +8,11 @@ import Html.Styled as S
 import Html.Styled.Attributes as A
 
 
-icon : Size -> List (S.Attribute msg) -> List (IconBody msg) -> Icon msg
-icon size attributes =
-    Bulma.Styled.Elements.icon size attributes
-
-
 tag : List (S.Html msg) -> S.Html msg
 tag messages =
     let
         tagModif =
-            { tagModifiers | size = small }
+            { tagModifiers | size = standard }
     in
     Bulma.Styled.Elements.tag tagModif [ A.css [ maxWidth fitContent ] ] messages
 
@@ -50,3 +45,5 @@ defaultProps =
 
 type alias IconBody msg =
     S.Html msg
+
+
