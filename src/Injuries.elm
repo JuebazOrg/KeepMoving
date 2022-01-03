@@ -1,5 +1,6 @@
 module Injuries exposing (..)
 
+import AddInjury exposing (myModal)
 import Components.Card exposing (..)
 import Components.Components as C
 import Css exposing (..)
@@ -48,6 +49,7 @@ view model =
             List.map
                 (\i -> viewInjury i)
                 model
+        , myModal
         ]
 
 

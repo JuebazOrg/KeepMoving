@@ -30,6 +30,18 @@ addButton messages =
     Components.BulmaElements.button buttonProps [] messages
 
 
+closeButton : List (S.Html msg) -> S.Html msg
+closeButton messages =
+    let
+        myIcon =
+            Just ( BM.standard, [], icon [] [ S.i [ A.class I.close ] [] ] )
+
+        buttonProps =
+            { defaultButtonProps | color = BM.primary, iconLeft = myIcon, rounded = True }
+    in
+    Components.BulmaElements.button buttonProps [] messages
+
+
 primaryTag : List (S.Html msg) -> S.Html msg
 primaryTag messages =
     let
