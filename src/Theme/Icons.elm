@@ -1,13 +1,11 @@
-module Theme.Icons exposing (Icon, add, dynamicIcon, staticIcon, yogaIcon)
+module Theme.Icons exposing (Icon, add, calendar, dynamicIcon, edit, staticIcon, yogaIcon)
 
 import Css exposing (..)
 import Css.Transitions exposing (transition)
 import Html.Styled as S
 import Html.Styled.Attributes as A
-import Material.Icons as Filled
 import Material.Icons.Types exposing (Coloring(..), Icon)
 import Svg.Styled exposing (fromUnstyled, svg)
-import Theme.Colors exposing (primary, primaryLight, white)
 
 
 type alias Icon msg =
@@ -42,7 +40,6 @@ staticIcon icon size colorValue =
         ]
 
 
-
 dynamicIconStyle : Color -> Color -> Style
 dynamicIconStyle colorValue hoverColor =
     batch
@@ -60,3 +57,13 @@ dynamicIconStyle colorValue hoverColor =
 add : String
 add =
     "fa fa-plus"
+
+
+edit : String
+edit =
+    "fa fa-pencil"
+
+
+calendar : String
+calendar =
+    "fa fa-calendar"

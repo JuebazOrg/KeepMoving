@@ -3,7 +3,7 @@ module Components.Components exposing (..)
 import Bulma.Styled.Elements as BE
 import Bulma.Styled.Modifiers as BM
 import Components.BulmaElements exposing (..)
-import Css exposing (backgroundColor, borderRadius, fitContent, height, margin, maxWidth, ms, padding, px, width)
+import Css exposing (borderRadius, height, px, width)
 import Html.Styled as S
 import Html.Styled.Attributes as A
 import Theme.Icons as I
@@ -13,7 +13,7 @@ roundButton : Float -> List (S.Html msg) -> S.Html msg
 roundButton size messages =
     let
         buttonP =
-            { defaultProps | rounded = True, color = BM.primary }
+            { defaultButtonProps | rounded = True, color = BM.primary }
     in
     button buttonP [ A.css [ width (px size), height (px size), borderRadius (px size) ] ] messages
 
@@ -25,14 +25,18 @@ addButton messages =
             Just ( BM.standard, [], icon [] [ S.i [ A.class I.add ] [] ] )
 
         buttonProps =
-            { defaultProps | color = BM.primary, inverted = True, iconLeft = myIcon }
+            { defaultButtonProps | color = BM.primary, inverted = True, iconLeft = myIcon }
     in
     Components.BulmaElements.button buttonProps [] messages
 
 
 primaryTag : List (S.Html msg) -> S.Html msg
 primaryTag messages =
-    Components.BulmaElements.tag messages
+    let
+        tagModifs =
+            { defaultTagProps | color = BM.primary }
+    in
+    Components.BulmaElements.tag tagModifs messages
 
 
 roundedTag : BE.TagModifiers -> List (S.Attribute msg) -> List (S.Html msg) -> BE.Tag msg
@@ -58,9 +62,3 @@ h4Title attributes messages =
 icon : List (S.Attribute msg) -> List (IconBody msg) -> BE.Icon msg
 icon attributes iconBodyMsgs =
     BE.icon BM.standard attributes iconBodyMsgs
-
-
-
--- icon : String -> BM.Size -> List (S.Attribute msg) -> List (IconBody msg) -> BE.Icon msg
--- icon iconName size attributes =
---     BE.icon size [ attributes ++ S.i [] [ A.class I.iconName ] ]

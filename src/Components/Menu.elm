@@ -2,7 +2,6 @@ module Components.Menu exposing (..)
 
 import Bulma.Styled.Components as BC
 import Html.Styled as S
-import Html.Styled.Attributes as A
 
 
 menu : List (S.Attribute msg) -> List (BC.MenuPart msg) -> BC.Menu msg

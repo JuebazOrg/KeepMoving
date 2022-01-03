@@ -5,6 +5,7 @@ import Components.Components as C
 import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
+import Theme.Icons as I
 
 
 type alias Injury =
@@ -55,18 +56,6 @@ addInjuryBtn =
     C.addButton [ text "Injury" ]
 
 
-
--- viewInjury : Injury -> Html Msg
--- viewInjury injury =
---     div [ A.css [ box C.white, maxWidth fitContent, marginBottom (px 16) ] ]
---         [ tag [ text (fromRegion injury.region) ]
---         , span
---             [ A.css [ color C.grey, alignSelf flexStart, paddingTop (px 5) ] ]
---             [ text injury.location ]
---         , p [] [ text injury.description ]
---         ]
-
-
 viewInjury : Injury -> Html Msg
 viewInjury injury =
     card [ A.css [ borderRadius (px 5), margin (px 20) ] ]
@@ -78,21 +67,16 @@ viewInjury injury =
             , cardIcon []
                 [ C.icon
                     []
-                    [ i [ A.class "fa fa-calendar" ] []
+                    [ i [ A.class I.calendar ] []
                     ]
                 , span [] [ text "30 Jan 2020" ]
                 , C.icon
-                    [A.css [paddingLeft (px 5)]]
-                    [ i [ A.class "fa fa-pencil" ] []
+                    [ A.css [ paddingLeft (px 5) ] ]
+                    [ i [ A.class I.edit ] []
                     ]
                 ]
             ]
         , cardContent [] [ text injury.description ]
-
-        -- , cardFooter []
-        --     [ cardFooterItemLink [] [ text "Edit" ]
-        --     , cardFooterItemLink [] [ text "Delete" ]
-        --     ]
         ]
 
 
