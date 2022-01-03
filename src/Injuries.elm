@@ -1,5 +1,6 @@
 module Injuries exposing (..)
 
+import Array
 import Components.Card exposing (..)
 import Components.Elements as C
 import Components.Form exposing (anOption, controlInput, controlLabel, controlSelect, controlTextArea, defaultControlInputProps, defaultTextAreaProps, field, selectDefaultProps)
@@ -7,7 +8,7 @@ import Components.Modal exposing (modal, modalBody, modalCardTitle, modalHead)
 import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
-import Html.Styled.Events exposing (onClick)
+import Html.Styled.Events exposing (onClick, onInput)
 import Regions exposing (BodyRegion, bodyRegionToString, bodyRegions, fromRegion)
 import Theme.Icons as I
 
@@ -31,6 +32,7 @@ init injuriesList =
 type Msg
     = OpenModal
     | CloseModal
+    | UpdateChoice String
 
 
 update : Model -> Msg -> Model
@@ -41,6 +43,9 @@ update model msg =
 
         CloseModal ->
             { model | addInjuryModalOpen = False }
+
+        UpdateChoice value ->
+            model
 
 
 view : Model -> Html Msg
@@ -110,12 +115,12 @@ myModal =
             let
                 regionOptions =
                     bodyRegions
-                        |> List.map (\b -> b.region)
-                        |> List.map fromRegion
-                        |> List.map (\r -> ( r, "" ))
+                        |> List.map (\br -> fromRegion br.region)
+                        |> List.indexedMap Tuple.pair
+                        |> List.map (\( value, key ) -> ( key, String.fromInt value ))
                         |> List.map anOption
             in
-            controlSelect selectDefaultProps [] [] regionOptions
+            controlSelect selectDefaultProps [] [ onInput UpdateChoice ] regionOptions
 
         sidesDropDown =
             let
@@ -132,6 +137,19 @@ myModal =
         , modalBody []
             [ locationInput
             , myTextArea
-            , div [ A.css [ displayFlex] ] [ regionsDropDown, sidesDropDown ]
+            , div [ A.css [ displayFlex ] ] [ regionsDropDown, sidesDropDown ]
             ]
         ]
+
+
+getBodyRegion : Int -> Maybe BodyRegion
+getBodyRegion index =
+    Array.fromList bodyRegions |> Array.get index
+
+
+displaySide : Int -> Bool
+displaySide index =
+    getBodyRegion index
+        |> Maybe.map (\b -> b.side)
+        |> Maybe.map (always True)
+        |> Maybe.withDefault False

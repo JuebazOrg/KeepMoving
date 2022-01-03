@@ -1,9 +1,6 @@
 module Components.Form exposing (..)
 
-import Bulma.Styled.Components as BC
-import Bulma.Styled.Elements as BE
 import Bulma.Styled.Form as BF
-import Bulma.Styled.Modifiers as BM
 import Html.Styled exposing (Attribute, Html, option, text)
 import Html.Styled.Attributes as A
 

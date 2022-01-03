@@ -39,7 +39,8 @@ bodyRegionToString bodyRegion =
         bodyRegion.side
         |> withDefault ""
     )
-        ++ " " ++ fromRegion bodyRegion.region
+        ++ " "
+        ++ fromRegion bodyRegion.region
 
 
 fromSide : Side -> String
