@@ -81,13 +81,18 @@ viewInjury injury =
                     [ i [ A.class "fa fa-calendar" ] []
                     ]
                 , span [] [ text "30 Jan 2020" ]
+                , C.icon
+                    [A.css [paddingLeft (px 5)]]
+                    [ i [ A.class "fa fa-pencil" ] []
+                    ]
                 ]
             ]
         , cardContent [] [ text injury.description ]
-        , cardFooter []
-            [ cardFooterItemLink [] [ text "Edit" ]
-            , cardFooterItemLink [] [ text "Delete" ]
-            ]
+
+        -- , cardFooter []
+        --     [ cardFooterItemLink [] [ text "Edit" ]
+        --     , cardFooterItemLink [] [ text "Delete" ]
+        --     ]
         ]
 
 
