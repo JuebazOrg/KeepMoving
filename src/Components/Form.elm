@@ -60,8 +60,8 @@ type alias ControlSelectModifiers msg =
     BF.ControlSelectModifiers msg
 
 
-selectDefaultProps : ControlSelectModifiers msg
-selectDefaultProps =
+controlSelectDefaultProps : ControlSelectModifiers msg
+controlSelectDefaultProps =
     BF.controlSelectModifiers
 
 
@@ -75,9 +75,9 @@ controlSelect controlAttributes selectAttributes options =
     BF.controlSelect controlAttributes selectAttributes options
 
 
-anOption : ( String, String ) -> Html msg
-anOption ( key, val ) =
-    option [ A.value val ]
+anOption : ( String, String ) -> List (Attribute msg) -> Html msg
+anOption ( key, val ) attributes =
+    option (A.value val :: attributes)
         [ text key
         ]
 
@@ -131,3 +131,5 @@ dropdownMenu :
     -> BC.DropdownContent msg
 dropdownMenu attributes dropdownItems =
     BC.dropdownMenu attributes dropdownItems
+
+

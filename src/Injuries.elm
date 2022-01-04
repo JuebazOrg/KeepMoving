@@ -1,14 +1,14 @@
 module Injuries exposing (..)
 
-import Array
 import Components.Card exposing (..)
 import Components.Elements as C
 import Components.Form exposing (..)
-import Components.Modal exposing (modal, modalBody, modalCardTitle, modalHead)
 import Css exposing (..)
+import Css.Global exposing (body)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
-import Html.Styled.Events exposing (onClick, onInput)
+import Html.Styled.Events exposing (onClick)
+import InjuryModal exposing (viewModal)
 import Regions exposing (BodyRegion, bodyRegionToString, bodyRegions, fromRegion)
 import Theme.Icons as I
 
@@ -21,37 +21,33 @@ type alias Injury =
 
 
 type alias Model =
-    { injuries : List Injury, addInjuryModalOpen : Bool, addInjuryModal : { regionIndex : Int } }
+    { injuries : List Injury, injuryModal : InjuryModal.Model, toggleModal : Bool }
 
 
 init : List Injury -> Model
 init injuriesList =
-    { injuries = injuriesList, addInjuryModalOpen = False, addInjuryModal = { regionIndex = 0 } }
+    { injuries = injuriesList, injuryModal = InjuryModal.init bodyRegions, toggleModal = False }
 
 
 type Msg
     = OpenModal
-    | CloseModal
-    | UpdateChoice String
+    | InjuryModalMsg InjuryModal.Msg
 
 
 update : Model -> Msg -> Model
 update model msg =
     case msg of
         OpenModal ->
-            { model | addInjuryModalOpen = True }
+            { model | toggleModal = True }
 
-        CloseModal ->
-            { model | addInjuryModalOpen = False }
-
-        UpdateChoice value ->
-            { model | addInjuryModal = { regionIndex = value |> String.toInt |> Maybe.withDefault 0 } }
+        InjuryModalMsg subMsg ->
+            { model | injuryModal = InjuryModal.update model.injuryModal subMsg }
 
 
 view : Model -> Html Msg
 view model =
-    if model.addInjuryModalOpen then
-        myModal model
+    if model.toggleModal then
+        map InjuryModalMsg <| InjuryModal.viewModal model.injuryModal
 
     else
         div []
@@ -90,81 +86,3 @@ viewInjury injury =
             ]
         , cardContent [] [ text injury.description ]
         ]
-
-
-myModal : Model -> Html Msg
-myModal model =
-    let
-        locationInput =
-            field []
-                [ controlLabel [] [ text "location" ]
-                , controlInput defaultControlInputProps [] [] []
-                ]
-
-        myTextArea =
-            field []
-                [ controlLabel [] [ text "description" ]
-                , controlTextArea
-                    defaultTextAreaProps
-                    []
-                    []
-                    []
-                ]
-
-        regionsDropDown =
-            let
-                regionOptions =
-                    bodyRegions
-                        |> List.map (\br -> fromRegion br.region)
-                        |> List.indexedMap Tuple.pair
-                        |> List.map (\( value, key ) -> ( key, String.fromInt value ))
-                        |> List.map anOption
-            in
-            controlSelect selectDefaultProps [] [ onInput UpdateChoice ] regionOptions
-
-        sidesDropDown =
-            let
-                sideOptions =
-                    [ "left", "right" ]
-                        |> List.map (\r -> ( r, "" ))
-                        |> List.map anOption
-            in
-            controlSelect selectDefaultProps [] [] sideOptions
-    in
-    modal
-        []
-        [ modalHead [] [ modalCardTitle [ A.css [ displayFlex, justifyContent spaceBetween ] ] [ text "New injury" ], C.closeButton [ onClick CloseModal ] [] ]
-        , modalBody []
-            [ locationInput
-            , myTextArea
-            , div [ A.css [ displayFlex ] ]
-                [ regionsDropDown
-                , if displaySide model.addInjuryModal.regionIndex then
-                    sidesDropDown
-
-                  else
-                    C.empty
-                ]
-            ]
-        ]
-
-
-getBodyRegion : Int -> Maybe BodyRegion
-getBodyRegion index =
-    Array.fromList bodyRegions |> Array.get index
-
-
-displaySide : Int -> Bool
-displaySide index =
-    let
-        side =
-            getBodyRegion index
-                |> Maybe.withDefault { region = Regions.Head, side = Nothing }
-                |> (\b -> b.side)
-    in
-    case side of
-        Nothing ->
-            False
-
-        _ ->
-            True
