@@ -1,6 +1,9 @@
 module Components.Form exposing (..)
 
+import Bulma.Styled.Components as BC
+import Bulma.Styled.Elements as BE
 import Bulma.Styled.Form as BF
+import Css exposing (content)
 import Html.Styled exposing (Attribute, Html, option, text)
 import Html.Styled.Attributes as A
 
@@ -77,3 +80,54 @@ anOption ( key, val ) =
     option [ A.value val ]
         [ text key
         ]
+
+
+type alias DropdownProps =
+    BC.DropdownModifiers
+
+
+dropdownModifiers : DropdownProps
+dropdownModifiers =
+    BC.dropdownModifiers
+
+
+dropdown :
+    BC.IsActive
+    -> BC.DropdownModifiers
+    -> List (Attribute msg)
+    -> List (BC.DropdownContent msg)
+    -> BC.Dropdown msg
+dropdown isActive attributes contents =
+    BC.dropdown isActive attributes contents
+
+
+dropdownItem :
+    BC.IsActive
+    -> List (Attribute msg)
+    -> List (Html msg)
+    -> BC.DropdownItem msg
+dropdownItem isActive attributes messages =
+    BC.dropdownItem isActive attributes messages
+
+
+dropdownItemLink :
+    BC.IsActive
+    -> List (Attribute msg)
+    -> List (Html msg)
+    -> BC.DropdownItem msg
+dropdownItemLink isActive attributes messages =
+    BC.dropdownItemLink isActive attributes messages
+
+
+dropdownTrigger : List (Attribute msg) -> List (BE.Button msg) -> BC.DropdownContent msg
+dropdownTrigger attributes buttons =
+    BC.dropdownTrigger attributes buttons
+
+
+dropdownMenu :
+    List (Attribute msg)
+    -> List (Attribute msg)
+    -> List (BC.DropdownItem msg)
+    -> BC.DropdownContent msg
+dropdownMenu attributes dropdownItems =
+    BC.dropdownMenu attributes dropdownItems

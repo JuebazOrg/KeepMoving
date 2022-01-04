@@ -74,3 +74,8 @@ h4Title attributes messages =
 icon : List (S.Attribute msg) -> List (IconBody msg) -> BE.Icon msg
 icon attributes iconBodyMsgs =
     BE.icon BM.standard attributes iconBodyMsgs
+
+
+empty : S.Html msg
+empty =
+    S.text ""
