@@ -7,6 +7,7 @@ import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Injuries exposing (Injury, Msg, view)
+import Json.Encode as Encode
 import Mock.InjuryMock as M
 import SideBarNav exposing (Msg, viewSideNav)
 import Theme.Colors exposing (..)
@@ -37,7 +38,9 @@ update msg model =
     case msg of
         InjuriesMsg subMsg ->
             ( { model | injuries = Injuries.update model.injuries subMsg }, Cmd.none )
-        SideBarNavMsg subMsg -> (model, Cmd.none)
+
+        SideBarNavMsg subMsg ->
+            ( model, Cmd.none )
 
 
 viewHeader : Html Msg
@@ -51,19 +54,55 @@ viewHeader =
         ]
 
 
-view : Model -> Html Msg
+chart : List (Attribute a) -> List (Html a) -> Html a
+chart =
+    node "google-char"
+
+
+datePicker : List (Attribute a) -> List (Html a) -> Html a
+datePicker =
+    node "date-picker"
+
+
+
+-- view : Model -> Html Msg
+-- view model =
+--     div [ A.css [ displayFlex, flexDirection column, height (vh 100) ] ]
+--         [ viewHeader
+--         , div [ A.css [ displayFlex, flex (int 1) ] ]
+--             [ stylesheet
+--             , fontAwesomeCDN
+--             , map SideBarNavMsg viewSideNav
+--             , div
+--                 [ A.css [ backgroundColor primaryLightest, flex (int 6), padding (px 20) ] ]
+--                 [ map InjuriesMsg (Injuries.view model.injuries) ]
+--             ]
+--         ]
+
+
+view : Model -> Html msg
 view model =
-    div [ A.css [ displayFlex, flexDirection column, height (vh 100) ] ]
-        [ viewHeader
-        , div [ A.css [ displayFlex, flex (int 1) ] ]
-            [ stylesheet
-            , fontAwesomeCDN
-            , map SideBarNavMsg viewSideNav
-            , div
-                [ A.css [ backgroundColor primaryLightest, flex (int 6), padding (px 20) ] ]
-                [ map InjuriesMsg (Injuries.view model.injuries) ]
-            ]
-        ]
+    datePicker [] []
+
+
+
+-- node "google-chart"
+--     [ A.attribute "type" "pie"
+--     , A.property "options" <|
+--         Encode.object [ ( "title", Encode.string "Distribution of days in 2001Q1" ) ]
+--     , A.property "cols" <|
+--         Encode.list Encode.object
+--             [ [ ( "label", Encode.string "Month" ), ( "type", Encode.string "string" ) ]
+--             , [ ( "label", Encode.string "Days" ), ( "type", Encode.string "number" ) ]
+--             ]
+--     , A.property "rows" <|
+--         Encode.list (Encode.list identity) <|
+--             [ [ Encode.string "Jan", Encode.int 31 ]
+--             , [ Encode.string "Feb", Encode.int 28 ]
+--             , [ Encode.string "Mar", Encode.int 41 ]
+--             ]
+--     ]
+--     []
 
 
 fontAwesomeCDN =
