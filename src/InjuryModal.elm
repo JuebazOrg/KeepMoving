@@ -1,8 +1,9 @@
 module InjuryModal exposing (..)
 
+import Components.Dropdown as DD
 import Components.Elements as C
 import Components.Form exposing (..)
-import Components.Modal exposing (modal, modalBody, modalCardTitle, modalHead)
+import Components.Modal exposing (modal, modalBackground, modalCard, modalCardBody, modalCardFoot, modalCardHead, modalCardTitle, modalContent)
 import Css exposing (..)
 import Html.Styled exposing (Attribute, Html, div, text)
 import Html.Styled.Attributes as A
@@ -11,31 +12,32 @@ import Regions exposing (..)
 
 
 type alias Model =
-    { bodyRegions : List BodyRegion, bodyRegionSelected : Maybe BodyRegion, isActive : Bool }
+    { regions : List Region, regionSelected : Maybe Region, dropdownRegionActive : Bool }
 
 
-init : List BodyRegion -> Model
-init bodyRegions =
-    { bodyRegions = bodyRegions, bodyRegionSelected = Nothing, isActive = False }
+init : List Region -> Model
+init bodyRegion =
+    { regions = bodyRegion, regionSelected = Nothing, dropdownRegionActive = False }
 
 
 type Msg
     = UpdateRegionChoice Region
     | CloseModal
     | ToggleRegionDropDown
+    | Save
 
 
 update : Model -> Msg -> Model
 update model msg =
     case msg of
         UpdateRegionChoice regionValue ->
-            { model | bodyRegionSelected = Just { region = regionValue, side = Nothing }, isActive = False }
-
-        CloseModal ->
-            model
+            { model | regionSelected = Just regionValue, dropdownRegionActive = False }
 
         ToggleRegionDropDown ->
-            { model | isActive = not model.isActive }
+            { model | dropdownRegionActive = not model.dropdownRegionActive }
+
+        _ ->
+            model
 
 
 viewDescriptionInput : Html msg
@@ -52,33 +54,44 @@ viewDescriptionInput =
 
 viewLocationInput : Html msg
 viewLocationInput =
-    field []
+    field [ A.css [ flex (int 3), marginRight (px 10) ] ]
         [ controlLabel [] [ text "location" ]
         , controlInput defaultControlInputProps [] [] []
         ]
 
 
+view : Model -> Html Msg
+view model =
+    modal True
+        [ A.css [ important <| overflow visible ] ]
+        [ modalBackground [] []
+        , modalContent [ A.css [ important <| overflow visible ] ]
+            [ viewModal model
+            ]
+        ]
+
+
 viewModal : Model -> Html Msg
 viewModal model =
-    modal
+    modalCard
         [ A.css [ important <| overflow visible ] ]
-        [ modalHead [] [ modalCardTitle [ A.css [ displayFlex, justifyContent spaceBetween ] ] [ text "New injury" ], C.closeButton [ onClick CloseModal ] [] ]
-        , modalBody [ A.css [ important <| overflow visible ] ]
-            [ viewLocationInput
+        [ modalCardHead [] [ modalCardTitle [ A.css [ displayFlex, justifyContent spaceBetween ] ] [ text "New injury" ], C.closeButton [ onClick CloseModal ] [] ]
+        , modalCardBody [ A.css [ important <| overflow visible ] ]
+            [ div [ A.css [ displayFlex, justifyContent center, alignItems center ] ] [ viewLocationInput, myDropdown model ]
             , viewDescriptionInput
-            , myDropdown model
             ]
+        , modalCardFoot [ A.css [ important displayFlex, important <| justifyContent flexEnd ] ] [ C.lightButton [] [ text "cancel" ], C.saveButton [ onClick Save ] [ text "save" ] ]
         ]
 
 
 myDropdownTrigger : Model -> Html Msg
 myDropdownTrigger model =
     dropdownTrigger []
-        [ C.addButton
+        [ C.regionButton
             [ onClick ToggleRegionDropDown ]
             [ text <|
-                (model.bodyRegionSelected
-                    |> Maybe.map (\br -> fromRegion br.region)
+                (model.regionSelected
+                    |> Maybe.map (\br -> fromRegion br)
                     |> Maybe.withDefault "Region"
                 )
             ]
@@ -88,23 +101,20 @@ myDropdownTrigger model =
 myDropdownMenu : Model -> Html Msg
 myDropdownMenu model =
     let
-        activeRegion =
-            model.bodyRegionSelected |> Maybe.map (\br -> br.region)
-
         dropdownItems =
-            bodyRegions
+            model.regions
                 |> List.map
-                    (\item ->
-                        case activeRegion of
+                    (\region ->
+                        case model.regionSelected of
                             Just active ->
-                                if item.region == active then
-                                    dropdownItemLink True [ onClick <| UpdateRegionChoice item.region ] [ text (fromRegion item.region) ]
+                                if region == active then
+                                    dropdownItemLink True [ onClick <| UpdateRegionChoice region ] [ text (fromRegion region) ]
 
                                 else
-                                    dropdownItemLink False [ onClick <| UpdateRegionChoice item.region ] [ text (fromRegion item.region) ]
+                                    dropdownItemLink False [ onClick <| UpdateRegionChoice region ] [ text (fromRegion region) ]
 
                             _ ->
-                                dropdownItemLink False [ onClick <| UpdateRegionChoice item.region ] [ text (fromRegion item.region) ]
+                                dropdownItemLink False [ onClick <| UpdateRegionChoice region ] [ text (fromRegion region) ]
                     )
     in
     dropdownMenu []
@@ -114,7 +124,7 @@ myDropdownMenu model =
 
 myDropdown : Model -> Html Msg
 myDropdown model =
-    dropdown model.isActive
+    dropdown model.dropdownRegionActive
         dropdownModifiers
         []
         [ myDropdownTrigger model

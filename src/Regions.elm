@@ -19,17 +19,16 @@ type Region
 type Side
     = Left
     | Right
+    | Middle
 
 
 type alias BodyRegion =
     { region : Region, side : Maybe Side }
 
 
-bodyRegions : List BodyRegion
-bodyRegions =
-    [ { region = Leg, side = Just Left }
-    , { region = Head, side = Nothing }
-    ]
+regions : List Region
+regions =
+    [ Leg, Arm, Neck, Hands, Wrist, UpperBack, MiddleBack, LowerBack, Feet, Head ]
 
 
 bodyRegionToString : BodyRegion -> String
@@ -51,6 +50,9 @@ fromSide side =
 
         Left ->
             "left"
+
+        Middle ->
+            "middle"
 
 
 fromRegion : Region -> String

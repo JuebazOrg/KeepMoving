@@ -30,6 +30,39 @@ addButton attributes messages =
     Components.BulmaElements.button buttonProps attributes messages
 
 
+saveButton : List (S.Attribute msg) -> List (S.Html msg) -> S.Html msg
+saveButton attributes messages =
+    let
+        myIcon =
+            Just ( BM.standard, [], icon [] [ S.i [ A.class I.save ] [] ] )
+
+        buttonProps =
+            { defaultButtonProps | color = BM.primary, iconLeft = myIcon }
+    in
+    Components.BulmaElements.button buttonProps attributes messages
+
+
+regionButton : List (S.Attribute msg) -> List (S.Html msg) -> S.Html msg
+regionButton attributes messages =
+    let
+        myIcon =
+            Just ( BM.standard, [], icon [] [ S.i [ A.class I.region ] [] ] )
+
+        buttonProps =
+            { defaultButtonProps | color = BM.primary, iconLeft = myIcon }
+    in
+    Components.BulmaElements.button buttonProps attributes messages
+
+
+lightButton : List (S.Attribute msg) -> List (S.Html msg) -> S.Html msg
+lightButton attributes messages =
+    let
+        buttonProps =
+            { defaultButtonProps | color = BM.primary }
+    in
+    Components.BulmaElements.button buttonProps attributes messages
+
+
 closeButton : List (S.Attribute msg) -> List (S.Html msg) -> S.Html msg
 closeButton attributes messages =
     let

@@ -1,6 +1,9 @@
 module Injuries exposing (..)
 
+import Bulma.Styled.Components as BC
+import Bulma.Styled.Modifiers as BM
 import Components.Card exposing (..)
+import Components.Dropdown exposing (Msg(..))
 import Components.Elements as C
 import Components.Form exposing (..)
 import Css exposing (..)
@@ -9,7 +12,7 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick)
 import InjuryModal exposing (viewModal)
-import Regions exposing (BodyRegion, bodyRegionToString, bodyRegions, fromRegion)
+import Regions exposing (BodyRegion, bodyRegionToString, fromRegion, regions)
 import Theme.Icons as I
 
 
@@ -21,12 +24,12 @@ type alias Injury =
 
 
 type alias Model =
-    { injuries : List Injury, injuryModal : InjuryModal.Model, toggleModal : Bool }
+    { injuries : List Injury, injuryModal : InjuryModal.Model, modalActive : Bool }
 
 
 init : List Injury -> Model
 init injuriesList =
-    { injuries = injuriesList, injuryModal = InjuryModal.init bodyRegions, toggleModal = False }
+    { injuries = injuriesList, injuryModal = InjuryModal.init regions, modalActive = False }
 
 
 type Msg
@@ -38,25 +41,30 @@ update : Model -> Msg -> Model
 update model msg =
     case msg of
         OpenModal ->
-            { model | toggleModal = True }
+            { model | modalActive = True }
 
         InjuryModalMsg subMsg ->
-            { model | injuryModal = InjuryModal.update model.injuryModal subMsg }
+            if subMsg == InjuryModal.CloseModal then
+                { model | injuryModal = InjuryModal.update model.injuryModal subMsg, modalActive = False }
+
+            else
+                { model | injuryModal = InjuryModal.update model.injuryModal subMsg }
 
 
 view : Model -> Html Msg
 view model =
-    if model.toggleModal then
-        map InjuryModalMsg <| InjuryModal.viewModal model.injuryModal
+    div []
+        [ div [ A.css [ displayFlex, justifyContent spaceBetween, marginBottom (px 10) ] ] [ C.h3Title [ A.css [ margin (px 0) ] ] [ text "Injuries" ], addInjuryBtn ]
+        , div [ A.css [ displayFlex, flexDirection column, width (px 500) ] ] <|
+            List.map
+                (\i -> viewInjury i)
+                model.injuries
+        , if model.modalActive then
+            map InjuryModalMsg <| InjuryModal.view model.injuryModal
 
-    else
-        div []
-            [ div [ A.css [ displayFlex, justifyContent spaceBetween, marginBottom (px 10) ] ] [ C.h3Title [ A.css [ margin (px 0) ] ] [ text "Injuries" ], addInjuryBtn ]
-            , div [ A.css [ displayFlex, flexDirection column, width (px 500) ] ] <|
-                List.map
-                    (\i -> viewInjury i)
-                    model.injuries
-            ]
+          else
+            C.empty
+        ]
 
 
 addInjuryBtn : Html Msg

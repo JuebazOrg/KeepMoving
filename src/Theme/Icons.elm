@@ -59,6 +59,11 @@ add =
     "fa fa-plus"
 
 
+save : String
+save =
+    "fa fa-save"
+
+
 edit : String
 edit =
     "fa fa-pencil"
@@ -72,3 +77,6 @@ calendar =
 close : String
 close =
     "fa fa-close"
+
+region : String
+region = "fa fa-compass"
