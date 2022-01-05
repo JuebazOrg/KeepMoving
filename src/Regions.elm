@@ -31,6 +31,11 @@ regions =
     [ Leg, Arm, Neck, Hands, Wrist, UpperBack, MiddleBack, LowerBack, Feet, Head ]
 
 
+sides : List Side
+sides =
+    [ Left, Right, Middle ]
+
+
 bodyRegionToString : BodyRegion -> String
 bodyRegionToString bodyRegion =
     (Maybe.map

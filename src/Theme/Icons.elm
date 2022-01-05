@@ -80,3 +80,6 @@ close =
 
 region : String
 region = "fa fa-compass"
+
+caretDown : String
+caretDown = "fa fa-caret-down"

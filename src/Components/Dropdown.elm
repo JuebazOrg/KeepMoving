@@ -2,28 +2,36 @@ module Components.Dropdown exposing (..)
 
 import Components.BulmaElements exposing (..)
 import Components.Elements as C
-import Css exposing (content, visibility, visible)
-import Html.Styled exposing (Attribute, Html, option, text)
+import Html.Styled exposing (Html, option, text)
 import Html.Styled.Events exposing (onClick)
 
 
-type alias Option =
-    { label : String, value : String }
+type DropDownOption a
+    = Value a
 
 
-type alias Model =
+type alias Option a =
+    { label : String, value : DropDownOption a }
+
+
+type alias Model a =
     { isActive : Bool
-    , selectedOption : Maybe Option
-    , options : List Option
+    , selectedOption : Maybe (Option a)
+    , options : List (Option a)
+    , defaultTitle : String
     }
 
 
-type Msg
+type Msg a
     = ToggleDropdown
-    | UpdateOption Option
+    | UpdateOption (Option a)
+
+init : List (Option a) -> String -> Model a
+init optionsValues title =
+    { options = optionsValues, isActive = False, selectedOption = Nothing, defaultTitle = title }
 
 
-update : Model -> Msg -> Model
+update : Model a -> Msg a -> Model a
 update model msg =
     case msg of
         UpdateOption option ->
@@ -33,17 +41,23 @@ update model msg =
             { model | isActive = not model.isActive }
 
 
-myDropdownTrigger : Model -> Html Msg
+myDropdownTrigger : Model a -> Html (Msg a)
 myDropdownTrigger model =
+    let
+        title =
+            model.selectedOption
+                |> Maybe.map (\option -> option.label)
+                |> Maybe.withDefault model.defaultTitle
+    in
     dropdownTrigger []
-        [ C.addButton
+        [ C.dropDownButton
             [ onClick ToggleDropdown ]
-            [ text "Toogle me"
+            [ text title
             ]
         ]
 
 
-myDropdownMenu : Model -> Html Msg
+myDropdownMenu : Model a -> Html (Msg a)
 myDropdownMenu model =
     let
         dropdownItems =
@@ -67,13 +81,9 @@ myDropdownMenu model =
         dropdownItems
 
 
-init : List Option -> Model
-init optionsValues =
-    { options = optionsValues, isActive = False, selectedOption = Nothing }
 
-
-myDropdown : Model -> Html Msg
-myDropdown model =
+viewDropDown : Model a -> Html (Msg a)
+viewDropDown model =
     dropdown model.isActive
         dropdownModifiers
         []

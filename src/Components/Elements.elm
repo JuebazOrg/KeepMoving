@@ -42,11 +42,11 @@ saveButton attributes messages =
     Components.BulmaElements.button buttonProps attributes messages
 
 
-regionButton : List (S.Attribute msg) -> List (S.Html msg) -> S.Html msg
-regionButton attributes messages =
+dropDownButton : List (S.Attribute msg) -> List (S.Html msg) -> S.Html msg
+dropDownButton attributes messages =
     let
         myIcon =
-            Just ( BM.standard, [], icon [] [ S.i [ A.class I.region ] [] ] )
+            Just ( BM.standard, [], icon [] [ S.i [ A.class I.caretDown ] [] ] )
 
         buttonProps =
             { defaultButtonProps | color = BM.primary, iconLeft = myIcon }
