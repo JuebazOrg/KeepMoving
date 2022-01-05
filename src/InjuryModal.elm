@@ -6,6 +6,7 @@ import Components.Elements as C
 import Components.Form exposing (..)
 import Components.Modal exposing (modal, modalBackground, modalCard, modalCardBody, modalCardFoot, modalCardHead, modalCardTitle, modalContent)
 import Css exposing (..)
+import Date as Date
 import Html.Styled exposing (Html, div, map, span, text)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick)
@@ -18,7 +19,7 @@ type alias Model =
     , dropdownRegionActive : Bool
     , dropdown : DD.Model Region
     , sideDropDown : DD.Model Side
-    , startDate : String
+    , startDate : DP.Model
     }
 
 
@@ -29,7 +30,7 @@ init bodyRegion =
     , dropdownRegionActive = False
     , dropdown = DD.init regionDropdownOptions "Region"
     , sideDropDown = DD.init sideDropDownOptions "Side"
-    , startDate = ""
+    , startDate = DP.init
     }
 
 
@@ -57,6 +58,9 @@ update model msg =
 
         SideDropDownMsg subMsg ->
             { model | sideDropDown = DD.update model.sideDropDown subMsg }
+
+        CalendarMsg subMsg ->
+            { model | startDate = DP.update subMsg model.startDate }
 
         _ ->
             model
