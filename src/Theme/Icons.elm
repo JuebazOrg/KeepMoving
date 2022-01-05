@@ -1,4 +1,4 @@
-module Theme.Icons exposing (Icon, add, calendar, dynamicIcon, edit, staticIcon, yogaIcon)
+module Theme.Icons exposing (..)
 
 import Css exposing (..)
 import Css.Transitions exposing (transition)
@@ -59,6 +59,11 @@ add =
     "fa fa-plus"
 
 
+save : String
+save =
+    "fa fa-save"
+
+
 edit : String
 edit =
     "fa fa-pencil"
@@ -67,3 +72,14 @@ edit =
 calendar : String
 calendar =
     "fa fa-calendar"
+
+
+close : String
+close =
+    "fa fa-close"
+
+region : String
+region = "fa fa-compass"
+
+caretDown : String
+caretDown = "fa fa-caret-down"

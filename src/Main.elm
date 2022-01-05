@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Browser
 import Bulma.Styled.CDN exposing (..)
-import Components.Components exposing (h4Title, roundButton)
+import Components.Elements exposing (h4Title, roundButton)
 import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
@@ -10,18 +10,21 @@ import Injuries exposing (Injury, Msg, view)
 import Mock.InjuryMock as M
 import SideBarNav exposing (Msg, viewSideNav)
 import Theme.Colors exposing (..)
-import Theme.Fonts as F
 import Theme.Icons as I
 
 
 type alias Model =
-    { injuries : List Injury
+    { injuries : Injuries.Model
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { injuries = [ M.anInjury, M.anInjury2 ] }, Cmd.none )
+    let
+        model =
+            Injuries.init [ M.anInjury, M.anInjury2 ]
+    in
+    ( { injuries = model }, Cmd.none )
 
 
 type Msg
@@ -31,7 +34,12 @@ type Msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    ( model, Cmd.none )
+    case msg of
+        InjuriesMsg subMsg ->
+            ( { model | injuries = Injuries.update model.injuries subMsg }, Cmd.none )
+
+        SideBarNavMsg subMsg ->
+            ( model, Cmd.none )
 
 
 viewHeader : Html Msg

@@ -1,6 +1,6 @@
 module SideBarNav exposing (..)
 
-import Components.Components as C
+import Components.Elements as C
 import Components.Menu exposing (menu, menuLabel, menuList, menuListItemLink)
 import Css exposing (..)
 import Html.Styled exposing (Html, i, text)
