@@ -2,12 +2,10 @@ module Injuries exposing (..)
 
 import Bulma.Styled.Components as BC
 import Bulma.Styled.Modifiers as BM
+import Components.Calendar.Calendar as Calendar
 import Components.Card exposing (..)
-import Components.Dropdown exposing (Msg(..))
 import Components.Elements as C
-import Components.Form exposing (..)
 import Css exposing (..)
-import Css.Global exposing (body)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick)

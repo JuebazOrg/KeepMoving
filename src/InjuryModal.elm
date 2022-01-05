@@ -1,11 +1,12 @@
 module InjuryModal exposing (..)
 
+import Components.Calendar.DatePicker as DP
 import Components.Dropdown as DD
 import Components.Elements as C
 import Components.Form exposing (..)
 import Components.Modal exposing (modal, modalBackground, modalCard, modalCardBody, modalCardFoot, modalCardHead, modalCardTitle, modalContent)
 import Css exposing (..)
-import Html.Styled exposing (Html, div, map, text, span)
+import Html.Styled exposing (Html, div, map, span, text)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick)
 import Regions exposing (..)
@@ -17,6 +18,7 @@ type alias Model =
     , dropdownRegionActive : Bool
     , dropdown : DD.Model Region
     , sideDropDown : DD.Model Side
+    , startDate : String
     }
 
 
@@ -27,6 +29,7 @@ init bodyRegion =
     , dropdownRegionActive = False
     , dropdown = DD.init regionDropdownOptions "Region"
     , sideDropDown = DD.init sideDropDownOptions "Side"
+    , startDate = ""
     }
 
 
@@ -37,6 +40,7 @@ type Msg
     | Save
     | DropDownMsg (DD.Msg Region)
     | SideDropDownMsg (DD.Msg Side)
+    | CalendarMsg DP.Msg
 
 
 update : Model -> Msg -> Model
@@ -56,6 +60,11 @@ update model msg =
 
         _ ->
             model
+
+
+viewStartDate : Model -> Html Msg
+viewStartDate model =
+    field [] [ controlLabel [] [ text "start date" ], map CalendarMsg (DP.view model.startDate) ]
 
 
 viewDescriptionInput : Html msg
@@ -99,6 +108,7 @@ viewModal model =
                 [ span [ A.css [ marginRight (px 10) ] ] [ map DropDownMsg (DD.viewDropDown model.dropdown) ]
                 , map SideDropDownMsg (DD.viewDropDown model.sideDropDown)
                 ]
+            , viewStartDate model
             , viewLocationInput
             , viewDescriptionInput
             ]
