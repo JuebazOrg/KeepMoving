@@ -19,9 +19,7 @@ import RemoteData exposing (WebData, fromResult)
 
 
 type alias Model =
-    { regions : List Region
-    , regionSelected : Maybe Region
-    , dropdownRegionActive : Bool
+    { dropdownRegionActive : Bool
     , dropdown : DD.Model Region
     , sideDropDown : DD.Model Side
     , startDate : DP.Model
@@ -45,16 +43,9 @@ createNewInjuryFromForm model =
     }
 
 
-initOpen : Model -> Model
-initOpen model =
-    { model | isOpen = True }
-
-
 initClosed : Model
 initClosed =
-    { regions = Regions.regions
-    , regionSelected = Nothing
-    , dropdownRegionActive = False
+    { dropdownRegionActive = False
     , dropdown = DD.init regionDropdownOptions "Region"
     , sideDropDown = DD.init sideDropDownOptions "Side"
     , startDate = DP.init
@@ -63,26 +54,18 @@ initClosed =
 
 
 type Msg
-    = UpdateRegionChoice Region
-    | CloseModal
-    | ToggleRegionDropDown
+    = CloseModal
+    | OpenModal
     | Save
     | DropDownMsg (DD.Msg Region)
     | SideDropDownMsg (DD.Msg Side)
     | CalendarMsg DP.Msg
-    | OpenModal
     | InjuryCreated (Result Http.Error ())
 
 
 update : Model -> Msg -> ( Model, Cmd Msg )
 update model msg =
     case msg of
-        UpdateRegionChoice regionValue ->
-            ( { model | regionSelected = Just regionValue, dropdownRegionActive = False }, Cmd.none )
-
-        ToggleRegionDropDown ->
-            ( { model | dropdownRegionActive = not model.dropdownRegionActive }, Cmd.none )
-
         DropDownMsg subMsg ->
             ( { model | dropdown = DD.update model.dropdown subMsg }, Cmd.none )
 
@@ -104,7 +87,9 @@ update model msg =
         InjuryCreated res ->
             case res of
                 Ok _ ->
-                    ( initClosed, Navigation.reload ) -- todo : meilleur facon de faire ca ? passer une fonction a executer onCreation?
+                    ( initClosed, Navigation.reload )
+
+                -- todo : meilleur facon de faire ca ? passer une fonction a executer onCreation?
                 Err error ->
                     let
                         log =
