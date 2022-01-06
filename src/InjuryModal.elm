@@ -1,5 +1,6 @@
 module InjuryModal exposing (..)
 
+import Browser.Navigation as Navigation
 import Clients.InjuryClient as Client
 import Components.Calendar.DatePicker as DP
 import Components.Dropdown as DD
@@ -11,6 +12,8 @@ import Date as Date
 import Html.Styled exposing (Html, a, div, li, map, span, text, ul)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick)
+import Http
+import Injury exposing (..)
 import Regions exposing (..)
 import RemoteData exposing (WebData, fromResult)
 
@@ -27,10 +30,7 @@ type alias Model =
 
 
 type alias NewInjury =
-    { bodyRegion : BodyRegion
-    , description : String
-    , location : String
-    }
+    Injury
 
 
 
@@ -71,7 +71,7 @@ type Msg
     | SideDropDownMsg (DD.Msg Side)
     | CalendarMsg DP.Msg
     | OpenModal
-    | InjuryCreated (WebData ())
+    | InjuryCreated (Result Http.Error ())
 
 
 update : Model -> Msg -> ( Model, Cmd Msg )
@@ -101,13 +101,21 @@ update model msg =
         Save ->
             ( model, createNewInjury (createNewInjuryFromForm model) )
 
-        InjuryCreated _ ->
-            ( model, Cmd.none )
+        InjuryCreated res ->
+            case res of
+                Ok _ ->
+                    ( initClosed, Navigation.reload ) -- todo : meilleur facon de faire ca ? passer une fonction a executer onCreation?
+                Err error ->
+                    let
+                        log =
+                            Debug.log "injuryModalError" error
+                    in
+                    ( model, Cmd.none )
 
 
 createNewInjury : NewInjury -> Cmd Msg
 createNewInjury newInjury =
-    Client.createInjury newInjury (fromResult >> InjuryCreated)
+    Client.createInjury newInjury InjuryCreated
 
 
 viewStartDate : Model -> Html Msg

@@ -51,13 +51,13 @@ fromSide : Side -> String
 fromSide side =
     case side of
         Right ->
-            "right"
+            "Right"
 
         Left ->
-            "left"
+            "Left"
 
         Middle ->
-            "middle"
+            "Middle"
 
 
 fromRegion : Region -> String
