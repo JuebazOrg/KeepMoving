@@ -1,5 +1,6 @@
 module Injuries exposing (..)
 
+import Clients.InjuryClient as Client
 import Components.Card exposing (..)
 import Components.Elements as C
 import Css exposing (..)
@@ -27,7 +28,7 @@ type alias Model =
 
 init : List Injury -> ( Model, Cmd Msg )
 init injuriesList =
-    ( { injuries = RemoteData.NotAsked, injuryModal = InjuryModal.init regions, modalActive = False }, httpCommand )
+    ( { injuries = RemoteData.NotAsked, injuryModal = InjuryModal.init regions, modalActive = False }, getInjuries )
 
 
 type Msg
@@ -51,20 +52,15 @@ update model msg =
                 ( { model | injuryModal = InjuryModal.update model.injuryModal subMsg }, Cmd.none )
 
         SendHttpRequest ->
-            ( model, httpCommand )
+            ( model, getInjuries )
 
         DataReceived response ->
             ( { model | injuries = response }, Cmd.none )
 
 
-httpCommand : Cmd Msg
-httpCommand =
-    Http.get
-        { url = "http://localhost:3004/injuries"
-        , expect =
-            Decode.list InjuryDecoder.decode
-                |> Http.expectJson (RemoteData.fromResult >> DataReceived)
-        }
+getInjuries : Cmd Msg
+getInjuries =
+    Client.getInjuries (RemoteData.fromResult >> DataReceived)
 
 
 viewInjuriesOrError : Model -> Html Msg
@@ -80,26 +76,7 @@ viewInjuriesOrError model =
             viewInjuries injuries
 
         RemoteData.Failure httpError ->
-            div [] [ text <| buildErrorMessage httpError ]
-
-
-buildErrorMessage : Http.Error -> String
-buildErrorMessage httpError =
-    case httpError of
-        Http.BadUrl message ->
-            message
-
-        Http.Timeout ->
-            "Server is taking too long to respond. Please try again later."
-
-        Http.NetworkError ->
-            "Unable to reach server."
-
-        Http.BadStatus statusCode ->
-            "Request failed with status code: " ++ String.fromInt statusCode
-
-        Http.BadBody message ->
-            message
+            div [] [ text <| Client.client.defaultErrorMessage httpError ]
 
 
 view : Model -> Html Msg
