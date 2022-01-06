@@ -7,7 +7,7 @@ import Components.Form exposing (..)
 import Components.Modal exposing (modal, modalBackground, modalCard, modalCardBody, modalCardFoot, modalCardHead, modalCardTitle, modalContent)
 import Css exposing (..)
 import Date as Date
-import Html.Styled exposing (Html, div, map, span, text)
+import Html.Styled exposing (Html, a, div, li, map, span, text, ul)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick)
 import Regions exposing (..)
@@ -115,8 +115,19 @@ viewModal model =
             , viewStartDate model
             , viewLocationInput
             , viewDescriptionInput
+            , viewProgressBar
             ]
         , modalCardFoot [ A.css [ important displayFlex, important <| justifyContent flexEnd ] ] [ C.lightButton [] [ text "cancel" ], C.saveButton [ onClick Save ] [ text "save" ] ]
+        ]
+
+
+viewProgressBar : Html msg
+viewProgressBar =
+    ul [ A.class "steps" ]
+        [ li [ A.class "steps-segment", A.css [ width (px 50) ] ] [ a [ A.class "steps-marker" ] [] ]
+        , li [ A.class "steps-segment", A.class "is-active", A.css [ width (px 50) ] ] [ a [ A.class "steps-marker" ] [] ]
+        , li [ A.class "steps-segment", A.css [ width (px 50) ] ] [ a [ A.class "steps-marker" ] [] ]
+        , li [ A.class "steps-segment", A.css [ width (px 50) ] ] [ a [ A.class "steps-marker" ] [] ]
         ]
 
 

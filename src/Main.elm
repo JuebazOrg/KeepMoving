@@ -2,6 +2,7 @@ module Main exposing (..)
 
 import Browser
 import Bulma.Styled.CDN exposing (..)
+import Components.Calendar.Calendar as Calendar
 import Components.Elements exposing (h4Title, roundButton)
 import Css exposing (..)
 import Html.Styled exposing (..)
@@ -61,7 +62,7 @@ view model =
             [ stylesheet
             , fontAwesomeCDN
             , map SideBarNavMsg viewSideNav
-            , div
+                , div
                 [ A.css [ backgroundColor primaryLightest, flex (int 6), padding (px 20) ] ]
                 [ map InjuriesMsg (Injuries.view model.injuries) ]
             ]
@@ -74,6 +75,7 @@ fontAwesomeCDN =
         , A.href "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
         ]
         []
+
 
 
 ---- PROGRAM ----

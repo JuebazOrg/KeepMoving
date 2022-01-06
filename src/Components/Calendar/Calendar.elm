@@ -11,4 +11,4 @@ datePicker =
 
 view : Html msg
 view =
-    datePicker [] []
+    datePicker [ A.attribute "id" "calendar" ] []
