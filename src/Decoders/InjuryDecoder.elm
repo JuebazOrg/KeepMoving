@@ -1,4 +1,4 @@
-module Decoders.InjuryDecoder exposing (..)
+module Decoders.InjuryDecoder exposing (decode)
 
 import Injury exposing (..)
 import Json.Decode as D
@@ -16,12 +16,12 @@ decode =
 bodyRegionDecoder : D.Decoder BodyRegion
 bodyRegionDecoder =
     D.map2 BodyRegion
-        (D.field "region" <| fromRegion)
-        (D.field "side" <| fromSide)
+        (D.field "region" <| regionDecoder)
+        (D.field "side" <| sideDecoder)
 
 
-fromRegion : D.Decoder Region
-fromRegion =
+regionDecoder : D.Decoder Region
+regionDecoder =
     D.string
         |> D.andThen
             (\str ->
@@ -43,26 +43,23 @@ fromRegion =
             )
 
 
-fromSide : D.Decoder (Maybe Side)
-fromSide =
-    D.nullable sideDecoder
-
-
-sideDecoder : D.Decoder Side
+sideDecoder : D.Decoder (Maybe Side)
 sideDecoder =
-    D.string
-        |> D.andThen
-            (\str ->
-                case str of
-                    "Left" ->
-                        D.succeed Left
+    D.nullable
+        (D.string
+            |> D.andThen
+                (\str ->
+                    case str of
+                        "Left" ->
+                            D.succeed Left
 
-                    "Right" ->
-                        D.succeed Right
+                        "Right" ->
+                            D.succeed Right
 
-                    "Middle" ->
-                        D.succeed Middle
+                        "Middle" ->
+                            D.succeed Middle
 
-                    _ ->
-                        D.fail "unknow side"
-            )
+                        _ ->
+                            D.fail "unknow side"
+                )
+        )
