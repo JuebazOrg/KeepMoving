@@ -1,4 +1,4 @@
-module Decoders.InjuryDecoder exposing (decode)
+module Assemblers.InjuryDecoder exposing (decode)
 
 import Injury exposing (..)
 import Json.Decode as D

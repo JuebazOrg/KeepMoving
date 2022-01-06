@@ -1,10 +1,10 @@
 module Injuries exposing (..)
 
+import Assemblers.InjuryDecoder as InjuryDecoder
 import Clients.InjuryClient as Client
 import Components.Card exposing (..)
 import Components.Elements as C
 import Css exposing (..)
-import Decoders.InjuryDecoder as InjuryDecoder
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick)
@@ -41,7 +41,11 @@ update : Model -> Msg -> ( Model, Cmd Msg )
 update model msg =
     case msg of
         InjuryModalMsg subMsg ->
-            ( { model | injuryModal = InjuryModal.update model.injuryModal subMsg }, Cmd.none )
+            let
+                ( injuryModalModel, cmd ) =
+                    InjuryModal.update model.injuryModal subMsg
+            in
+            ( { model | injuryModal = injuryModalModel }, Cmd.map InjuryModalMsg cmd )
 
         FetchInjuries ->
             ( model, getInjuries )

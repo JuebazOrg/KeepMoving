@@ -1,6 +1,7 @@
 module Tests exposing (..)
 
-import Decoders.InjuryDecoder as InjuryDecoder
+import Assemblers.InjuryDecoder as InjuryDecoder
+import Decodes.InjuryEncoder as InjuryEncoder
 import Expect
 import Json.Decode exposing (decodeValue)
 import Json.Encode as Json
@@ -42,3 +43,28 @@ injuryDecoderTest =
             decodeValue InjuryDecoder.decode json
                 |> Expect.equal
                     (Ok { description = injury.description, location = injury.location, bodyRegion = { region = injury.bodyRegion.region, side = injury.bodyRegion.side } })
+
+
+-- injuryEncoderTest : Test
+-- injuryEncoderTest =
+--     test "encode an injury" <|
+--         \_ ->
+--             let
+--                 injury =
+--                     { description = "description", location = "location", bodyRegion = { region = Leg, side = Just Left } }
+
+--                 expected =
+--                     Json.object
+--                         [ ( "description", Json.string injury.description )
+--                         , ( "location", Json.string injury.location )
+--                         , ( "bodyRegion"
+--                           , Json.object
+--                                 [ ( "region", Json.string "Leg" )
+--                                 , ( "side", Json.string "Left" )
+--                                 ]
+--                           )
+--                         ]
+--             in
+--             Json.encode InjuryEncoder.encode injury
+--                 |> Expect.equal
+--                     (Ok { description = injury.description, location = injury.location, bodyRegion = { region = injury.bodyRegion.region, side = injury.bodyRegion.side } })

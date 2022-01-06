@@ -1,5 +1,6 @@
 module InjuryModal exposing (..)
 
+import Clients.InjuryClient as Client
 import Components.Calendar.DatePicker as DP
 import Components.Dropdown as DD
 import Components.Elements as C
@@ -11,6 +12,7 @@ import Html.Styled exposing (Html, a, div, li, map, span, text, ul)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick)
 import Regions exposing (..)
+import RemoteData exposing (WebData, fromResult)
 
 
 type alias Model =
@@ -21,6 +23,25 @@ type alias Model =
     , sideDropDown : DD.Model Side
     , startDate : DP.Model
     , isOpen : Bool
+    }
+
+
+type alias NewInjury =
+    { bodyRegion : BodyRegion
+    , description : String
+    , location : String
+    }
+
+
+
+-- todo: validation + creer a partir du form
+
+
+createNewInjuryFromForm : Model -> NewInjury
+createNewInjuryFromForm model =
+    { bodyRegion = { region = Head, side = Nothing }
+    , location = "yeux"
+    , description = "recu de la glace dans l'oeil"
     }
 
 
@@ -50,34 +71,43 @@ type Msg
     | SideDropDownMsg (DD.Msg Side)
     | CalendarMsg DP.Msg
     | OpenModal
+    | InjuryCreated (WebData ())
 
 
-update : Model -> Msg -> Model
+update : Model -> Msg -> ( Model, Cmd Msg )
 update model msg =
     case msg of
         UpdateRegionChoice regionValue ->
-            { model | regionSelected = Just regionValue, dropdownRegionActive = False }
+            ( { model | regionSelected = Just regionValue, dropdownRegionActive = False }, Cmd.none )
 
         ToggleRegionDropDown ->
-            { model | dropdownRegionActive = not model.dropdownRegionActive }
+            ( { model | dropdownRegionActive = not model.dropdownRegionActive }, Cmd.none )
 
         DropDownMsg subMsg ->
-            { model | dropdown = DD.update model.dropdown subMsg }
+            ( { model | dropdown = DD.update model.dropdown subMsg }, Cmd.none )
 
         SideDropDownMsg subMsg ->
-            { model | sideDropDown = DD.update model.sideDropDown subMsg }
+            ( { model | sideDropDown = DD.update model.sideDropDown subMsg }, Cmd.none )
 
         CalendarMsg subMsg ->
-            { model | startDate = DP.update subMsg model.startDate }
+            ( { model | startDate = DP.update subMsg model.startDate }, Cmd.none )
 
         CloseModal ->
-            initClosed
+            ( initClosed, Cmd.none )
 
         OpenModal ->
-            { initClosed | isOpen = True }
+            ( { initClosed | isOpen = True }, Cmd.none )
 
-        _ ->
-            model
+        Save ->
+            ( model, createNewInjury (createNewInjuryFromForm model) )
+
+        InjuryCreated _ ->
+            ( model, Cmd.none )
+
+
+createNewInjury : NewInjury -> Cmd Msg
+createNewInjury newInjury =
+    Client.createInjury newInjury (fromResult >> InjuryCreated)
 
 
 viewStartDate : Model -> Html Msg

@@ -67,28 +67,28 @@ fromRegion region =
             "Leg"
 
         Arm ->
-            "arm"
+            "Arm"
 
         Neck ->
-            "neck"
+            "Neck"
 
         Hands ->
-            "hands"
+            "Hands"
 
         Wrist ->
-            "wrist"
+            "Wrist"
 
         UpperBack ->
-            "upper back"
+            "Upper back"
 
         MiddleBack ->
-            "middle back"
+            "Middle back"
 
         LowerBack ->
-            "lower back"
+            "Lower back"
 
         Feet ->
-            "foot"
+            "Foot"
 
         Head ->
-            "head"
+            "Head"
