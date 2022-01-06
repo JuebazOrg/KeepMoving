@@ -23,17 +23,16 @@ import Theme.Icons as I
 
 
 type alias Model =
-    { injuries : WebData (List Injury), injuryModal : InjuryModal.Model, modalActive : Bool }
+    { injuries : WebData (List Injury), injuryModal : InjuryModal.Model }
 
 
 init : List Injury -> ( Model, Cmd Msg )
 init injuriesList =
-    ( { injuries = RemoteData.NotAsked, injuryModal = InjuryModal.init regions, modalActive = False }, getInjuries )
+    ( { injuries = RemoteData.NotAsked, injuryModal = InjuryModal.initClosed }, getInjuries )
 
 
 type Msg
-    = OpenModal
-    | InjuryModalMsg InjuryModal.Msg
+    = InjuryModalMsg InjuryModal.Msg
     | FetchInjuries
     | InjuriesReceived (WebData (List Injury))
 
@@ -41,15 +40,8 @@ type Msg
 update : Model -> Msg -> ( Model, Cmd Msg )
 update model msg =
     case msg of
-        OpenModal ->
-            ( { model | modalActive = True }, Cmd.none )
-
         InjuryModalMsg subMsg ->
-            if subMsg == InjuryModal.CloseModal then
-                ( { model | injuryModal = InjuryModal.update model.injuryModal subMsg, modalActive = False }, Cmd.none )
-
-            else
-                ( { model | injuryModal = InjuryModal.update model.injuryModal subMsg }, Cmd.none )
+            ( { model | injuryModal = InjuryModal.update model.injuryModal subMsg }, Cmd.none )
 
         FetchInjuries ->
             ( model, getInjuries )
@@ -82,19 +74,12 @@ viewInjuriesOrError model =
 view : Model -> Html Msg
 view model =
     div []
-        [ div [ A.css [ displayFlex, justifyContent spaceBetween, marginBottom (px 10) ] ] [ C.h3Title [ A.css [ margin (px 0) ] ] [ text "Injuries history" ], addInjuryBtn ]
+        [ div [ A.css [ displayFlex, justifyContent spaceBetween, marginBottom (px 10) ] ]
+            [ C.h3Title [ A.css [ margin (px 0) ] ] [ text "Injuries history" ]
+            , map InjuryModalMsg (InjuryModal.view model.injuryModal)
+            ]
         , viewInjuriesOrError model
-        , if model.modalActive then
-            map InjuryModalMsg <| InjuryModal.view model.injuryModal
-
-          else
-            C.empty
         ]
-
-
-addInjuryBtn : Html Msg
-addInjuryBtn =
-    C.addButton [ onClick OpenModal ] [ text "Injury" ]
 
 
 viewInjuries : List Injury -> Html Msg

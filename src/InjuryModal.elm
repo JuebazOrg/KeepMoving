@@ -20,17 +20,24 @@ type alias Model =
     , dropdown : DD.Model Region
     , sideDropDown : DD.Model Side
     , startDate : DP.Model
+    , isOpen : Bool
     }
 
 
-init : List Region -> Model
-init bodyRegion =
-    { regions = bodyRegion
+initOpen : Model -> Model
+initOpen model =
+    { model | isOpen = True }
+
+
+initClosed : Model
+initClosed =
+    { regions = Regions.regions
     , regionSelected = Nothing
     , dropdownRegionActive = False
     , dropdown = DD.init regionDropdownOptions "Region"
     , sideDropDown = DD.init sideDropDownOptions "Side"
     , startDate = DP.init
+    , isOpen = False
     }
 
 
@@ -42,6 +49,7 @@ type Msg
     | DropDownMsg (DD.Msg Region)
     | SideDropDownMsg (DD.Msg Side)
     | CalendarMsg DP.Msg
+    | OpenModal
 
 
 update : Model -> Msg -> Model
@@ -61,6 +69,12 @@ update model msg =
 
         CalendarMsg subMsg ->
             { model | startDate = DP.update subMsg model.startDate }
+
+        CloseModal ->
+            initClosed
+
+        OpenModal ->
+            { initClosed | isOpen = True }
 
         _ ->
             model
@@ -93,11 +107,16 @@ viewLocationInput =
 
 view : Model -> Html Msg
 view model =
-    modal True
-        [ A.css [ important <| overflow visible ] ]
-        [ modalBackground [] []
-        , modalContent [ A.css [ important <| overflow visible ] ]
-            [ viewModal model
+    div []
+        [ C.addButton [ onClick OpenModal ]
+            [ text "Injury" ]
+        , modal
+            model.isOpen
+            [ A.css [ important <| overflow visible ] ]
+            [ modalBackground [] []
+            , modalContent [ A.css [ important <| overflow visible ] ]
+                [ viewModal model
+                ]
             ]
         ]
 
