@@ -34,8 +34,8 @@ init injuriesList =
 type Msg
     = OpenModal
     | InjuryModalMsg InjuryModal.Msg
-    | SendHttpRequest
-    | DataReceived (WebData (List Injury))
+    | FetchInjuries
+    | InjuriesReceived (WebData (List Injury))
 
 
 update : Model -> Msg -> ( Model, Cmd Msg )
@@ -51,16 +51,16 @@ update model msg =
             else
                 ( { model | injuryModal = InjuryModal.update model.injuryModal subMsg }, Cmd.none )
 
-        SendHttpRequest ->
+        FetchInjuries ->
             ( model, getInjuries )
 
-        DataReceived response ->
+        InjuriesReceived response ->
             ( { model | injuries = response }, Cmd.none )
 
 
 getInjuries : Cmd Msg
 getInjuries =
-    Client.getInjuries (RemoteData.fromResult >> DataReceived)
+    Client.getInjuries (RemoteData.fromResult >> InjuriesReceived)
 
 
 viewInjuriesOrError : Model -> Html Msg
