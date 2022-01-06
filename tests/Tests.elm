@@ -4,7 +4,6 @@ import Decoders.InjuryDecoder as InjuryDecoder
 import Expect
 import Json.Decode exposing (decodeValue)
 import Json.Encode as Json
-import Material.Icons exposing (description)
 import Regions exposing (Region(..), Side(..))
 import Test exposing (..)
 

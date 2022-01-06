@@ -1,16 +1,16 @@
 module Injuries exposing (..)
 
-import Bulma.Styled.Components as BC
-import Bulma.Styled.Modifiers as BM
-import Components.Calendar.Calendar as Calendar
 import Components.Card exposing (..)
 import Components.Elements as C
 import Css exposing (..)
+import Decoders.InjuryDecoder as InjuryDecoder
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick)
+import Http
 import Injury exposing (..)
 import InjuryModal exposing (viewModal)
+import Json.Decode as Decode
 import Regions exposing (bodyRegionToString, regions)
 import Theme.Icons as I
 
@@ -19,28 +19,48 @@ type alias Model =
     { injuries : List Injury, injuryModal : InjuryModal.Model, modalActive : Bool }
 
 
-init : List Injury -> Model
+init : List Injury -> ( Model, Cmd Msg )
 init injuriesList =
-    { injuries = injuriesList, injuryModal = InjuryModal.init regions, modalActive = False }
+    ( { injuries = [], injuryModal = InjuryModal.init regions, modalActive = False }, httpCommand )
 
 
 type Msg
     = OpenModal
     | InjuryModalMsg InjuryModal.Msg
+    | SendHttpRequest
+    | DataReceived (Result Http.Error (List Injury))
 
 
-update : Model -> Msg -> Model
+update : Model -> Msg -> ( Model, Cmd Msg )
 update model msg =
     case msg of
         OpenModal ->
-            { model | modalActive = True }
+            ( { model | modalActive = True }, Cmd.none )
 
         InjuryModalMsg subMsg ->
             if subMsg == InjuryModal.CloseModal then
-                { model | injuryModal = InjuryModal.update model.injuryModal subMsg, modalActive = False }
+                ( { model | injuryModal = InjuryModal.update model.injuryModal subMsg, modalActive = False }, Cmd.none )
 
             else
-                { model | injuryModal = InjuryModal.update model.injuryModal subMsg }
+                ( { model | injuryModal = InjuryModal.update model.injuryModal subMsg }, Cmd.none )
+
+        SendHttpRequest ->
+            ( model, httpCommand )
+
+        DataReceived (Ok injuries) ->
+            ( { model | injuries = injuries }, Cmd.none )
+
+        DataReceived (Err injuries) ->
+            -- todo: // on error
+            ( model, Cmd.none )
+
+
+httpCommand : Cmd Msg
+httpCommand =
+    Http.get
+        { url = "http://localhost:3004/injuries"
+        , expect = Http.expectJson DataReceived (Decode.list InjuryDecoder.decode)
+        }
 
 
 view : Model -> Html Msg

@@ -22,10 +22,10 @@ type alias Model =
 init : ( Model, Cmd Msg )
 init =
     let
-        model =
+        ( model, cmd ) =
             Injuries.init [ M.anInjury, M.anInjury2 ]
     in
-    ( { injuries = model }, Cmd.none )
+    ( { injuries = model }, Cmd.map InjuriesMsg cmd )
 
 
 type Msg
@@ -37,7 +37,11 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         InjuriesMsg subMsg ->
-            ( { model | injuries = Injuries.update model.injuries subMsg }, Cmd.none )
+            let
+                ( injuryModel, cmd ) =
+                    Injuries.update model.injuries subMsg
+            in
+            ( { model | injuries = injuryModel }, Cmd.map InjuriesMsg cmd )
 
         SideBarNavMsg subMsg ->
             ( model, Cmd.none )

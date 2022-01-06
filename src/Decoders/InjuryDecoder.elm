@@ -32,6 +32,12 @@ fromRegion =
                     "Leg" ->
                         D.succeed Leg
 
+                    "Arm" ->
+                        D.succeed Arm
+
+                    "Wrist" ->
+                        D.succeed Wrist
+
                     _ ->
                         D.fail <| "Unknown region: "
             )
