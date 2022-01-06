@@ -11,24 +11,30 @@ import Http
 import Injury exposing (..)
 import InjuryModal exposing (viewModal)
 import Json.Decode as Decode
+import Material.Icons exposing (build)
 import Regions exposing (bodyRegionToString, regions)
+import RemoteData exposing (RemoteData(..), WebData)
 import Theme.Icons as I
 
 
+
+-- todo : Modal se gere tout seul
+
+
 type alias Model =
-    { injuries : List Injury, injuryModal : InjuryModal.Model, modalActive : Bool }
+    { injuries : WebData (List Injury), injuryModal : InjuryModal.Model, modalActive : Bool }
 
 
 init : List Injury -> ( Model, Cmd Msg )
 init injuriesList =
-    ( { injuries = [], injuryModal = InjuryModal.init regions, modalActive = False }, httpCommand )
+    ( { injuries = RemoteData.NotAsked, injuryModal = InjuryModal.init regions, modalActive = False }, httpCommand )
 
 
 type Msg
     = OpenModal
     | InjuryModalMsg InjuryModal.Msg
     | SendHttpRequest
-    | DataReceived (Result Http.Error (List Injury))
+    | DataReceived (WebData (List Injury))
 
 
 update : Model -> Msg -> ( Model, Cmd Msg )
@@ -47,30 +53,60 @@ update model msg =
         SendHttpRequest ->
             ( model, httpCommand )
 
-        DataReceived (Ok injuries) ->
-            ( { model | injuries = injuries }, Cmd.none )
-
-        DataReceived (Err injuries) ->
-            -- todo: // on error
-            ( model, Cmd.none )
+        DataReceived response ->
+            ( { model | injuries = response }, Cmd.none )
 
 
 httpCommand : Cmd Msg
 httpCommand =
     Http.get
         { url = "http://localhost:3004/injuries"
-        , expect = Http.expectJson DataReceived (Decode.list InjuryDecoder.decode)
+        , expect =
+            Decode.list InjuryDecoder.decode
+                |> Http.expectJson (RemoteData.fromResult >> DataReceived)
         }
+
+
+viewInjuriesOrError : Model -> Html Msg
+viewInjuriesOrError model =
+    case model.injuries of
+        RemoteData.NotAsked ->
+            text "not asked for yet"
+
+        RemoteData.Loading ->
+            h3 [] [ text "Loading..." ]
+
+        RemoteData.Success injuries ->
+            viewInjuries injuries
+
+        RemoteData.Failure httpError ->
+            div [] [ text <| buildErrorMessage httpError ]
+
+
+buildErrorMessage : Http.Error -> String
+buildErrorMessage httpError =
+    case httpError of
+        Http.BadUrl message ->
+            message
+
+        Http.Timeout ->
+            "Server is taking too long to respond. Please try again later."
+
+        Http.NetworkError ->
+            "Unable to reach server."
+
+        Http.BadStatus statusCode ->
+            "Request failed with status code: " ++ String.fromInt statusCode
+
+        Http.BadBody message ->
+            message
 
 
 view : Model -> Html Msg
 view model =
     div []
         [ div [ A.css [ displayFlex, justifyContent spaceBetween, marginBottom (px 10) ] ] [ C.h3Title [ A.css [ margin (px 0) ] ] [ text "Injuries history" ], addInjuryBtn ]
-        , div [ A.css [ displayFlex, flexDirection column, width (px 500) ] ] <|
-            List.map
-                (\i -> viewInjury i)
-                model.injuries
+        , viewInjuriesOrError model
         , if model.modalActive then
             map InjuryModalMsg <| InjuryModal.view model.injuryModal
 
@@ -82,6 +118,14 @@ view model =
 addInjuryBtn : Html Msg
 addInjuryBtn =
     C.addButton [ onClick OpenModal ] [ text "Injury" ]
+
+
+viewInjuries : List Injury -> Html Msg
+viewInjuries injuries =
+    div [ A.css [ displayFlex, flexDirection column, width (px 500) ] ] <|
+        List.map
+            (\i -> viewInjury i)
+            injuries
 
 
 viewInjury : Injury -> Html Msg

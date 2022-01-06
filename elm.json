@@ -16,6 +16,7 @@
             "elm/svg": "1.0.1",
             "icidasset/elm-material-icons": "9.0.0",
             "justinmimbs/date": "4.0.0",
+            "krisajenkins/remotedata": "6.0.1",
             "rtfeldman/elm-css": "16.1.1"
         },
         "indirect": {
