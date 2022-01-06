@@ -9,16 +9,10 @@ import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick)
+import Injury exposing (..)
 import InjuryModal exposing (viewModal)
-import Regions exposing (BodyRegion, bodyRegionToString, fromRegion, regions)
+import Regions exposing (bodyRegionToString, regions)
 import Theme.Icons as I
-
-
-type alias Injury =
-    { description : String
-    , region : BodyRegion
-    , location : String
-    }
 
 
 type alias Model =
@@ -52,7 +46,7 @@ update model msg =
 view : Model -> Html Msg
 view model =
     div []
-        [ div [ A.css [ displayFlex, justifyContent spaceBetween, marginBottom (px 10) ] ] [ C.h3Title [ A.css [ margin (px 0) ] ] [ text "Injuries" ], addInjuryBtn ]
+        [ div [ A.css [ displayFlex, justifyContent spaceBetween, marginBottom (px 10) ] ] [ C.h3Title [ A.css [ margin (px 0) ] ] [ text "Injuries history" ], addInjuryBtn ]
         , div [ A.css [ displayFlex, flexDirection column, width (px 500) ] ] <|
             List.map
                 (\i -> viewInjury i)
@@ -76,7 +70,7 @@ viewInjury injury =
         [ cardHeader []
             [ cardTitle []
                 [ span [ A.css [ paddingRight (px 7) ] ] [ text <| injury.location ]
-                , C.primaryTag [ text <| bodyRegionToString injury.region ]
+                , C.primaryTag [ text <| bodyRegionToString injury.bodyRegion ]
                 ]
             , cardIcon []
                 [ C.icon

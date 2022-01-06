@@ -7,7 +7,7 @@ import Components.Elements exposing (h4Title, roundButton)
 import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
-import Injuries exposing (Injury, Msg, view)
+import Injuries exposing (Msg, view)
 import Mock.InjuryMock as M
 import SideBarNav exposing (Msg, viewSideNav)
 import Theme.Colors exposing (..)
@@ -62,7 +62,7 @@ view model =
             [ stylesheet
             , fontAwesomeCDN
             , map SideBarNavMsg viewSideNav
-                , div
+            , div
                 [ A.css [ backgroundColor primaryLightest, flex (int 6), padding (px 20) ] ]
                 [ map InjuriesMsg (Injuries.view model.injuries) ]
             ]
