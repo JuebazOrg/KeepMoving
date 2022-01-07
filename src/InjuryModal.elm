@@ -16,6 +16,7 @@ import Http
 import Injury exposing (..)
 import Regions exposing (..)
 import RemoteData exposing (WebData, fromResult)
+import Theme.Mobile as M
 import Time exposing (Month(..))
 
 
@@ -150,18 +151,16 @@ view model =
         , modal
             model.isOpen
             [ A.css [ important <| overflow visible ] ]
-            [ modalBackground [] []
-            , modalContent [ A.css [ important <| overflow visible ] ]
-                [ viewModal model
-                ]
+            [ modalBackground [ A.css [ M.onMobile [ visibility hidden ] ] ] []
+            , viewModal model
             ]
         ]
 
 
 viewModal : Model -> Html Msg
 viewModal model =
-    modalCard
-        [ A.css [ important <| overflow visible ] ]
+    modalContent
+        [ A.css [ displayFlex, flexDirection column, important <| overflow visible, M.onMobile [ important <| maxHeight (pct 100), height (pct 100) ] ] ]
         [ modalCardHead [] [ modalCardTitle [ A.css [ displayFlex, justifyContent spaceBetween ] ] [ text "New injury" ], C.closeButton [ onClick CloseModal ] [] ]
         , modalCardBody [ A.css [ important <| overflow visible ] ]
             [ div [ A.css [ displayFlex, alignItems center ] ]
@@ -171,7 +170,8 @@ viewModal model =
             , viewStartDate model
             , viewLocationInput
             , viewDescriptionInput
-            , viewProgressBar
+
+            -- , viewProgressBar
             ]
         , modalCardFoot [ A.css [ important displayFlex, important <| justifyContent flexEnd ] ] [ C.lightButton [] [ text "cancel" ], C.saveButton [ onClick Save ] [ text "save" ] ]
         ]
