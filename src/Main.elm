@@ -11,7 +11,6 @@ import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Injuries exposing (Msg, view)
-import Mock.InjuryMock as M
 import SideBarNav exposing (Msg, viewSideNav)
 import Theme.Colors exposing (..)
 import Theme.Icons as I
@@ -26,7 +25,7 @@ init : ( Model, Cmd Msg )
 init =
     let
         ( model, cmd ) =
-            Injuries.init [ M.anInjury, M.anInjury2 ]
+            Injuries.init  
     in
     ( { injuries = model }, Cmd.map InjuriesMsg cmd )
 

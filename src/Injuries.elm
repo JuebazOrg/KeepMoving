@@ -26,8 +26,8 @@ type alias Model =
     { injuries : WebData (List Injury), injuryModal : InjuryModal.Model }
 
 
-init : List Injury -> ( Model, Cmd Msg )
-init injuriesList =
+init :  ( Model, Cmd Msg )
+init =
     ( { injuries = RemoteData.NotAsked, injuryModal = InjuryModal.initClosed }, getInjuries )
 
 
