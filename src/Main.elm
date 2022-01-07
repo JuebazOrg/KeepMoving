@@ -10,6 +10,8 @@ import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Injuries as Injuries exposing (Msg, view)
+import Injury as Injury
+import InjuryDetail as InjuryDetail
 import Navigation.Route as Route exposing (Route(..))
 import SideBarNav exposing (Msg, viewSideNav)
 import Theme.Colors exposing (..)
@@ -27,6 +29,7 @@ type alias Model =
 type Page
     = NotFoundPage
     | InjuriesPage Injuries.Model
+    | InjuryPage InjuryDetail.Model
 
 
 type Msg
@@ -61,6 +64,13 @@ initCurrentPage ( model, existingCmds ) =
                             Injuries.init
                     in
                     ( InjuriesPage pageModel, Cmd.map InjuriesMsg pageCmds )
+
+                Route.Injury id ->
+                    let
+                        pageModel =
+                            InjuryDetail.init
+                    in
+                    ( InjuryPage pageModel, Cmd.none )
     in
     ( { model | page = currentPage }
     , Cmd.batch [ existingCmds, mappedPageCmds ]
@@ -145,6 +155,9 @@ currentView model =
                     [ map InjuriesMsg (Injuries.view pageModel)
                     ]
                 ]
+
+        InjuryPage injury ->
+            InjuryDetail.view injury
 
 
 notFoundView : Html msg

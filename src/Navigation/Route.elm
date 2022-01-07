@@ -7,6 +7,7 @@ import Url.Parser exposing (..)
 type Route
     = NotFound
     | Injuries
+    | Injury Int
 
 
 parseUrl : Url -> Route
@@ -24,4 +25,5 @@ matchRoute =
     oneOf
         [ map Injuries top
         , map Injuries (s "injuries")
+        , map Injury (s "injuries" </> Url.Parser.int)
         ]

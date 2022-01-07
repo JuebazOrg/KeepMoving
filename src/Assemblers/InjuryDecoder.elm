@@ -8,7 +8,8 @@ import Regions exposing (BodyRegion, Region(..), Side(..))
 
 decode : D.Decoder Injury
 decode =
-    D.map7 Injury
+    D.map8 Injury
+        (D.field "id" D.int)
         (D.field "description" D.string)
         (D.field "bodyRegion" bodyRegionDecoder)
         (D.field "location" D.string)

@@ -54,6 +54,7 @@ createNewInjuryFromForm model =
     , endDate = date
     , how = ""
     , injuryType = Sprains
+    , id = 3 -- todo pas le meme model en creation
     }
 
 

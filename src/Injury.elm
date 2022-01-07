@@ -14,7 +14,8 @@ type InjuryType
 
 
 type alias Injury =
-    { description : String
+    { id : Int
+    , description : String
     , bodyRegion : BodyRegion
     , location : String
     , startDate : Date
@@ -44,4 +45,5 @@ injuryTypeToString injuryType =
 
         Other ->
             "Other"
+
 

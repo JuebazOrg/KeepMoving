@@ -10,7 +10,8 @@ import Regions exposing (..)
 encode : Injury -> Encode.Value
 encode injury =
     Encode.object
-        [ ( "description", Encode.string injury.description )
+        [ ( "id", Encode.int injury.id)
+        , ( "description", Encode.string injury.description )
         , ( "location", Encode.string injury.location )
         , ( "bodyRegion"
           , Encode.object
