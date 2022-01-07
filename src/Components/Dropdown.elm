@@ -7,12 +7,8 @@ import Html.Styled.Events exposing (onClick)
 import Regions exposing (Side(..))
 
 
-type DropDownOption a
-    = DropDownOption a
-
-
 type alias Option a =
-    { label : String, value : DropDownOption a }
+    { label : String, value : a }
 
 
 type alias Model a =
@@ -26,17 +22,14 @@ type alias Model a =
 type Msg a
     = ToggleDropdown
     | UpdateOption (Option a)
+    | Reset
 
 
 getSelectedValue : Model a -> Maybe a
 getSelectedValue model =
     model.selectedOption
         |> Maybe.map
-            (\option ->
-                case option.value of
-                    DropDownOption value ->
-                        value
-            )
+            (\option -> option.value)
 
 
 init : List (Option a) -> String -> Model a
@@ -52,6 +45,9 @@ update model msg =
 
         ToggleDropdown ->
             { model | isActive = not model.isActive }
+
+        Reset ->
+            { model | selectedOption = Nothing, isActive = False }
 
 
 myDropdownTrigger : Model a -> Html (Msg a)
@@ -91,7 +87,12 @@ myDropdownMenu model =
     in
     dropdownMenu []
         []
-        dropdownItems
+        (dropdownItemLink
+            False
+            [ onClick <| Reset ]
+            [ text model.defaultTitle ]
+            :: dropdownItems
+        )
 
 
 viewDropDown : Model a -> Html (Msg a)

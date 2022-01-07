@@ -1,4 +1,4 @@
-module Theme.Colors exposing (black, grey, primary, primaryDark, primaryDarker, primaryDarkest, primaryLight, primaryLighter, primaryLightest, secondary, secondaryDark, secondaryDarker, secondaryDarkest, secondaryLight, secondaryLighter, secondaryListest, white)
+module Theme.Colors exposing (..)
 
 import Css exposing (..)
 
@@ -203,3 +203,8 @@ tertiaryDarker =
 tertiaryDarkest : Color
 tertiaryDarkest =
     cyan
+
+
+lightestGrey : Color
+lightestGrey =
+    hex "f5f6f7"

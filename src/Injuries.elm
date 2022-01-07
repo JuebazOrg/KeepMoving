@@ -5,6 +5,7 @@ import Clients.InjuryClient as Client
 import Components.Card exposing (..)
 import Components.Dropdown as DD
 import Components.Elements as C
+import Components.Modal as CM
 import Css exposing (..)
 import Date
 import Html.Styled exposing (..)
@@ -20,16 +21,15 @@ import RemoteData exposing (RemoteData(..), WebData)
 import Theme.Icons as I
 
 
-
 -- todo : Modal se gere tout seul
 
 
 type alias Model =
-    { injuries : WebData (List Injury), injuryModal : InjuryModal.Model, filters : Filters }
+    { injuries : WebData (List Injury), injuryModal : InjuryModal.Model, filters : Filters, selectedInjury : Maybe Injury }
 
 
 type alias Filters =
-    { region : DD.Model Region }
+    { region : DD.Model Region, side : DD.Model Side }
 
 
 init : ( Model, Cmd Msg )
@@ -37,7 +37,10 @@ init =
     ( { injuries = RemoteData.NotAsked
       , injuryModal = InjuryModal.initClosed
       , filters =
-            { region = DD.init regionDropdownOptions "Regions" }
+            { region = DD.init regionDropdownOptions "Regions"
+            , side = DD.init sideDropdownOptions "Side"
+            }
+      , selectedInjury = Nothing
       }
     , getInjuries
     )
@@ -48,6 +51,8 @@ type Msg
     | FetchInjuries
     | InjuriesReceived (WebData (List Injury))
     | RegionFilterMsg (DD.Msg Region)
+    | SideFilterMsg (DD.Msg Side)
+    | OpenDetail Injury
 
 
 update : Model -> Msg -> ( Model, Cmd Msg )
@@ -67,7 +72,13 @@ update model msg =
             ( { model | injuries = response }, Cmd.none )
 
         RegionFilterMsg subMsg ->
-            ( { model | filters = { region = DD.update model.filters.region subMsg } }, Cmd.none )
+            ( { model | filters = { side = model.filters.side, region = DD.update model.filters.region subMsg } }, Cmd.none )
+
+        SideFilterMsg subMsg ->
+            ( { model | filters = { side = DD.update model.filters.side subMsg, region = model.filters.region } }, Cmd.none )
+
+        OpenDetail injury ->
+            ( { model | selectedInjury = Just injury }, Cmd.none )
 
 
 getInjuries : Cmd Msg
@@ -100,6 +111,7 @@ view model =
             ]
         , viewFilters model.filters
         , viewInjuriesOrError model
+        -- , Maybe.map (\selected -> viewDetails selected) model.selectedInjury |> Maybe.withDefault C.empty
         ]
 
 
@@ -118,18 +130,31 @@ filterInjuries filters injuries =
     let
         region =
             DD.getSelectedValue filters.region
-    in
-    case region of
-        Just r ->
-            injuries |> List.filter (\i -> i.bodyRegion.region == r)
 
-        Nothing ->
-            injuries
+        side =
+            DD.getSelectedValue filters.side
+    in
+    let
+        filterByRegion =
+            Maybe.map
+                (\r -> injuries |> List.filter (\i -> i.bodyRegion.region == r))
+                region
+                |> Maybe.withDefault injuries
+    in
+    let
+        filterBySide =
+            if side == Nothing then
+                filterByRegion
+
+            else
+                List.filter (\i -> i.bodyRegion.side == side) filterByRegion
+    in
+    filterBySide
 
 
 viewInjury : Injury -> Html Msg
 viewInjury injury =
-    card [ A.css [ borderRadius (px 5), margin (px 10), important (maxWidth (px 500)) ] ]
+    card [ onClick <| OpenDetail injury, A.css [ borderRadius (px 5), marginTop (px 10), important (maxWidth (px 500)) ] ]
         [ cardHeader []
             [ cardTitle []
                 [ span [ A.css [ paddingRight (px 7) ] ] [ text <| injury.location ]
@@ -153,15 +178,26 @@ viewInjury injury =
 
 viewFilters : Filters -> Html Msg
 viewFilters filters =
-    section [] [ text "fitlers here", regionFilter filters ]
+    div [ A.css [ displayFlex ] ] [ span [ A.css [ marginRight (px 10) ] ] [ regionFilter filters ], sideFilter filters ]
 
 
 regionDropdownOptions : List (DD.Option Region)
 regionDropdownOptions =
     regions
-        |> List.map (\region -> { label = fromRegion region, value = DD.DropDownOption region })
+        |> List.map (\region -> { label = fromRegion region, value = region })
 
 
 regionFilter : Filters -> Html Msg
 regionFilter filters =
     map RegionFilterMsg (DD.viewDropDown filters.region)
+
+
+sideDropdownOptions : List (DD.Option Side)
+sideDropdownOptions =
+    sides
+        |> List.map (\side -> { label = fromSide side, value = side })
+
+
+sideFilter : Filters -> Html Msg
+sideFilter filters =
+    map SideFilterMsg (DD.viewDropDown filters.side)

@@ -8,11 +8,43 @@ import Regions exposing (BodyRegion, Region(..), Side(..))
 
 decode : D.Decoder Injury
 decode =
-    D.map4 Injury
+    D.map7 Injury
         (D.field "description" D.string)
         (D.field "bodyRegion" bodyRegionDecoder)
         (D.field "location" D.string)
         (D.field "startDate" dateDecoder)
+        (D.field "endDate" dateDecoder)
+        (D.field "how" D.string)
+        (D.field "injuryType" injuryTypeDecoder)
+
+
+injuryTypeDecoder : D.Decoder InjuryType
+injuryTypeDecoder =
+    D.string
+        |> D.andThen
+            (\str ->
+                case str of
+                    "Bruises" ->
+                        D.succeed Bruises
+
+                    "Dislocation" ->
+                        D.succeed Dislocation
+
+                    "Fracture" ->
+                        D.succeed Fracture
+
+                    "Sprains" ->
+                        D.succeed Sprains
+
+                    "Strains" ->
+                        D.succeed Strains
+
+                    "Other" ->
+                        D.succeed Other
+
+                    _ ->
+                        D.fail "unknow injury type "
+            )
 
 
 bodyRegionDecoder : D.Decoder BodyRegion
@@ -44,7 +76,7 @@ regionDecoder =
                         D.succeed Feet
 
                     _ ->
-                        D.fail <| "Unknown region: "
+                        D.fail "Unknown region: "
             )
 
 

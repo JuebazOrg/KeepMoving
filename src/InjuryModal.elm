@@ -51,6 +51,9 @@ createNewInjuryFromForm model =
     , location = model.location
     , description = model.description
     , startDate = date
+    , endDate = date
+    , how = ""
+    , injuryType = Sprains
     }
 
 
@@ -190,9 +193,9 @@ viewProgressBar =
 regionDropdownOptions : List (DD.Option Region)
 regionDropdownOptions =
     regions
-        |> List.map (\region -> { label = fromRegion region, value = DD.DropDownOption region })
+        |> List.map (\region -> { label = fromRegion region, value = region })
 
 
 sideDropDownOptions : List (DD.Option Side)
 sideDropDownOptions =
-    sides |> List.map (\side -> { label = fromSide side, value = DD.DropDownOption side })
+    sides |> List.map (\side -> { label = fromSide side, value = side })

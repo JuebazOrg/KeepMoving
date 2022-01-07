@@ -1,7 +1,7 @@
 module Assemblers.InjuryEncoder exposing (..)
 
 import Date
-import Injury exposing (..)
+import Injury exposing (Injury, InjuryType(..))
 import Json.Encode as Encode
 import Json.Encode.Extra as EncodeExtra
 import Regions exposing (..)
@@ -19,4 +19,29 @@ encode injury =
                 ]
           )
         , ( "startDate", Encode.string <| Date.toIsoString injury.startDate )
+        , ( "endDate", Encode.string <| Date.toIsoString injury.startDate )
+        , ( "how", Encode.string injury.how )
+        , ( "injuryType", Encode.string <| injuryTypeToString injury.injuryType )
         ]
+
+
+injuryTypeToString : InjuryType -> String
+injuryTypeToString injuryType =
+    case injuryType of
+        Bruises ->
+            "Bruises"
+
+        Dislocation ->
+            "Dislocation"
+
+        Fracture ->
+            "Facture"
+
+        Sprains ->
+            "Sprains"
+
+        Strains ->
+            "Strains"
+
+        Other ->
+            "Other"
