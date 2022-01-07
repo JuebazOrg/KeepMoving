@@ -1,5 +1,6 @@
 module Assemblers.InjuryEncoder exposing (..)
 
+import Date
 import Injury exposing (..)
 import Json.Encode as Encode
 import Json.Encode.Extra as EncodeExtra
@@ -17,4 +18,5 @@ encode injury =
                 , ( "side", EncodeExtra.maybe Encode.string (Maybe.map fromSide injury.bodyRegion.side) )
                 ]
           )
+        , ( "startDate", Encode.string <| Date.toIsoString injury.startDate )
         ]

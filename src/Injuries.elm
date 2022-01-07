@@ -5,6 +5,7 @@ import Clients.InjuryClient as Client
 import Components.Card exposing (..)
 import Components.Elements as C
 import Css exposing (..)
+import Date
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick)
@@ -26,7 +27,7 @@ type alias Model =
     { injuries : WebData (List Injury), injuryModal : InjuryModal.Model }
 
 
-init :  ( Model, Cmd Msg )
+init : ( Model, Cmd Msg )
 init =
     ( { injuries = RemoteData.NotAsked, injuryModal = InjuryModal.initClosed }, getInjuries )
 
@@ -42,10 +43,10 @@ update model msg =
     case msg of
         InjuryModalMsg subMsg ->
             let
-                ( injuryModalModel, cmd ) =
-                    InjuryModal.update model.injuryModal subMsg
+                ( injuryModalModel, cmd, outCmd ) =
+                    InjuryModal.update model.injuryModal subMsg getInjuries
             in
-            ( { model | injuryModal = injuryModalModel }, Cmd.map InjuryModalMsg cmd )
+            ( { model | injuryModal = injuryModalModel }, Cmd.batch [ outCmd, Cmd.map InjuryModalMsg cmd ] )
 
         FetchInjuries ->
             ( model, getInjuries )
@@ -107,7 +108,7 @@ viewInjury injury =
                     []
                     [ i [ A.class I.calendar ] []
                     ]
-                , span [] [ text "30 Jan 2020" ]
+                , span [] [ text <| Date.toIsoString injury.startDate ]
                 , C.icon
                     [ A.css [ paddingLeft (px 5) ] ]
                     [ i [ A.class I.edit ] []

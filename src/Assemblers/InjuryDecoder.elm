@@ -1,5 +1,6 @@
 module Assemblers.InjuryDecoder exposing (decode)
 
+import Date exposing (..)
 import Injury exposing (..)
 import Json.Decode as D
 import Regions exposing (BodyRegion, Region(..), Side(..))
@@ -7,10 +8,11 @@ import Regions exposing (BodyRegion, Region(..), Side(..))
 
 decode : D.Decoder Injury
 decode =
-    D.map3 Injury
+    D.map4 Injury
         (D.field "description" D.string)
         (D.field "bodyRegion" bodyRegionDecoder)
         (D.field "location" D.string)
+        (D.field "startDate" dateDecoder)
 
 
 bodyRegionDecoder : D.Decoder BodyRegion
@@ -66,3 +68,17 @@ sideDecoder =
                             D.fail "unknow side"
                 )
         )
+
+
+dateDecoder : D.Decoder Date
+dateDecoder =
+    D.string
+        |> D.andThen
+            (\str ->
+                case Date.fromIsoString str of
+                    Err err ->
+                        D.fail err
+
+                    Ok date ->
+                        D.succeed date
+            )

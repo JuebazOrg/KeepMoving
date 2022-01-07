@@ -16,6 +16,7 @@ import Http
 import Injury exposing (..)
 import Regions exposing (..)
 import RemoteData exposing (WebData, fromResult)
+import Time exposing (Month(..))
 
 
 type alias Model =
@@ -38,12 +39,17 @@ type alias NewInjury =
 
 createNewInjuryFromForm : Model -> NewInjury
 createNewInjuryFromForm model =
+    let
+        date =
+            Maybe.withDefault (Date.fromCalendarDate 2018 Sep 26) model.startDate
+    in
     { bodyRegion =
         { region = Maybe.withDefault Head (DD.getSelectedValue model.regionDropdown)
         , side = DD.getSelectedValue model.sideDropDown
         }
     , location = model.location
     , description = model.description
+    , startDate = date
     }
 
 
@@ -70,45 +76,40 @@ type Msg
     | UpdateLocation String
 
 
-update : Model -> Msg -> ( Model, Cmd Msg )
-update model msg =
+update : Model -> Msg -> Cmd msg -> ( Model, Cmd Msg, Cmd msg )
+update model msg onSuccess =
     case msg of
         DropDownMsg subMsg ->
-            ( { model | regionDropdown = DD.update model.regionDropdown subMsg }, Cmd.none )
+            ( { model | regionDropdown = DD.update model.regionDropdown subMsg }, Cmd.none, Cmd.none )
 
         SideDropDownMsg subMsg ->
-            ( { model | sideDropDown = DD.update model.sideDropDown subMsg }, Cmd.none )
+            ( { model | sideDropDown = DD.update model.sideDropDown subMsg }, Cmd.none, Cmd.none )
 
         CalendarMsg subMsg ->
-            ( { model | startDate = DP.update subMsg model.startDate }, Cmd.none )
+            ( { model | startDate = DP.update subMsg model.startDate }, Cmd.none, Cmd.none )
 
         CloseModal ->
-            ( initClosed, Cmd.none )
+            ( initClosed, Cmd.none, Cmd.none )
 
         OpenModal ->
-            ( { initClosed | isOpen = True }, Cmd.none )
+            ( { initClosed | isOpen = True }, Cmd.none, Cmd.none )
 
         Save ->
-            ( model, createNewInjury (createNewInjuryFromForm model) )
+            ( model, createNewInjury (createNewInjuryFromForm model), Cmd.none )
 
         UpdateDescription content ->
-            ( { model | description = content }, Cmd.none )
+            ( { model | description = content }, Cmd.none, Cmd.none )
 
         UpdateLocation content ->
-            ( { model | location = content }, Cmd.none )
+            ( { model | location = content }, Cmd.none, Cmd.none )
 
         InjuryCreated res ->
             case res of
                 Ok _ ->
-                    ( initClosed, Navigation.reload )
+                    ( initClosed, Cmd.none, onSuccess )
 
-                -- todo : meilleur facon de faire ca ? passer une fonction a executer onCreation?
                 Err error ->
-                    let
-                        log =
-                            Debug.log "injuryModalError" error
-                    in
-                    ( model, Cmd.none )
+                    ( model, Cmd.none, Cmd.none )
 
 
 createNewInjury : NewInjury -> Cmd Msg

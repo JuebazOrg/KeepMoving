@@ -51,7 +51,7 @@ update msg model =
 
 myNavbarBurger : Html Msg
 myNavbarBurger =
-    BC.navbarBurger True
+    BC.navbarBurger False
         []
         [ span [] []
         , span [] []
