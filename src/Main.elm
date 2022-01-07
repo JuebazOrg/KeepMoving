@@ -2,6 +2,9 @@ module Main exposing (..)
 
 import Browser
 import Bulma.Styled.CDN exposing (..)
+import Bulma.Styled.Components as BC
+import Bulma.Styled.Elements as BE
+import Bulma.Styled.Modifiers as BM
 import Components.Calendar.Calendar as Calendar
 import Components.Elements exposing (h4Title, roundButton)
 import Css exposing (..)
@@ -47,28 +50,59 @@ update msg model =
             ( model, Cmd.none )
 
 
-viewHeader : Html Msg
-viewHeader =
-    div [ A.css [ backgroundColor white, padding2 (px 10) (px 20), displayFlex, justifyContent spaceBetween, alignItems center ] ]
-        [ div [ A.css [ displayFlex, alignItems center ] ]
-            [ I.yogaIcon 45, h4Title [] [ text "Keep Moving" ] ]
-        , div
+myNavbarBurger : Html Msg
+myNavbarBurger =
+    BC.navbarBurger True
+        []
+        [ span [] []
+        , span [] []
+        , span [] []
+        ]
+
+
+
+viewNavBar : Bool -> Html Msg
+viewNavBar isOpen =
+    BC.fixedNavbar BM.top
+        BC.navbarModifiers
+        []
+        [ BC.navbarBrand []
+            myNavbarBurger
+            [ BC.navbarItem False
+                []
+                [ h4Title [] [ text "Keep Moving" ]
+                ]
+            ]
+        , BC.navbarMenu False
             []
-            [ roundButton 45 [ text "JB" ] ]
+            [ BC.navbarStart []
+                [ BC.navbarItemLink False [] [ text "Home" ]
+                , BC.navbarItemLink False [] [ text "Blog" ]
+                , BC.navbarItemLink False [] [ text "Carrots" ]
+                , BC.navbarItemLink False [] [ text "About" ]
+                ]
+            , BC.navbarEnd []
+                [ BC.navbarItem False [] [ roundButton 45 [ text "JB" ] ] ]
+            ]
         ]
 
 
 view : Model -> Html Msg
 view model =
-    div [ A.css [ displayFlex, flexDirection column, height (vh 100) ] ]
-        [ viewHeader
-        , div [ A.css [ displayFlex, flex (int 1) ] ]
-            [ stylesheet
-            , fontAwesomeCDN
-            , map SideBarNavMsg viewSideNav
-            , div
-                [ A.css [ backgroundColor primaryLightest, flex (int 6), padding (px 20) ] ]
-                [ map InjuriesMsg (Injuries.view model.injuries) ]
+    div []
+        [ stylesheet
+        , fontAwesomeCDN
+        , viewNavBar True
+
+        -- , div [ A.class "is-main-content", A.css [ displayFlex ] ]
+        --     [ map SideBarNavMsg viewSideNav
+        --     , div
+        --         [ A.css [ backgroundColor primaryLightest, flex (int 6), padding (px 15) ] ]
+        --         [ map InjuriesMsg (Injuries.view model.injuries) ]
+        --     ]
+        , div
+            [ A.css [ padding (px 20) ] ]
+            [ map InjuriesMsg (Injuries.view model.injuries)
             ]
         ]
 

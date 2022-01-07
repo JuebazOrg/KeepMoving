@@ -38,6 +38,9 @@ regionDecoder =
                     "Wrist" ->
                         D.succeed Wrist
 
+                    "Feet" ->
+                        D.succeed Feet
+
                     _ ->
                         D.fail <| "Unknown region: "
             )

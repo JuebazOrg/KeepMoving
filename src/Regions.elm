@@ -88,7 +88,7 @@ fromRegion region =
             "Lower back"
 
         Feet ->
-            "Foot"
+            "Feet"
 
         Head ->
             "Head"

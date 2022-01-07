@@ -2,12 +2,13 @@ module Components.Dropdown exposing (..)
 
 import Components.BulmaElements exposing (..)
 import Components.Elements as C
-import Html.Styled exposing (Html, option, text)
+import Html.Styled exposing (Html, a, option, text)
 import Html.Styled.Events exposing (onClick)
+import Regions exposing (Side(..))
 
 
 type DropDownOption a
-    = Value a
+    = DropDownOption a
 
 
 type alias Option a =
@@ -25,6 +26,18 @@ type alias Model a =
 type Msg a
     = ToggleDropdown
     | UpdateOption (Option a)
+
+
+getSelectedValue : Model a -> Maybe a
+getSelectedValue model =
+    model.selectedOption
+        |> Maybe.map
+            (\option ->
+                case option.value of
+                    DropDownOption value ->
+                        value
+            )
+
 
 init : List (Option a) -> String -> Model a
 init optionsValues title =
@@ -79,7 +92,6 @@ myDropdownMenu model =
     dropdownMenu []
         []
         dropdownItems
-
 
 
 viewDropDown : Model a -> Html (Msg a)

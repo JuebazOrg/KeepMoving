@@ -78,8 +78,8 @@ viewInjuriesOrError model =
 view : Model -> Html Msg
 view model =
     div []
-        [ div [ A.css [ displayFlex, justifyContent spaceBetween, marginBottom (px 10) ] ]
-            [ C.h3Title [ A.css [ margin (px 0) ] ] [ text "Injuries history" ]
+        [ div [ A.css [ displayFlex, justifyContent spaceBetween ] ]
+            [ C.h3Title [ A.css [ margin (px 0) ] ] [ text "Injuries" ]
             , map InjuryModalMsg (InjuryModal.view model.injuryModal)
             ]
         , viewInjuriesOrError model
@@ -88,7 +88,7 @@ view model =
 
 viewInjuries : List Injury -> Html Msg
 viewInjuries injuries =
-    div [ A.css [ displayFlex, flexDirection column, width (px 500) ] ] <|
+    div [ A.css [ displayFlex, flexDirection column ] ] <|
         List.map
             (\i -> viewInjury i)
             injuries
@@ -96,7 +96,7 @@ viewInjuries injuries =
 
 viewInjury : Injury -> Html Msg
 viewInjury injury =
-    card [ A.css [ borderRadius (px 5), margin (px 20) ] ]
+    card [ A.css [ borderRadius (px 5), margin (px 10), important (maxWidth (px 500)) ] ]
         [ cardHeader []
             [ cardTitle []
                 [ span [ A.css [ paddingRight (px 7) ] ] [ text <| injury.location ]

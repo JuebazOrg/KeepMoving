@@ -11,7 +11,7 @@ import Css exposing (..)
 import Date as Date
 import Html.Styled exposing (Html, a, div, li, map, span, text, ul)
 import Html.Styled.Attributes as A
-import Html.Styled.Events exposing (onClick)
+import Html.Styled.Events exposing (onClick, onInput)
 import Http
 import Injury exposing (..)
 import Regions exposing (..)
@@ -19,11 +19,12 @@ import RemoteData exposing (WebData, fromResult)
 
 
 type alias Model =
-    { dropdownRegionActive : Bool
-    , dropdown : DD.Model Region
+    { regionDropdown : DD.Model Region
     , sideDropDown : DD.Model Side
     , startDate : DP.Model
     , isOpen : Bool
+    , description : String
+    , location : String
     }
 
 
@@ -32,24 +33,28 @@ type alias NewInjury =
 
 
 
--- todo: validation + creer a partir du form
+-- todo: validation  + error + loading
 
 
 createNewInjuryFromForm : Model -> NewInjury
 createNewInjuryFromForm model =
-    { bodyRegion = { region = Head, side = Nothing }
-    , location = "yeux"
-    , description = "recu de la glace dans l'oeil"
+    { bodyRegion =
+        { region = Maybe.withDefault Head (DD.getSelectedValue model.regionDropdown)
+        , side = DD.getSelectedValue model.sideDropDown
+        }
+    , location = model.location
+    , description = model.description
     }
 
 
 initClosed : Model
 initClosed =
-    { dropdownRegionActive = False
-    , dropdown = DD.init regionDropdownOptions "Region"
+    { regionDropdown = DD.init regionDropdownOptions "Region"
     , sideDropDown = DD.init sideDropDownOptions "Side"
     , startDate = DP.init
     , isOpen = False
+    , description = ""
+    , location = ""
     }
 
 
@@ -61,13 +66,15 @@ type Msg
     | SideDropDownMsg (DD.Msg Side)
     | CalendarMsg DP.Msg
     | InjuryCreated (Result Http.Error ())
+    | UpdateDescription String
+    | UpdateLocation String
 
 
 update : Model -> Msg -> ( Model, Cmd Msg )
 update model msg =
     case msg of
         DropDownMsg subMsg ->
-            ( { model | dropdown = DD.update model.dropdown subMsg }, Cmd.none )
+            ( { model | regionDropdown = DD.update model.regionDropdown subMsg }, Cmd.none )
 
         SideDropDownMsg subMsg ->
             ( { model | sideDropDown = DD.update model.sideDropDown subMsg }, Cmd.none )
@@ -83,6 +90,12 @@ update model msg =
 
         Save ->
             ( model, createNewInjury (createNewInjuryFromForm model) )
+
+        UpdateDescription content ->
+            ( { model | description = content }, Cmd.none )
+
+        UpdateLocation content ->
+            ( { model | location = content }, Cmd.none )
 
         InjuryCreated res ->
             case res of
@@ -108,23 +121,23 @@ viewStartDate model =
     field [] [ controlLabel [] [ text "start date" ], map CalendarMsg (DP.view model.startDate) ]
 
 
-viewDescriptionInput : Html msg
+viewDescriptionInput : Html Msg
 viewDescriptionInput =
     field []
         [ controlLabel [] [ text "description" ]
         , controlTextArea
             defaultTextAreaProps
-            []
+            [ onInput UpdateDescription ]
             []
             []
         ]
 
 
-viewLocationInput : Html msg
+viewLocationInput : Html Msg
 viewLocationInput =
     field [ A.css [ flex (int 3), marginRight (px 10) ] ]
         [ controlLabel [] [ text "location details" ]
-        , controlInput defaultControlInputProps [] [] []
+        , controlInput defaultControlInputProps [ onInput UpdateLocation ] [] []
         ]
 
 
@@ -151,7 +164,7 @@ viewModal model =
         [ modalCardHead [] [ modalCardTitle [ A.css [ displayFlex, justifyContent spaceBetween ] ] [ text "New injury" ], C.closeButton [ onClick CloseModal ] [] ]
         , modalCardBody [ A.css [ important <| overflow visible ] ]
             [ div [ A.css [ displayFlex, alignItems center ] ]
-                [ span [ A.css [ marginRight (px 10) ] ] [ map DropDownMsg (DD.viewDropDown model.dropdown) ]
+                [ span [ A.css [ marginRight (px 10) ] ] [ map DropDownMsg (DD.viewDropDown model.regionDropdown) ]
                 , map SideDropDownMsg (DD.viewDropDown model.sideDropDown)
                 ]
             , viewStartDate model
@@ -176,9 +189,9 @@ viewProgressBar =
 regionDropdownOptions : List (DD.Option Region)
 regionDropdownOptions =
     regions
-        |> List.map (\region -> { label = fromRegion region, value = DD.Value region })
+        |> List.map (\region -> { label = fromRegion region, value = DD.DropDownOption region })
 
 
 sideDropDownOptions : List (DD.Option Side)
 sideDropDownOptions =
-    sides |> List.map (\side -> { label = fromSide side, value = DD.Value side })
+    sides |> List.map (\side -> { label = fromSide side, value = DD.DropDownOption side })
