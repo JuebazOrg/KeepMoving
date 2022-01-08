@@ -5,7 +5,7 @@ import Decodes.InjuryEncoder as InjuryEncoder
 import Expect
 import Json.Decode exposing (decodeValue)
 import Json.Encode as Json
-import Regions exposing (Region(..), Side(..))
+import Domain.Regions exposing (Region(..), Side(..))
 import Test exposing (..)
 
 

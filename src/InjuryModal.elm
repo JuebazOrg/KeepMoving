@@ -1,6 +1,6 @@
 module InjuryModal exposing (..)
 
-import Browser.Navigation as Navigation
+import Browser.Navigation as Nav
 import Clients.InjuryClient as Client
 import Components.Calendar.DatePicker as DP
 import Components.Dropdown as DD
@@ -9,13 +9,14 @@ import Components.Form exposing (..)
 import Components.Modal exposing (modal, modalBackground, modalCard, modalCardBody, modalCardFoot, modalCardHead, modalCardTitle, modalContent)
 import Css exposing (..)
 import Date as Date
+import Domain.Injury exposing (..)
+import Domain.Regions exposing (..)
 import Html.Styled exposing (Html, a, div, li, map, span, text, ul)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick, onInput)
 import Http
 import Id exposing (noId)
-import Injury exposing (..)
-import Regions exposing (..)
+import Navigation.Route as Route
 import RemoteData exposing (WebData, fromResult)
 import Theme.Mobile as M
 import Time exposing (Month(..))
@@ -25,9 +26,9 @@ type alias Model =
     { regionDropdown : DD.Model Region
     , sideDropDown : DD.Model Side
     , startDate : DP.Model
-    , isOpen : Bool
     , description : String
     , location : String
+    , navKey : Nav.Key
     }
 
 
@@ -59,20 +60,19 @@ createNewInjuryFromForm model =
     }
 
 
-initClosed : Model
-initClosed =
+init : Nav.Key -> Model
+init navKey =
     { regionDropdown = DD.init regionDropdownOptions "Region"
     , sideDropDown = DD.init sideDropDownOptions "Side"
     , startDate = DP.init
-    , isOpen = False
     , description = ""
     , location = ""
+    , navKey = navKey
     }
 
 
 type Msg
     = CloseModal
-    | OpenModal
     | Save
     | DropDownMsg (DD.Msg Region)
     | SideDropDownMsg (DD.Msg Side)
@@ -82,40 +82,38 @@ type Msg
     | UpdateLocation String
 
 
-update : Model -> Msg -> Cmd msg -> ( Model, Cmd Msg, Cmd msg )
-update model msg onSuccess =
+update : Model -> Msg -> ( Model, Cmd Msg )
+update model msg =
     case msg of
         DropDownMsg subMsg ->
-            ( { model | regionDropdown = DD.update model.regionDropdown subMsg }, Cmd.none, Cmd.none )
+            ( { model | regionDropdown = DD.update model.regionDropdown subMsg }, Cmd.none )
 
         SideDropDownMsg subMsg ->
-            ( { model | sideDropDown = DD.update model.sideDropDown subMsg }, Cmd.none, Cmd.none )
+            ( { model | sideDropDown = DD.update model.sideDropDown subMsg }, Cmd.none )
 
         CalendarMsg subMsg ->
-            ( { model | startDate = DP.update subMsg model.startDate }, Cmd.none, Cmd.none )
+            ( { model | startDate = DP.update subMsg model.startDate }, Cmd.none )
 
         CloseModal ->
-            ( initClosed, Cmd.none, Cmd.none )
-
-        OpenModal ->
-            ( { initClosed | isOpen = True }, Cmd.none, Cmd.none )
+            -- ( model, Route.pushUrl Route.Injuries model.navKey )
+            ( model, Cmd.none )
 
         Save ->
-            ( model, createNewInjury (createNewInjuryFromForm model), Cmd.none )
+            ( model, createNewInjury (createNewInjuryFromForm model) )
 
         UpdateDescription content ->
-            ( { model | description = content }, Cmd.none, Cmd.none )
+            ( { model | description = content }, Cmd.none )
 
         UpdateLocation content ->
-            ( { model | location = content }, Cmd.none, Cmd.none )
+            ( { model | location = content }, Cmd.none )
 
         InjuryCreated res ->
             case res of
                 Ok _ ->
-                    ( initClosed, Cmd.none, onSuccess )
+                    ( model, Cmd.none )
 
                 Err error ->
-                    ( model, Cmd.none, Cmd.none )
+                    ( model, Cmd.none )
 
 
 createNewInjury : NewInjury -> Cmd Msg
@@ -150,15 +148,10 @@ viewLocationInput =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ C.addButton [ onClick OpenModal ]
-            [ text "Injury" ]
-        , modal
-            model.isOpen
-            [ A.css [ important <| overflow visible ] ]
-            [ modalBackground [ A.css [ M.onMobile [ visibility hidden ] ] ] []
-            , viewModal model
-            ]
+    div
+        [ A.css [ important <| overflow visible ] ]
+        [ modalBackground [ A.css [ M.onMobile [ visibility hidden ] ] ] []
+        , viewModal model
         ]
 
 
@@ -166,13 +159,13 @@ viewModal : Model -> Html Msg
 viewModal model =
     modalContent
         [ A.css [ displayFlex, flexDirection column, important <| overflow visible, M.onMobile [ important <| maxHeight (pct 100), height (pct 100) ] ] ]
-        [ modalCardHead [] [ modalCardTitle [ A.css [ displayFlex, justifyContent spaceBetween ] ] [ text "New injury" ], C.closeButton [ onClick CloseModal ] [] ]
+        [ modalCardHead [] [ modalCardTitle [ A.css [ displayFlex, justifyContent spaceBetween ] ] [ text "New injury" ], C.closeButton [ onClick CloseModal, A.href "/injuries" ] [] ]
         , modalCardBody [ A.css [ important <| overflow visible ] ]
             [ div [ A.css [ displayFlex, alignItems center ] ]
                 [ span [ A.css [ marginRight (px 10) ] ] [ map DropDownMsg (DD.viewDropDown model.regionDropdown) ]
                 , map SideDropDownMsg (DD.viewDropDown model.sideDropDown)
                 ]
-            , viewStartDate model
+            -- , viewStartDate model
             , viewLocationInput
             , viewDescriptionInput
 

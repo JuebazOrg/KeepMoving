@@ -4,7 +4,7 @@ import Components.BulmaElements exposing (..)
 import Components.Elements as C
 import Html.Styled exposing (Html, a, option, text)
 import Html.Styled.Events exposing (onClick)
-import Regions exposing (Side(..))
+import Domain.Regions exposing (Side(..))
 
 
 type alias Option a =

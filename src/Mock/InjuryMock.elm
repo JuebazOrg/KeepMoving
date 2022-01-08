@@ -1,7 +1,7 @@
 module Mock.InjuryMock exposing (..)
 
-import Injury exposing (Injury)
-import Regions exposing (Region(..), Side(..))
+import Domain.Injury exposing (Injury)
+import Domain.Regions exposing (Region(..), Side(..))
 
 
 anInjury : Injury

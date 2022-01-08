@@ -1,5 +1,8 @@
 module Navigation.Route exposing (..)
 
+import Browser.Navigation as Nav
+import Css exposing (nwResize)
+import Id exposing (Id, idParser)
 import Url exposing (Url)
 import Url.Parser exposing (..)
 
@@ -7,7 +10,8 @@ import Url.Parser exposing (..)
 type Route
     = NotFound
     | Injuries
-    | Injury Int
+    | Injury Id
+    | NewInjury
 
 
 parseUrl : Url -> Route
@@ -25,5 +29,28 @@ matchRoute =
     oneOf
         [ map Injuries top
         , map Injuries (s "injuries")
-        , map Injury (s "injuries" </> Url.Parser.int)
+        , map Injury (s "injuries" </> idParser)
+        , map NewInjury (s "injuries" </> s "new")
         ]
+
+
+pushUrl : Route -> Nav.Key -> Cmd msg
+pushUrl route navKey =
+    routeToString route
+        |> Nav.pushUrl navKey
+
+
+routeToString : Route -> String
+routeToString route =
+    case route of
+        NotFound ->
+            "/not-found"
+
+        Injuries ->
+            "/injuries"
+
+        Injury id ->
+            "/injuries/" ++ Id.toString id
+
+        NewInjury ->
+            "injuries/new"

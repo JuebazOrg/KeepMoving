@@ -2,9 +2,9 @@ module Assemblers.InjuryDecoder exposing (decode)
 
 import Assemblers.IdDecoder exposing (idDecoder)
 import Date exposing (..)
-import Injury exposing (..)
+import Domain.Injury exposing (..)
 import Json.Decode as D
-import Regions exposing (BodyRegion, Region(..), Side(..))
+import Domain.Regions exposing (BodyRegion, Region(..), Side(..))
 
 
 decode : D.Decoder Injury

@@ -8,6 +8,7 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Injuries as Injuries exposing (Msg, view)
 import InjuryDetail as InjuryDetail
+import InjuryModal
 import Navigation.NavBar exposing (myNavbarBurger, viewNavBar)
 import Navigation.Route as Route exposing (Route(..))
 import Url exposing (Url)
@@ -24,6 +25,7 @@ type Page
     = NotFoundPage
     | InjuriesPage Injuries.Model
     | InjuryPage InjuryDetail.Model
+    | NewInjuryPage InjuryModal.Model
 
 
 type Msg
@@ -31,6 +33,7 @@ type Msg
     | LinkClicked UrlRequest
     | UrlChanged Url
     | InjuryDetailMsg InjuryDetail.Msg
+    | NewInjuryPageMsg InjuryModal.Msg
 
 
 init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -66,6 +69,9 @@ initCurrentPage ( model, existingCmds ) =
                             InjuryDetail.init id
                     in
                     ( InjuryPage pageModel, Cmd.map InjuryDetailMsg pageCmds )
+
+                Route.NewInjury ->
+                    ( NewInjuryPage <| InjuryModal.init model.navKey, Cmd.none )
     in
     ( { model | page = currentPage }
     , Cmd.batch [ existingCmds, mappedPageCmds ]
@@ -93,6 +99,15 @@ update msg model =
             , Cmd.map InjuryDetailMsg updatedCmd
             )
 
+        ( NewInjuryPageMsg subMsg, NewInjuryPage pageModel ) ->
+            let
+                ( updatedPageModel, updatedCmd ) =
+                    InjuryModal.update pageModel subMsg
+            in
+            ( { model | page = NewInjuryPage updatedPageModel }
+            , Cmd.map NewInjuryPageMsg updatedCmd
+            )
+
         ( LinkClicked urlRequest, _ ) ->
             case urlRequest of
                 Browser.Internal url ->
@@ -115,6 +130,7 @@ update msg model =
 
         ( _, _ ) ->
             ( model, Cmd.none )
+        
 
 
 view : Model -> Document Msg
@@ -129,23 +145,27 @@ view model =
 
 currentView : Model -> Html Msg
 currentView model =
-    case model.page of
-        NotFoundPage ->
-            notFoundView
+    let
+        content =
+            case model.page of
+                NotFoundPage ->
+                    notFoundView
 
-        InjuriesPage pageModel ->
-            div []
-                [ stylesheet
-                , fontAwesomeCDN
-                , viewNavBar True
-                , div
-                    [ A.css [ padding (px 20) ] ]
-                    [ map InjuriesMsg (Injuries.view pageModel)
-                    ]
-                ]
+                InjuriesPage pageModel ->
+                    map InjuriesMsg (Injuries.view pageModel)
 
-        InjuryPage pageModel ->
-            map InjuryDetailMsg (InjuryDetail.view pageModel)
+                InjuryPage pageModel ->
+                    map InjuryDetailMsg (InjuryDetail.view pageModel)
+
+                NewInjuryPage pageModel ->
+                    map NewInjuryPageMsg (InjuryModal.view pageModel)
+    in
+    div []
+        [ stylesheet
+        , fontAwesomeCDN
+        , viewNavBar True
+        , div [ A.css [ padding (px 20) ] ] [ content ]
+        ]
 
 
 notFoundView : Html msg

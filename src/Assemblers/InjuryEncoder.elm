@@ -2,10 +2,10 @@ module Assemblers.InjuryEncoder exposing (..)
 
 import Assemblers.IdEncoder exposing (idEncoder)
 import Date
-import Injury exposing (Injury, InjuryType(..))
+import Domain.Injury exposing (Injury, InjuryType(..))
 import Json.Encode as Encode
 import Json.Encode.Extra as EncodeExtra
-import Regions exposing (..)
+import Domain.Regions exposing (..)
 
 
 encode : Injury -> Encode.Value

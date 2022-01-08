@@ -2,8 +2,9 @@ module InjuryDetail exposing (..)
 
 import Clients.InjuryClient as Client
 import Css exposing (..)
+import Domain.Injury exposing (..)
 import Html.Styled exposing (..)
-import Injury exposing (..)
+import Id exposing (Id)
 import RemoteData exposing (RemoteData(..), WebData)
 
 
@@ -11,7 +12,7 @@ type alias Model =
     { injury : WebData Injury }
 
 
-init : Int -> ( Model, Cmd Msg )
+init : Id -> ( Model, Cmd Msg )
 init id =
     ( { injury = RemoteData.Loading }, getInjury id )
 
@@ -20,7 +21,7 @@ type Msg
     = InjuryReceived (WebData Injury)
 
 
-getInjury : Int -> Cmd Msg
+getInjury : Id -> Cmd Msg
 getInjury id =
     Client.getInjury id (RemoteData.fromResult >> InjuryReceived)
 

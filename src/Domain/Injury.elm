@@ -1,8 +1,8 @@
-module Injury exposing (..)
+module Domain.Injury exposing (..)
 
 import Date exposing (Date)
 import Id exposing (Id)
-import Regions exposing (BodyRegion, Region(..))
+import Domain.Regions exposing (BodyRegion, Region(..))
 import Time exposing (Month(..))
 
 

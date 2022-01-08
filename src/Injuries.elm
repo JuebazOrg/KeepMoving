@@ -1,6 +1,7 @@
 module Injuries exposing (..)
 
 import Assemblers.InjuryDecoder as InjuryDecoder
+import Browser.Navigation as Nav
 import Clients.InjuryClient as Client
 import Components.Card exposing (..)
 import Components.Dropdown as DD
@@ -8,15 +9,16 @@ import Components.Elements as C
 import Components.Modal as CM
 import Css exposing (..)
 import Date
+import Domain.Injury exposing (..)
+import Domain.Regions exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick)
 import Http
-import Injury exposing (..)
 import InjuryModal exposing (viewModal)
 import Json.Decode as Decode
 import Material.Icons exposing (build)
-import Regions exposing (..)
+import Navigation.Route as Route
 import RemoteData exposing (RemoteData(..), WebData)
 import Theme.Icons as I
 
@@ -26,7 +28,7 @@ import Theme.Icons as I
 
 
 type alias Model =
-    { injuries : WebData (List Injury), injuryModal : InjuryModal.Model, filters : Filters, selectedInjury : Maybe Injury }
+    { injuries : WebData (List Injury), filters : Filters, selectedInjury : Maybe Injury }
 
 
 type alias Filters =
@@ -36,7 +38,6 @@ type alias Filters =
 init : ( Model, Cmd Msg )
 init =
     ( { injuries = RemoteData.NotAsked
-      , injuryModal = InjuryModal.initClosed
       , filters =
             { region = DD.init regionDropdownOptions "Regions"
             , side = DD.init sideDropdownOptions "Side"
@@ -48,8 +49,7 @@ init =
 
 
 type Msg
-    = InjuryModalMsg InjuryModal.Msg
-    | FetchInjuries
+    = FetchInjuries
     | InjuriesReceived (WebData (List Injury))
     | RegionFilterMsg (DD.Msg Region)
     | SideFilterMsg (DD.Msg Side)
@@ -59,13 +59,6 @@ type Msg
 update : Model -> Msg -> ( Model, Cmd Msg )
 update model msg =
     case msg of
-        InjuryModalMsg subMsg ->
-            let
-                ( injuryModalModel, cmd, outCmd ) =
-                    InjuryModal.update model.injuryModal subMsg getInjuries
-            in
-            ( { model | injuryModal = injuryModalModel }, Cmd.batch [ outCmd, Cmd.map InjuryModalMsg cmd ] )
-
         FetchInjuries ->
             ( model, getInjuries )
 
@@ -108,7 +101,7 @@ view model =
     div []
         [ div [ A.css [ displayFlex, justifyContent spaceBetween ] ]
             [ C.h3Title [ A.css [ margin (px 0) ] ] [ text "Injuries" ]
-            , map InjuryModalMsg (InjuryModal.view model.injuryModal)
+            , C.addButton [ A.href "/injuries/new" ] [ text "injury" ]
             ]
         , viewFilters model.filters
         , viewInjuriesOrError model

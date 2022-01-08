@@ -1,4 +1,4 @@
-module Regions exposing (..)
+module Domain.Regions exposing (..)
 
 import Maybe exposing (withDefault)
 

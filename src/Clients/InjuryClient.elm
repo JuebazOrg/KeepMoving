@@ -3,9 +3,9 @@ module Clients.InjuryClient exposing (..)
 import Assemblers.InjuryDecoder as InjuryDecoder
 import Assemblers.InjuryEncoder as InjuryEncoder
 import Clients.Client exposing (Client, baseRoute, buildErrorMessage)
+import Domain.Injury exposing (Injury)
 import Http
 import Id as Id exposing (Id)
-import Injury exposing (Injury)
 import Json.Decode as Decode
 
 
@@ -32,10 +32,10 @@ getInjuries onResult =
         }
 
 
-getInjury : Int -> (Result Http.Error Injury -> msg) -> Cmd msg
+getInjury : Id -> (Result Http.Error Injury -> msg) -> Cmd msg
 getInjury id onResult =
     Http.get
-        { url = client.baseRoute ++ client.route ++ String.fromInt id
+        { url = client.baseRoute ++ client.route ++ Id.toString id
         , expect =
             InjuryDecoder.decode
                 |> Http.expectJson onResult
