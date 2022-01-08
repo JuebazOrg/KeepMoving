@@ -1,5 +1,6 @@
 module Injuries exposing (..)
 
+import Browser.Navigation as Nav
 import Clients.InjuryClient as Client
 import Components.Card exposing (..)
 import Components.Dropdown as DD
@@ -22,21 +23,21 @@ import Theme.Icons as I
 
 
 type alias Model =
-    { injuries : WebData (List Injury), filters : Filters, selectedInjury : Maybe Injury }
+    { injuries : WebData (List Injury), filters : Filters, navKey : Nav.Key }
 
 
 type alias Filters =
     { region : DD.Model Region, side : DD.Model Side }
 
 
-init : ( Model, Cmd Msg )
-init =
+init : Nav.Key -> ( Model, Cmd Msg )
+init navKey =
     ( { injuries = RemoteData.NotAsked
       , filters =
             { region = DD.init regionDropdownOptions "Regions"
             , side = DD.init sideDropdownOptions "Side"
             }
-      , selectedInjury = Nothing
+      , navKey = navKey
       }
     , getInjuries
     )
@@ -66,7 +67,7 @@ update model msg =
             ( { model | filters = { side = DD.update model.filters.side subMsg, region = model.filters.region } }, Cmd.none )
 
         OpenDetail injury ->
-            ( { model | selectedInjury = Just injury }, Cmd.none )
+            ( model, Route.pushUrl (Route.Injury injury.id) model.navKey )
 
 
 getInjuries : Cmd Msg
@@ -150,11 +151,10 @@ viewInjury injury =
                 |> Maybe.withDefault "-"
     in
     card
-        [ A.css [ borderRadius (px 5), marginTop (px 10), important (maxWidth (px 500)) ] ]
+        [ onClick <| OpenDetail injury, A.css [ borderRadius (px 5), marginTop (px 10), important (maxWidth (px 500)) ] ]
         [ cardHeader []
             [ cardTitle []
-                [ span [ A.css [ paddingRight (px 7) ] ] [ text <| injury.location ]
-                , C.primaryTag [ text <| bodyRegionToString injury.bodyRegion ]
+                [ C.primaryTag [ text <| bodyRegionToString injury.bodyRegion ]
                 ]
             , cardIcon []
                 [ C.icon
@@ -168,8 +168,7 @@ viewInjury injury =
                     ]
                 ]
             ]
-        , cardContent [] [ text injury.description ]
-        , a [ A.href <| Client.injuryPath injury.id ] [ text "details" ]
+        , cardContent [] [ span [ A.css [ paddingRight (px 7) ] ] [ text <| injury.location ] ]
         ]
 
 
