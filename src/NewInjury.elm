@@ -11,7 +11,7 @@ import Css exposing (..)
 import Date as Date
 import Domain.Injury exposing (..)
 import Domain.Regions exposing (..)
-import Html.Styled exposing (Html, a, div, li, map, span, text, ul)
+import Html.Styled exposing (Html, a, div, input, li, map, span, text, ul)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick, onInput)
 import Http
@@ -91,7 +91,7 @@ update model msg =
             ( { model | startDate = DP.update subMsg model.startDate }, Cmd.none )
 
         CloseModal ->
-            ( model,Route.pushUrl Route.Injuries model.navKey )
+            ( model, Route.pushUrl Route.Injuries model.navKey )
 
         Save ->
             ( model, createNewInjury <| createNewInjuryFromForm model )
@@ -118,7 +118,8 @@ createNewInjury newInjury =
 
 viewStartDate : Model -> Html Msg
 viewStartDate model =
-    field [] [ controlLabel [] [ text "start date" ], map CalendarMsg (DP.view model.startDate) ]
+    -- field [] [ controlLabel [] [ text "start date" ], input [ A.type_ "date" ] [] ]
+    DP.datePicker [] [ ]
 
 
 viewDescriptionInput : Html Msg
@@ -133,6 +134,18 @@ viewDescriptionInput =
         ]
 
 
+viewHowInput : Html Msg
+viewHowInput =
+    field []
+        [ controlLabel [] [ text "how it happen" ]
+        , controlTextArea
+            defaultTextAreaProps
+            []
+            []
+            []
+        ]
+
+
 viewLocationInput : Html Msg
 viewLocationInput =
     field [ A.css [ flex (int 3), marginRight (px 10) ] ]
@@ -141,20 +154,17 @@ viewLocationInput =
         ]
 
 
+viewHeader : Model -> Html Msg
+viewHeader model =
+    cardHeader [] [ cardTitle [ A.css [ displayFlex, justifyContent spaceBetween ] ] [ text "New injury" ], C.closeButton [ onClick CloseModal ] [] ]
+
+
 view : Model -> Html Msg
 view model =
     div
-        [ A.css [ important <| overflow visible ] ]
-        [ viewModal model
-        ]
-
-
-viewModal : Model -> Html Msg
-viewModal model =
-    div
-        []
-        [ cardHeader [] [ cardTitle [ A.css [ displayFlex, justifyContent spaceBetween ] ] [ text "New injury" ], C.closeButton [ onClick CloseModal ] [] ]
-        , cardContent [ A.css [ important <| overflow visible ] ]
+        [ A.class "newInjury", A.css [ height (pct 100), displayFlex, flexDirection column, justifyContent spaceBetween ] ]
+        [ viewHeader model
+        , cardContent [ A.css [ flex (int 1) ] ]
             [ div [ A.css [ displayFlex, alignItems center ] ]
                 [ span [ A.css [ marginRight (px 10) ] ] [ map DropDownMsg (DD.viewDropDown model.regionDropdown) ]
                 , map SideDropDownMsg (DD.viewDropDown model.sideDropDown)
@@ -163,8 +173,9 @@ viewModal model =
             -- , viewStartDate model
             , viewLocationInput
             , viewDescriptionInput
-
-            -- , viewProgressBar
+            , viewHowInput
+            , viewStartDate model
+            , viewProgressBar
             ]
         , cardFooter [ A.css [ important displayFlex, important <| justifyContent flexEnd ] ] [ C.lightButton [] [ text "cancel" ], C.saveButton [ onClick Save ] [ text "save" ] ]
         ]

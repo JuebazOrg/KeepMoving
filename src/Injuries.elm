@@ -1,12 +1,9 @@
 module Injuries exposing (..)
 
-import Assemblers.InjuryDecoder as InjuryDecoder
-import Browser.Navigation as Nav
 import Clients.InjuryClient as Client
 import Components.Card exposing (..)
 import Components.Dropdown as DD
 import Components.Elements as C
-import Components.Modal as CM
 import Css exposing (..)
 import Date
 import Domain.Injury exposing (..)
@@ -14,10 +11,7 @@ import Domain.Regions exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick)
-import Http
-import NewInjury exposing (viewModal)
 import Json.Decode as Decode
-import Material.Icons exposing (build)
 import Navigation.Route as Route
 import RemoteData exposing (RemoteData(..), WebData)
 import Theme.Icons as I

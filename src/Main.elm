@@ -160,11 +160,11 @@ currentView model =
                 NewInjuryPage pageModel ->
                     map NewInjuryPageMsg (NewInjury.view pageModel)
     in
-    div []
+    div [ A.css [ height (pct 100) ] ]
         [ stylesheet
         , fontAwesomeCDN
         , viewNavBar True
-        , div [ A.css [ padding (px 20) ] ] [ content ]
+        , div [ A.css [ padding (px 20), height (pct 100) ] ] [ content ]
         ]
 
 

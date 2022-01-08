@@ -18,6 +18,7 @@ body {
   margin: 0;
   text-align: center;
   color: #293c4b;
+  height: 100%;
 }
 
 h1 {
@@ -27,4 +28,8 @@ h1 {
 img {
   margin: 20px 0;
   max-width: 200px;
+}
+
+html{
+  height: 100vh;
 }

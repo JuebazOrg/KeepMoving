@@ -43,9 +43,9 @@ datePicker =
 
 onDatePickerChange : (String -> msg) -> Attribute msg
 onDatePickerChange dateString =
-    on "duetChange" (Decode.map dateString targetValue)
+    on "select" (Decode.map dateString targetValue)
 
 
 view : Model -> Html Msg
 view model =
-    datePicker [ A.attribute "id" "date-picker", onDatePickerChange DateChange ] []
+    input [ A.type_ "date", A.attribute "id" "date-picker", onDatePickerChange DateChange ] []
