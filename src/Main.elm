@@ -8,9 +8,9 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Injuries as Injuries exposing (Msg, view)
 import InjuryDetail as InjuryDetail
-import NewInjury
 import Navigation.NavBar exposing (myNavbarBurger, viewNavBar)
 import Navigation.Route as Route exposing (Route(..))
+import NewInjury
 import Url exposing (Url)
 
 
@@ -117,7 +117,8 @@ update msg model =
 
                 Browser.External url ->
                     ( model
-                    , Nav.load url
+                    , Cmd.none
+                      -- todo : wierd behavior
                     )
 
         ( UrlChanged url, _ ) ->
@@ -130,7 +131,6 @@ update msg model =
 
         ( _, _ ) ->
             ( model, Cmd.none )
-        
 
 
 view : Model -> Document Msg

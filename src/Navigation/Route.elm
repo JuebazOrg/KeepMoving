@@ -36,6 +36,10 @@ matchRoute =
 
 pushUrl : Route -> Nav.Key -> Cmd msg
 pushUrl route navKey =
+    let
+        log =
+            Debug.log "navKey" navKey
+    in
     routeToString route
         |> Nav.pushUrl navKey
 

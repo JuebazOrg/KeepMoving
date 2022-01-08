@@ -16,6 +16,7 @@ import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick, onInput)
 import Http
 import Id exposing (noId)
+import Material.Icons exposing (create)
 import Navigation.Route as Route
 import RemoteData exposing (WebData, fromResult)
 import Theme.Mobile as M
@@ -90,11 +91,10 @@ update model msg =
             ( { model | startDate = DP.update subMsg model.startDate }, Cmd.none )
 
         CloseModal ->
-            -- ( model, Route.pushUrl Route.Injuries model.navKey )
-            ( model, Cmd.none )
+            ( model,Route.pushUrl Route.Injuries model.navKey )
 
         Save ->
-            ( model, createNewInjury (createNewInjuryFromForm model) )
+            ( model, createNewInjury <| createNewInjuryFromForm model )
 
         UpdateDescription content ->
             ( { model | description = content }, Cmd.none )
@@ -105,7 +105,7 @@ update model msg =
         InjuryCreated res ->
             case res of
                 Ok _ ->
-                    ( model, Cmd.none )
+                    ( model, Route.pushUrl Route.Injuries model.navKey )
 
                 Err error ->
                     ( model, Cmd.none )
@@ -153,7 +153,7 @@ viewModal : Model -> Html Msg
 viewModal model =
     div
         []
-        [ cardHeader [] [ cardTitle [ A.css [ displayFlex, justifyContent spaceBetween ] ] [ text "New injury" ], C.closeButton [ onClick CloseModal, A.href "/injuries" ] [] ]
+        [ cardHeader [] [ cardTitle [ A.css [ displayFlex, justifyContent spaceBetween ] ] [ text "New injury" ], C.closeButton [ onClick CloseModal ] [] ]
         , cardContent [ A.css [ important <| overflow visible ] ]
             [ div [ A.css [ displayFlex, alignItems center ] ]
                 [ span [ A.css [ marginRight (px 10) ] ] [ map DropDownMsg (DD.viewDropDown model.regionDropdown) ]
