@@ -3,19 +3,13 @@ module Main exposing (..)
 import Browser exposing (Document, UrlRequest)
 import Browser.Navigation as Nav
 import Bulma.Styled.CDN exposing (..)
-import Bulma.Styled.Components as BC
-import Bulma.Styled.Modifiers as BM
-import Components.Elements exposing (h4Title, roundButton)
 import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Injuries as Injuries exposing (Msg, view)
-import Injury as Injury
 import InjuryDetail as InjuryDetail
+import Navigation.NavBar exposing (myNavbarBurger, viewNavBar)
 import Navigation.Route as Route exposing (Route(..))
-import SideBarNav exposing (Msg, viewSideNav)
-import Theme.Colors exposing (..)
-import Theme.Icons as I
 import Url exposing (Url)
 
 
@@ -36,6 +30,7 @@ type Msg
     = InjuriesMsg Injuries.Msg
     | LinkClicked UrlRequest
     | UrlChanged Url
+    | InjuryDetailMsg InjuryDetail.Msg
 
 
 init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -67,10 +62,10 @@ initCurrentPage ( model, existingCmds ) =
 
                 Route.Injury id ->
                     let
-                        pageModel =
-                            InjuryDetail.init
+                        ( pageModel, pageCmds ) =
+                            InjuryDetail.init id
                     in
-                    ( InjuryPage pageModel, Cmd.none )
+                    ( InjuryPage pageModel, Cmd.map InjuryDetailMsg pageCmds )
     in
     ( { model | page = currentPage }
     , Cmd.batch [ existingCmds, mappedPageCmds ]
@@ -89,44 +84,37 @@ update msg model =
             , Cmd.map InjuriesMsg updatedCmd
             )
 
+        ( InjuryDetailMsg subMsg, InjuryPage pageModel ) ->
+            let
+                ( updatedPageModel, updatedCmd ) =
+                    InjuryDetail.update subMsg pageModel
+            in
+            ( { model | page = InjuryPage updatedPageModel }
+            , Cmd.map InjuryDetailMsg updatedCmd
+            )
+
+        ( LinkClicked urlRequest, _ ) ->
+            case urlRequest of
+                Browser.Internal url ->
+                    ( model
+                    , Nav.pushUrl model.navKey (Url.toString url)
+                    )
+
+                Browser.External url ->
+                    ( model
+                    , Nav.load url
+                    )
+
+        ( UrlChanged url, _ ) ->
+            let
+                newRoute =
+                    Route.parseUrl url
+            in
+            ( { model | route = newRoute }, Cmd.none )
+                |> initCurrentPage
+
         ( _, _ ) ->
             ( model, Cmd.none )
-
-
-myNavbarBurger : Html Msg
-myNavbarBurger =
-    BC.navbarBurger False
-        []
-        [ span [] []
-        , span [] []
-        , span [] []
-        ]
-
-
-viewNavBar : Bool -> Html Msg
-viewNavBar isOpen =
-    BC.fixedNavbar BM.top
-        BC.navbarModifiers
-        []
-        [ BC.navbarBrand []
-            myNavbarBurger
-            [ BC.navbarItem False
-                []
-                [ h4Title [] [ text "Keep Moving" ]
-                ]
-            ]
-        , BC.navbarMenu False
-            []
-            [ BC.navbarStart []
-                [ BC.navbarItemLink False [] [ text "Home" ]
-                , BC.navbarItemLink False [] [ text "Blog" ]
-                , BC.navbarItemLink False [] [ text "Carrots" ]
-                , BC.navbarItemLink False [] [ text "About" ]
-                ]
-            , BC.navbarEnd []
-                [ BC.navbarItem False [] [ roundButton 45 [ text "JB" ] ] ]
-            ]
-        ]
 
 
 view : Model -> Document Msg
@@ -156,8 +144,8 @@ currentView model =
                     ]
                 ]
 
-        InjuryPage injury ->
-            InjuryDetail.view injury
+        InjuryPage pageModel ->
+            map InjuryDetailMsg (InjuryDetail.view pageModel)
 
 
 notFoundView : Html msg

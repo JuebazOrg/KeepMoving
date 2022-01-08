@@ -160,28 +160,27 @@ viewInjury injury =
         injuryPath =
             "/injuries/" ++ String.fromInt injury.id
     in
-    a [ A.href injuryPath ]
-        [ card
-            [ onClick <| OpenDetail injury, A.css [ borderRadius (px 5), marginTop (px 10), important (maxWidth (px 500)) ] ]
-            [ cardHeader []
-                [ cardTitle []
-                    [ span [ A.css [ paddingRight (px 7) ] ] [ text <| injury.location ]
-                    , C.primaryTag [ text <| bodyRegionToString injury.bodyRegion ]
+    card
+        [ A.css [ borderRadius (px 5), marginTop (px 10), important (maxWidth (px 500)) ] ]
+        [ cardHeader []
+            [ cardTitle []
+                [ span [ A.css [ paddingRight (px 7) ] ] [ text <| injury.location ]
+                , C.primaryTag [ text <| bodyRegionToString injury.bodyRegion ]
+                ]
+            , cardIcon []
+                [ C.icon
+                    []
+                    [ i [ A.class I.calendar ] []
                     ]
-                , cardIcon []
-                    [ C.icon
-                        []
-                        [ i [ A.class I.calendar ] []
-                        ]
-                    , span [] [ text <| Date.toIsoString injury.startDate ]
-                    , C.icon
-                        [ A.css [ paddingLeft (px 5) ] ]
-                        [ i [ A.class I.edit ] []
-                        ]
+                , span [] [ text <| Date.toIsoString injury.startDate ]
+                , C.icon
+                    [ A.css [ paddingLeft (px 5) ] ]
+                    [ i [ A.class I.edit ] []
                     ]
                 ]
-            , cardContent [] [ text injury.description ]
             ]
+        , cardContent [] [ text injury.description ]
+        , a [ A.href injuryPath ] [ text "details" ]
         ]
 
 

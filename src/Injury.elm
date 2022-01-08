@@ -1,7 +1,8 @@
 module Injury exposing (..)
 
 import Date exposing (Date)
-import Regions exposing (BodyRegion)
+import Regions exposing (BodyRegion, Region(..))
+import Time exposing (Month(..))
 
 
 type InjuryType
@@ -47,3 +48,14 @@ injuryTypeToString injuryType =
             "Other"
 
 
+empty : Injury
+empty =
+    { id = 0
+    , description = ""
+    , bodyRegion = { region = Head, side = Nothing }
+    , location = ""
+    , startDate = Date.fromCalendarDate 2020 Jan 20
+    , endDate = Date.fromCalendarDate 2020 Jan 20
+    , how = ""
+    , injuryType = Other
+    }

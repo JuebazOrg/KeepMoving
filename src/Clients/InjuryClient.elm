@@ -26,6 +26,16 @@ getInjuries onResult =
         }
 
 
+getInjury : Int -> (Result Http.Error Injury -> msg) -> Cmd msg
+getInjury id onResult =
+    Http.get
+        { url = client.baseRoute ++ client.route ++ "/" ++ String.fromInt id
+        , expect =
+            InjuryDecoder.decode
+                |> Http.expectJson onResult
+        }
+
+
 createInjury : Injury -> (Result Http.Error () -> msg) -> Cmd msg
 createInjury injury onResult =
     Http.post
