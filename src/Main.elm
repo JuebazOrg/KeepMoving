@@ -8,7 +8,7 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Injuries as Injuries exposing (Msg, view)
 import InjuryDetail as InjuryDetail
-import InjuryModal
+import NewInjury
 import Navigation.NavBar exposing (myNavbarBurger, viewNavBar)
 import Navigation.Route as Route exposing (Route(..))
 import Url exposing (Url)
@@ -25,7 +25,7 @@ type Page
     = NotFoundPage
     | InjuriesPage Injuries.Model
     | InjuryPage InjuryDetail.Model
-    | NewInjuryPage InjuryModal.Model
+    | NewInjuryPage NewInjury.Model
 
 
 type Msg
@@ -33,7 +33,7 @@ type Msg
     | LinkClicked UrlRequest
     | UrlChanged Url
     | InjuryDetailMsg InjuryDetail.Msg
-    | NewInjuryPageMsg InjuryModal.Msg
+    | NewInjuryPageMsg NewInjury.Msg
 
 
 init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -71,7 +71,7 @@ initCurrentPage ( model, existingCmds ) =
                     ( InjuryPage pageModel, Cmd.map InjuryDetailMsg pageCmds )
 
                 Route.NewInjury ->
-                    ( NewInjuryPage <| InjuryModal.init model.navKey, Cmd.none )
+                    ( NewInjuryPage <| NewInjury.init model.navKey, Cmd.none )
     in
     ( { model | page = currentPage }
     , Cmd.batch [ existingCmds, mappedPageCmds ]
@@ -102,7 +102,7 @@ update msg model =
         ( NewInjuryPageMsg subMsg, NewInjuryPage pageModel ) ->
             let
                 ( updatedPageModel, updatedCmd ) =
-                    InjuryModal.update pageModel subMsg
+                    NewInjury.update pageModel subMsg
             in
             ( { model | page = NewInjuryPage updatedPageModel }
             , Cmd.map NewInjuryPageMsg updatedCmd
@@ -158,7 +158,7 @@ currentView model =
                     map InjuryDetailMsg (InjuryDetail.view pageModel)
 
                 NewInjuryPage pageModel ->
-                    map NewInjuryPageMsg (InjuryModal.view pageModel)
+                    map NewInjuryPageMsg (NewInjury.view pageModel)
     in
     div []
         [ stylesheet

@@ -3,7 +3,7 @@ module Clients.InjuryClient exposing (..)
 import Assemblers.InjuryDecoder as InjuryDecoder
 import Assemblers.InjuryEncoder as InjuryEncoder
 import Clients.Client exposing (Client, baseRoute, buildErrorMessage)
-import Domain.Injury exposing (Injury)
+import Domain.Injury exposing (Injury, NewInjury)
 import Http
 import Id as Id exposing (Id)
 import Json.Decode as Decode
@@ -42,10 +42,10 @@ getInjury id onResult =
         }
 
 
-createInjury : Injury -> (Result Http.Error () -> msg) -> Cmd msg
+createInjury : NewInjury -> (Result Http.Error () -> msg) -> Cmd msg
 createInjury injury onResult =
     Http.post
         { url = client.baseRoute ++ client.route
-        , body = Http.jsonBody (InjuryEncoder.encode injury)
+        , body = Http.jsonBody (InjuryEncoder.encodeNew injury)
         , expect = Http.expectWhatever onResult
         }

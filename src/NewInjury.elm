@@ -1,12 +1,12 @@
-module InjuryModal exposing (..)
+module NewInjury exposing (..)
 
 import Browser.Navigation as Nav
 import Clients.InjuryClient as Client
 import Components.Calendar.DatePicker as DP
+import Components.Card exposing (..)
 import Components.Dropdown as DD
 import Components.Elements as C
 import Components.Form exposing (..)
-import Components.Modal exposing (modal, modalBackground, modalCard, modalCardBody, modalCardFoot, modalCardHead, modalCardTitle, modalContent)
 import Css exposing (..)
 import Date as Date
 import Domain.Injury exposing (..)
@@ -32,10 +32,6 @@ type alias Model =
     }
 
 
-type alias NewInjury =
-    Injury
-
-
 
 -- todo: validation  + error + loading
 
@@ -56,7 +52,6 @@ createNewInjuryFromForm model =
     , endDate = date
     , how = ""
     , injuryType = Sprains
-    , id = Id.noId -- todo pas le meme model en creation
     }
 
 
@@ -150,28 +145,28 @@ view : Model -> Html Msg
 view model =
     div
         [ A.css [ important <| overflow visible ] ]
-        [ modalBackground [ A.css [ M.onMobile [ visibility hidden ] ] ] []
-        , viewModal model
+        [ viewModal model
         ]
 
 
 viewModal : Model -> Html Msg
 viewModal model =
-    modalContent
-        [ A.css [ displayFlex, flexDirection column, important <| overflow visible, M.onMobile [ important <| maxHeight (pct 100), height (pct 100) ] ] ]
-        [ modalCardHead [] [ modalCardTitle [ A.css [ displayFlex, justifyContent spaceBetween ] ] [ text "New injury" ], C.closeButton [ onClick CloseModal, A.href "/injuries" ] [] ]
-        , modalCardBody [ A.css [ important <| overflow visible ] ]
+    div
+        []
+        [ cardHeader [] [ cardTitle [ A.css [ displayFlex, justifyContent spaceBetween ] ] [ text "New injury" ], C.closeButton [ onClick CloseModal, A.href "/injuries" ] [] ]
+        , cardContent [ A.css [ important <| overflow visible ] ]
             [ div [ A.css [ displayFlex, alignItems center ] ]
                 [ span [ A.css [ marginRight (px 10) ] ] [ map DropDownMsg (DD.viewDropDown model.regionDropdown) ]
                 , map SideDropDownMsg (DD.viewDropDown model.sideDropDown)
                 ]
+
             -- , viewStartDate model
             , viewLocationInput
             , viewDescriptionInput
 
             -- , viewProgressBar
             ]
-        , modalCardFoot [ A.css [ important displayFlex, important <| justifyContent flexEnd ] ] [ C.lightButton [] [ text "cancel" ], C.saveButton [ onClick Save ] [ text "save" ] ]
+        , cardFooter [ A.css [ important displayFlex, important <| justifyContent flexEnd ] ] [ C.lightButton [] [ text "cancel" ], C.saveButton [ onClick Save ] [ text "save" ] ]
         ]
 
 

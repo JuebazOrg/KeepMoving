@@ -1,8 +1,8 @@
 module Assemblers.IdEncoder exposing (..)
 
-import Id exposing (Id(..), toString)
+import Id exposing (Id(..), toInt)
 
 
-idEncoder : Id -> String
+idEncoder : Id -> Int
 idEncoder id =
-    toString id
+    toInt id

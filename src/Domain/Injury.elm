@@ -1,8 +1,8 @@
 module Domain.Injury exposing (..)
 
 import Date exposing (Date)
-import Id exposing (Id)
 import Domain.Regions exposing (BodyRegion, Region(..))
+import Id exposing (Id)
 import Time exposing (Month(..))
 
 
@@ -22,6 +22,17 @@ type alias Injury =
     , location : String
     , startDate : Date
     , endDate : Date
+    , how : String
+    , injuryType : InjuryType
+    }
+
+
+type alias NewInjury =
+    { description : String
+    , bodyRegion : BodyRegion
+    , location : String
+    , startDate : Date.Date
+    , endDate : Date.Date
     , how : String
     , injuryType : InjuryType
     }

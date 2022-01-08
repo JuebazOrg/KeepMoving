@@ -15,7 +15,7 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick)
 import Http
-import InjuryModal exposing (viewModal)
+import NewInjury exposing (viewModal)
 import Json.Decode as Decode
 import Material.Icons exposing (build)
 import Navigation.Route as Route

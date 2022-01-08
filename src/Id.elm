@@ -16,6 +16,13 @@ toString id =
         )
 
 
+toInt : Id -> Int
+toInt id =
+    case id of
+        Id i ->
+            i
+
+
 idParser : Parser (Id -> a) a
 idParser =
     custom "ID" <|
