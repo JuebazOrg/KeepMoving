@@ -77,6 +77,9 @@ regionDecoder =
                     "Feet" ->
                         D.succeed Feet
 
+                    "Hand" ->
+                        D.succeed Hand
+
                     "Other" ->
                         D.succeed Other
 
@@ -107,18 +110,20 @@ sideDecoder =
         )
 
 
-dateDecoder : D.Decoder Date
+dateDecoder : D.Decoder (Maybe Date)
 dateDecoder =
-    D.string
-        |> D.andThen
-            (\str ->
-                case Date.fromIsoString str of
-                    Err err ->
-                        D.fail err
+    D.nullable
+        (D.string
+            |> D.andThen
+                (\str ->
+                    case Date.fromIsoString str of
+                        Err err ->
+                            D.fail err
 
-                    Ok date ->
-                        D.succeed date
-            )
+                        Ok date ->
+                            D.succeed date
+                )
+        )
 
 
 

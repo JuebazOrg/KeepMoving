@@ -108,7 +108,7 @@ viewHow : Injury -> Html msg
 viewHow injury =
     article [ A.class "tile is-child notification is-primary is-light" ]
         [ div [ A.class "content", A.css [ displayFlex, flexDirection column ] ]
-            [ p [ A.class "title" ] [ text "How" ]
+            [ p [ A.class "title" ] [ text "How it happen" ]
             , p [ A.class "content" ] [ text injury.how ]
             ]
         ]
@@ -120,16 +120,22 @@ viewDates injury =
         [ p [ A.class "title" ] [ text "When" ]
         , div [ A.class "content", A.css [ displayFlex, flexDirection column ] ]
             [ div [ A.css [ displayFlex, flexDirection column, alignItems flexStart ] ]
-                [ div [ A.css [ displayFlex, width (pct 100), justifyContent spaceBetween ] ]
-                    [ C.h4Title [] [ text "Start date" ]
-                    , C.h4Title [] [ text <| Date.toIsoString injury.startDate ]
-                    ]
-                , div [ A.css [ displayFlex, width (pct 100), justifyContent spaceBetween ] ]
-                    [ C.h4Title [] [ text "End date" ]
-                    , C.h4Title [] [ text <| Date.toIsoString injury.endDate ]
-                    ]
+                [ viewDateField injury.startDate "Start date"
+                , viewDateField injury.endDate "End date"
                 ]
             ]
+        ]
+
+
+viewDateField : Maybe Date.Date -> String -> Html msg
+viewDateField date label =
+    let
+        dateToString =
+            Maybe.map Date.toIsoString >> Maybe.withDefault "-"
+    in
+    div [ A.css [ displayFlex, width (pct 100), justifyContent spaceBetween ] ]
+        [ C.h4Title [] [ text label ]
+        , C.h4Title [] [ text <| dateToString date ]
         ]
 
 

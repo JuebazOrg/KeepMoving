@@ -143,6 +143,12 @@ filterInjuries filters injuries =
 
 viewInjury : Injury -> Html Msg
 viewInjury injury =
+    let
+        startDate =
+            injury.startDate
+                |> Maybe.map Date.toIsoString
+                |> Maybe.withDefault "-"
+    in
     card
         [ A.css [ borderRadius (px 5), marginTop (px 10), important (maxWidth (px 500)) ] ]
         [ cardHeader []
@@ -155,7 +161,7 @@ viewInjury injury =
                     []
                     [ i [ A.class I.calendar ] []
                     ]
-                , span [] [ text <| Date.toIsoString injury.startDate ]
+                , span [] [ text startDate ]
                 , C.icon
                     [ A.css [ paddingLeft (px 5) ] ]
                     [ i [ A.class I.edit ] []

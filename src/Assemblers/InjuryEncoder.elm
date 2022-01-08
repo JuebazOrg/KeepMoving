@@ -1,7 +1,7 @@
 module Assemblers.InjuryEncoder exposing (..)
 
 import Assemblers.IdEncoder exposing (idEncoder)
-import Date
+import Date exposing (Date)
 import Domain.Injury exposing (Injury, InjuryType(..), NewInjury)
 import Domain.Regions exposing (..)
 import Json.Encode as Encode
@@ -20,8 +20,8 @@ encode injury =
                 , ( "side", EncodeExtra.maybe Encode.string (Maybe.map fromSide injury.bodyRegion.side) )
                 ]
           )
-        , ( "startDate", Encode.string <| Date.toIsoString injury.startDate )
-        , ( "endDate", Encode.string <| Date.toIsoString injury.startDate )
+        , ( "startDate", encodeDate injury.startDate )
+        , ( "endDate", encodeDate injury.endDate )
         , ( "how", Encode.string injury.how )
         , ( "injuryType", Encode.string <| injuryTypeToString injury.injuryType )
         ]
@@ -34,15 +34,61 @@ encodeNew injury =
         , ( "location", Encode.string injury.location )
         , ( "bodyRegion"
           , Encode.object
-                [ ( "region", Encode.string <| fromRegion injury.bodyRegion.region ) -- todo: fct to encode dans encoder
+                [ ( "region", encodeRegion injury.bodyRegion.region) -- todo: fct to encode dans encoder
                 , ( "side", EncodeExtra.maybe Encode.string (Maybe.map fromSide injury.bodyRegion.side) ) -- todo fct encode dans encoder
                 ]
           )
-        , ( "startDate", Encode.string <| Date.toIsoString injury.startDate )
-        , ( "endDate", Encode.string <| Date.toIsoString injury.startDate )
+        , ( "startDate", encodeDate injury.startDate )
+        , ( "endDate", encodeDate injury.endDate )
         , ( "how", Encode.string injury.how )
         , ( "injuryType", Encode.string <| injuryTypeToString injury.injuryType )
         ]
+
+
+encodeDate : Maybe Date -> Encode.Value
+encodeDate date =
+    EncodeExtra.maybe Encode.string (Maybe.map Date.toIsoString date)
+
+
+encodeRegion : Region -> Encode.Value
+encodeRegion region =
+    let
+        string =
+            case region of
+                Leg ->
+                    "Leg"
+
+                Arm ->
+                    "Arm"
+
+                Neck ->
+                    "Neck"
+
+                Hand ->
+                    "Hand"
+
+                Wrist ->
+                    "Wrist"
+
+                UpperBack ->
+                    "Upper back"
+
+                MiddleBack ->
+                    "Middle back"
+
+                LowerBack ->
+                    "Lower back"
+
+                Feet ->
+                    "Feet"
+
+                Head ->
+                    "Head"
+
+                Other ->
+                    "Other"
+    in
+    Encode.string string
 
 
 injuryTypeToString : InjuryType -> String

@@ -28,6 +28,7 @@ type alias Model =
     , sideDropDown : DD.Model Side
     , injuryTypeDropDown : DD.Model InjuryType
     , startDate : DP.Model
+    , endDate : DP.Model
     , description : String
     , location : String
     , how : String
@@ -45,6 +46,7 @@ init navKey =
     , sideDropDown = DD.init sideDropDownOptions "Side"
     , injuryTypeDropDown = DD.init injuryTypeDropDownOptions "Injury type"
     , startDate = DP.init
+    , endDate = DP.init
     , description = ""
     , location = ""
     , how = ""
@@ -57,7 +59,8 @@ type Msg
     | Save
     | DropDownMsg (DD.Msg Region)
     | SideDropDownMsg (DD.Msg Side)
-    | CalendarMsg DP.Msg
+    | StartDateChange DP.Msg
+    | EndDateChange DP.Msg
     | InjuryCreated (Result Http.Error ())
     | UpdateDescription String
     | UpdateLocation String
@@ -76,8 +79,11 @@ update model msg =
         InjuryTypeDropDownMsg subMsg ->
             ( { model | injuryTypeDropDown = DD.update model.injuryTypeDropDown subMsg }, Cmd.none )
 
-        CalendarMsg subMsg ->
+        StartDateChange subMsg ->
             ( { model | startDate = DP.update subMsg model.startDate }, Cmd.none )
+
+        EndDateChange subMsg ->
+            ( { model | startDate = DP.update subMsg model.endDate }, Cmd.none )
 
         CloseModal ->
             ( model, Route.pushUrl Route.Injuries model.navKey )
@@ -107,21 +113,14 @@ createNewInjury newInjury =
 
 createNewInjuryFromForm : Model -> NewInjury
 createNewInjuryFromForm model =
-    let
-        startDate =
-            Maybe.withDefault (Date.fromCalendarDate 2018 Sep 26) model.startDate.date -- todo : default date is today or maybe date 
-
-        endDate =
-            Maybe.withDefault (Date.fromCalendarDate 2018 Sep 26) model.startDate.date
-    in
     { bodyRegion =
         { region = Maybe.withDefault Other (DD.getSelectedValue model.regionDropdown)
         , side = DD.getSelectedValue model.sideDropDown
         }
     , location = model.location
     , description = model.description
-    , startDate = startDate
-    , endDate = endDate
+    , startDate = model.startDate.date
+    , endDate = model.endDate.date
     , how = model.how
     , injuryType = Maybe.withDefault OtherInjuryType (DD.getSelectedValue model.injuryTypeDropDown)
     }
@@ -139,7 +138,6 @@ view model =
                 , map InjuryTypeDropDownMsg (DD.viewDropDown model.injuryTypeDropDown)
                 ]
 
-            -- , viewStartDate model
             , viewLocationInput
             , viewDescriptionInput
             , viewHowInput
@@ -147,8 +145,6 @@ view model =
                 [ viewStartDate model
                 , viewEndDate model
                 ]
-
-            -- , viewProgressBar
             ]
         , cardFooter [ A.css [ padding (px 10), important displayFlex, important <| justifyContent flexEnd ] ] [ C.lightButton [ A.css [ marginRight (px 10) ] ] [ text "cancel" ], C.saveButton [ onClick Save ] [ text "save" ] ]
         ]
@@ -156,12 +152,12 @@ view model =
 
 viewStartDate : Model -> Html Msg
 viewStartDate model =
-    field [] [ controlLabel [] [ text "Start date" ], map CalendarMsg (DP.view model.startDate) ]
+    field [] [ controlLabel [] [ text "Start date" ], map StartDateChange (DP.view model.startDate) ]
 
 
 viewEndDate : Model -> Html Msg
 viewEndDate model =
-    field [ A.css [ marginLeft (px 10) ] ] [ controlLabel [] [ text "End date" ], map CalendarMsg (DP.view model.startDate) ]
+    field [ A.css [ marginLeft (px 10) ] ] [ controlLabel [] [ text "End date" ], map EndDateChange (DP.view model.endDate) ]
 
 
 viewDescriptionInput : Html Msg
