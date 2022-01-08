@@ -92,9 +92,12 @@ closeButton attributes messages =
             Just ( BM.standard, [], icon [] [ S.i [ A.class I.close ] [] ] )
 
         buttonProps =
-            { defaultButtonProps | color = BM.primary, iconLeft = myIcon, rounded = True }
+            { defaultButtonProps | color = BM.primary, iconLeft = myIcon }
+
+        styled =
+            List.append attributes [ A.css [ round ] ]
     in
-    Components.BulmaElements.button buttonProps attributes messages
+    Components.BulmaElements.button buttonProps styled messages
 
 
 primaryTag : List (S.Html msg) -> S.Html msg

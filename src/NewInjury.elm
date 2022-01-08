@@ -129,15 +129,14 @@ createNewInjuryFromForm model =
 view : Model -> Html Msg
 view model =
     div
-        [ A.class "newInjury", A.css [ height (pct 100), displayFlex, flexDirection column, justifyContent spaceBetween ] ]
+        [ A.css [ height (pct 100), displayFlex, flexDirection column, justifyContent spaceBetween ] ]
         [ viewHeader model
         , cardContent [ A.css [ flex (int 1) ] ]
-            [ div [ A.css [ displayFlex, alignItems center ] ]
+            [ div [ A.css [ displayFlex, alignItems center, marginBottom (px 10) ] ]
                 [ span [ A.css [ marginRight (px 10) ] ] [ map DropDownMsg (DD.viewDropDown model.regionDropdown) ]
                 , span [ A.css [ marginRight (px 10) ] ] [ map SideDropDownMsg (DD.viewDropDown model.sideDropDown) ]
                 , map InjuryTypeDropDownMsg (DD.viewDropDown model.injuryTypeDropDown)
                 ]
-
             , viewLocationInput
             , viewDescriptionInput
             , viewHowInput
@@ -194,7 +193,7 @@ viewLocationInput =
 
 viewHeader : Model -> Html Msg
 viewHeader model =
-    cardHeader [] [ cardTitle [ A.css [ displayFlex, justifyContent spaceBetween ] ] [ text "New injury" ], C.closeButton [ onClick CloseModal ] [] ]
+    cardHeader [ A.css [ important <| alignItems center ] ] [ cardTitle [ A.css [ displayFlex, justifyContent spaceBetween ] ] [ C.h3Title [] [ text "New injury" ] ], C.closeButton [ onClick CloseModal ] [] ]
 
 
 viewProgressBar : Html msg
