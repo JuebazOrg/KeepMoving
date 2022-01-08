@@ -14,6 +14,7 @@ type Region
     | LowerBack
     | Feet
     | Head
+    | Other
 
 
 type Side
@@ -28,7 +29,7 @@ type alias BodyRegion =
 
 regions : List Region
 regions =
-    [ Leg, Arm, Neck, Hands, Wrist, UpperBack, MiddleBack, LowerBack, Feet, Head ]
+    [ Leg, Arm, Neck, Hands, Wrist, UpperBack, MiddleBack, LowerBack, Feet, Head, Other ]
 
 
 sides : List Side
@@ -92,3 +93,6 @@ fromRegion region =
 
         Head ->
             "Head"
+
+        Other ->
+            "Other"

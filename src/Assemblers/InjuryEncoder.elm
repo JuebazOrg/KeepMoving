@@ -34,8 +34,8 @@ encodeNew injury =
         , ( "location", Encode.string injury.location )
         , ( "bodyRegion"
           , Encode.object
-                [ ( "region", Encode.string <| fromRegion injury.bodyRegion.region )
-                , ( "side", EncodeExtra.maybe Encode.string (Maybe.map fromSide injury.bodyRegion.side) )
+                [ ( "region", Encode.string <| fromRegion injury.bodyRegion.region ) -- todo: fct to encode dans encoder
+                , ( "side", EncodeExtra.maybe Encode.string (Maybe.map fromSide injury.bodyRegion.side) ) -- todo fct encode dans encoder
                 ]
           )
         , ( "startDate", Encode.string <| Date.toIsoString injury.startDate )
@@ -63,5 +63,5 @@ injuryTypeToString injuryType =
         Strains ->
             "Strains"
 
-        Other ->
+        OtherInjuryType ->
             "Other"

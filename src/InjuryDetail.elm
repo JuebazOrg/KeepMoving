@@ -1,24 +1,33 @@
 module InjuryDetail exposing (..)
 
+import Browser.Navigation as Nav
 import Clients.InjuryClient as Client
+import Components.Card exposing (cardHeader)
+import Components.Elements as C
 import Css exposing (..)
+import Date
 import Domain.Injury exposing (..)
+import Domain.Regions exposing (..)
 import Html.Styled exposing (..)
+import Html.Styled.Attributes as A
+import Html.Styled.Events exposing (..)
 import Id exposing (Id)
+import Navigation.Route as Route
 import RemoteData exposing (RemoteData(..), WebData)
 
 
 type alias Model =
-    { injury : WebData Injury }
+    { injury : WebData Injury, navKey : Nav.Key }
 
 
-init : Id -> ( Model, Cmd Msg )
-init id =
-    ( { injury = RemoteData.Loading }, getInjury id )
+init : Nav.Key -> Id -> ( Model, Cmd Msg )
+init navKey id =
+    ( { injury = RemoteData.Loading, navKey = navKey }, getInjury id )
 
 
 type Msg
     = InjuryReceived (WebData Injury)
+    | GoBack
 
 
 getInjury : Id -> Cmd Msg
@@ -30,16 +39,98 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         InjuryReceived response ->
-            let
-                log =
-                    Debug.log "res" response
-            in
             ( { model | injury = response }, Cmd.none )
+
+        GoBack ->
+            ( model, Route.pushUrl Route.Injuries model.navKey )
 
 
 view : Model -> Html Msg
 view model =
     viewInjuryOrError model
+
+
+viewHeader : Injury -> Html Msg
+viewHeader injury =
+    div [ A.css [ displayFlex, justifyContent spaceBetween ] ]
+        [ C.backButton [ onClick GoBack ] []
+        , C.h3Title [] [ text "Injury Details" ]
+        , div [] []
+        ]
+
+
+viewContent : Injury -> Html Msg
+viewContent injury =
+    div []
+        [ viewHeader injury
+        , viewInfo injury
+        ]
+
+
+viewInfo : Injury -> Html msg
+viewInfo injury =
+    div [ A.class "tile is-ancestor" ]
+        [ div [ A.class "tile is-vertical is-4" ]
+            [ div [ A.class "tile is-parent is-vertical" ]
+                [ viewTagInfo injury
+                , viewDescription injury
+                , viewDates injury
+                ]
+            ]
+        , div [ A.class "tile is-parent " ]
+            [ viewHow injury
+            ]
+        ]
+
+
+viewTagInfo : Injury -> Html msg
+viewTagInfo injury =
+    article [ A.class "tile is-child notification" ]
+        [ div [ A.class "content", A.css [ displayFlex, flexDirection column ] ]
+            [ div [ A.css [ displayFlex, marginBottom (px 10) ] ] [ div [] [ C.h4Title [ A.css [ marginRight (px 5) ] ] [ text "Region" ] ], C.bigPrimaryTag [ text <| bodyRegionToString injury.bodyRegion ] ]
+            , div [ A.css [ displayFlex, marginBottom (px 10) ] ] [ div [] [ C.h4Title [ A.css [ marginRight (px 5) ] ] [ text "Location" ] ], C.bigPrimaryTag [ text injury.location ] ]
+            , div [ A.css [ displayFlex, marginBottom (px 10) ] ] [ div [] [ C.h4Title [ A.css [ marginRight (px 5) ] ] [ text "Injury type" ] ], C.bigPrimaryTag [ text <| injuryTypeToString injury.injuryType ] ]
+            ]
+        ]
+
+
+viewDescription : Injury -> Html msg
+viewDescription injury =
+    article [ A.class "tile is-child notification is-primary" ]
+        [ div [ A.class "content", A.css [ displayFlex, flexDirection column ] ]
+            [ p [ A.class "title" ] [ text "Description" ]
+            , p [ A.class "content" ] [ text injury.description ]
+            ]
+        ]
+
+
+viewHow : Injury -> Html msg
+viewHow injury =
+    article [ A.class "tile is-child notification is-primary is-light" ]
+        [ div [ A.class "content", A.css [ displayFlex, flexDirection column ] ]
+            [ p [ A.class "title" ] [ text "How" ]
+            , p [ A.class "content" ] [ text injury.how ]
+            ]
+        ]
+
+
+viewDates : Injury -> Html msg
+viewDates injury =
+    article [ A.class "tile is-child notification is-primary is-warning" ]
+        [ p [ A.class "title" ] [ text "When" ]
+        , div [ A.class "content", A.css [ displayFlex, flexDirection column ] ]
+            [ div [ A.css [ displayFlex, flexDirection column, alignItems flexStart ] ]
+                [ div [ A.css [ displayFlex, width (pct 100), justifyContent spaceBetween ] ]
+                    [ C.h4Title [] [ text "Start date" ]
+                    , C.h4Title [] [ text <| Date.toIsoString injury.startDate ]
+                    ]
+                , div [ A.css [ displayFlex, width (pct 100), justifyContent spaceBetween ] ]
+                    [ C.h4Title [] [ text "End date" ]
+                    , C.h4Title [] [ text <| Date.toIsoString injury.endDate ]
+                    ]
+                ]
+            ]
+        ]
 
 
 viewInjuryOrError : Model -> Html Msg
@@ -51,8 +142,8 @@ viewInjuryOrError model =
         RemoteData.Loading ->
             h3 [] [ text "Loading..." ]
 
-        RemoteData.Success injuries ->
-            div [] [ text injuries.location ]
+        RemoteData.Success injury ->
+            viewContent injury
 
         RemoteData.Failure httpError ->
             div [] [ text <| Client.client.defaultErrorMessage httpError ]

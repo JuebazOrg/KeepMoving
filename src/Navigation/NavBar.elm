@@ -38,6 +38,6 @@ viewNavBar isOpen =
                 , BC.navbarItemLink False [] [ text "About" ]
                 ]
             , BC.navbarEnd []
-                [ BC.navbarItem False [] [ roundButton 45 [ text "JB" ] ] ]
+                [ BC.navbarItem False [] [ roundButton 45 [] [ text "JB" ] ] ]
             ]
         ]

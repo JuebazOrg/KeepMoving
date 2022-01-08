@@ -12,7 +12,7 @@ type InjuryType
     | Fracture
     | Sprains --ligaments
     | Strains --tendon ou muscle
-    | Other
+    | OtherInjuryType
 
 
 type alias Injury =
@@ -56,7 +56,7 @@ injuryTypeToString injuryType =
         Strains ->
             "Ligament"
 
-        Other ->
+        OtherInjuryType ->
             "Other"
 
 
@@ -67,5 +67,5 @@ injuryTypes =
     , Fracture
     , Sprains
     , Strains
-    , Other
+    , OtherInjuryType
     ]

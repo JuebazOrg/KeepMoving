@@ -11,7 +11,7 @@ import Css exposing (..)
 import Date as Date
 import Domain.Injury exposing (..)
 import Domain.Regions exposing (..)
-import Html.Styled exposing (Html, a, div, input, li, map, span, text, ul)
+import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick, onInput)
 import Http
@@ -30,31 +30,13 @@ type alias Model =
     , startDate : DP.Model
     , description : String
     , location : String
+    , how : String
     , navKey : Nav.Key
     }
 
 
 
 -- todo: validation  + error + loading
-
-
-createNewInjuryFromForm : Model -> NewInjury
-createNewInjuryFromForm model =
-    let
-        date =
-            Maybe.withDefault (Date.fromCalendarDate 2018 Sep 26) model.startDate.date
-    in
-    { bodyRegion =
-        { region = Maybe.withDefault Head (DD.getSelectedValue model.regionDropdown)
-        , side = DD.getSelectedValue model.sideDropDown
-        }
-    , location = model.location
-    , description = model.description
-    , startDate = date
-    , endDate = date
-    , how = ""
-    , injuryType = Sprains
-    }
 
 
 init : Nav.Key -> Model
@@ -65,6 +47,7 @@ init navKey =
     , startDate = DP.init
     , description = ""
     , location = ""
+    , how = ""
     , navKey = navKey
     }
 
@@ -122,6 +105,55 @@ createNewInjury newInjury =
     Client.createInjury newInjury InjuryCreated
 
 
+createNewInjuryFromForm : Model -> NewInjury
+createNewInjuryFromForm model =
+    let
+        startDate =
+            Maybe.withDefault (Date.fromCalendarDate 2018 Sep 26) model.startDate.date -- todo : default date is today or maybe date 
+
+        endDate =
+            Maybe.withDefault (Date.fromCalendarDate 2018 Sep 26) model.startDate.date
+    in
+    { bodyRegion =
+        { region = Maybe.withDefault Other (DD.getSelectedValue model.regionDropdown)
+        , side = DD.getSelectedValue model.sideDropDown
+        }
+    , location = model.location
+    , description = model.description
+    , startDate = startDate
+    , endDate = endDate
+    , how = model.how
+    , injuryType = Maybe.withDefault OtherInjuryType (DD.getSelectedValue model.injuryTypeDropDown)
+    }
+
+
+view : Model -> Html Msg
+view model =
+    div
+        [ A.class "newInjury", A.css [ height (pct 100), displayFlex, flexDirection column, justifyContent spaceBetween ] ]
+        [ viewHeader model
+        , cardContent [ A.css [ flex (int 1) ] ]
+            [ div [ A.css [ displayFlex, alignItems center ] ]
+                [ span [ A.css [ marginRight (px 10) ] ] [ map DropDownMsg (DD.viewDropDown model.regionDropdown) ]
+                , span [ A.css [ marginRight (px 10) ] ] [ map SideDropDownMsg (DD.viewDropDown model.sideDropDown) ]
+                , map InjuryTypeDropDownMsg (DD.viewDropDown model.injuryTypeDropDown)
+                ]
+
+            -- , viewStartDate model
+            , viewLocationInput
+            , viewDescriptionInput
+            , viewHowInput
+            , span [ A.css [ displayFlex, M.onMobile [ flexDirection column ] ] ]
+                [ viewStartDate model
+                , viewEndDate model
+                ]
+
+            -- , viewProgressBar
+            ]
+        , cardFooter [ A.css [ padding (px 10), important displayFlex, important <| justifyContent flexEnd ] ] [ C.lightButton [ A.css [ marginRight (px 10) ] ] [ text "cancel" ], C.saveButton [ onClick Save ] [ text "save" ] ]
+        ]
+
+
 viewStartDate : Model -> Html Msg
 viewStartDate model =
     field [] [ controlLabel [] [ text "Start date" ], map CalendarMsg (DP.view model.startDate) ]
@@ -167,33 +199,6 @@ viewLocationInput =
 viewHeader : Model -> Html Msg
 viewHeader model =
     cardHeader [] [ cardTitle [ A.css [ displayFlex, justifyContent spaceBetween ] ] [ text "New injury" ], C.closeButton [ onClick CloseModal ] [] ]
-
-
-view : Model -> Html Msg
-view model =
-    div
-        [ A.class "newInjury", A.css [ height (pct 100), displayFlex, flexDirection column, justifyContent spaceBetween ] ]
-        [ viewHeader model
-        , cardContent [ A.css [ flex (int 1) ] ]
-            [ div [ A.css [ displayFlex, alignItems center ] ]
-                [ span [ A.css [ marginRight (px 10) ] ] [ map DropDownMsg (DD.viewDropDown model.regionDropdown) ]
-                , span [ A.css [ marginRight (px 10) ] ] [ map SideDropDownMsg (DD.viewDropDown model.sideDropDown) ]
-                , map InjuryTypeDropDownMsg (DD.viewDropDown model.injuryTypeDropDown)
-                ]
-
-            -- , viewStartDate model
-            , viewLocationInput
-            , viewDescriptionInput
-            , viewHowInput
-            , span [ A.css [ displayFlex, M.onMobile [ flexDirection column ] ] ]
-                [ viewStartDate model
-                , viewEndDate model
-                ]
-
-            -- , viewProgressBar
-            ]
-        , cardFooter [ A.css [ padding (px 10), important displayFlex, important <| justifyContent flexEnd ] ] [ C.lightButton [ A.css [ marginRight (px 10) ] ] [ text "cancel" ], C.saveButton [ onClick Save ] [ text "save" ] ]
-        ]
 
 
 viewProgressBar : Html msg

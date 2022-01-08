@@ -3,8 +3,8 @@ module Assemblers.InjuryDecoder exposing (decode)
 import Assemblers.IdDecoder exposing (idDecoder)
 import Date exposing (..)
 import Domain.Injury exposing (..)
-import Json.Decode as D
 import Domain.Regions exposing (BodyRegion, Region(..), Side(..))
+import Json.Decode as D
 
 
 decode : D.Decoder Injury
@@ -42,7 +42,7 @@ injuryTypeDecoder =
                         D.succeed Strains
 
                     "Other" ->
-                        D.succeed Other
+                        D.succeed OtherInjuryType
 
                     _ ->
                         D.fail "unknow injury type "
@@ -76,6 +76,9 @@ regionDecoder =
 
                     "Feet" ->
                         D.succeed Feet
+
+                    "Other" ->
+                        D.succeed Other
 
                     _ ->
                         D.fail "Unknown region: "

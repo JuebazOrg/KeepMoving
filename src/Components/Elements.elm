@@ -3,19 +3,41 @@ module Components.Elements exposing (..)
 import Bulma.Styled.Elements as BE
 import Bulma.Styled.Modifiers as BM
 import Components.BulmaElements exposing (..)
-import Css exposing (borderRadius, height, px, width)
+import Css exposing (Style, batch, borderRadius, height, important, pct, px, width)
 import Html.Styled as S
 import Html.Styled.Attributes as A
 import Theme.Icons as I
 
 
-roundButton : Float -> List (S.Html msg) -> S.Html msg
-roundButton size messages =
+round : Style
+round =
+    batch
+        [ important <| borderRadius (pct 50)
+        ]
+
+
+roundButton : Float -> List (S.Attribute msg) -> List (S.Html msg) -> S.Html msg
+roundButton size attributes messages =
     let
         buttonP =
-            { defaultButtonProps | rounded = True, color = BM.primary }
+            { defaultButtonProps | color = BM.primary }
     in
-    button buttonP [ A.css [ width (px size), height (px size), borderRadius (px size) ] ] messages
+    button buttonP (List.append attributes [ A.css [ round ] ]) messages
+
+
+backButton : List (S.Attribute msg) -> List (S.Html msg) -> S.Html msg
+backButton attributes messages =
+    let
+        myIcon =
+            Just ( BM.standard, [], icon [] [ S.i [ A.class I.back ] [] ] )
+
+        buttonProps =
+            { defaultButtonProps | color = BM.primary, iconLeft = myIcon }
+
+        styled =
+            List.append attributes [ A.css [ round ] ]
+    in
+    Components.BulmaElements.button buttonProps styled messages
 
 
 addButton : List (S.Attribute msg) -> List (S.Html msg) -> S.Html msg
@@ -80,6 +102,15 @@ primaryTag messages =
     let
         tagModifs =
             { defaultTagProps | color = BM.primary }
+    in
+    Components.BulmaElements.tag tagModifs messages
+
+
+bigPrimaryTag : List (S.Html msg) -> S.Html msg
+bigPrimaryTag messages =
+    let
+        tagModifs =
+            { defaultTagProps | color = BM.primary, size = BM.large }
     in
     Components.BulmaElements.tag tagModifs messages
 

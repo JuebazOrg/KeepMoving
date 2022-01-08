@@ -66,7 +66,7 @@ initCurrentPage ( model, existingCmds ) =
                 Route.Injury id ->
                     let
                         ( pageModel, pageCmds ) =
-                            InjuryDetail.init id
+                            InjuryDetail.init model.navKey id
                     in
                     ( InjuryPage pageModel, Cmd.map InjuryDetailMsg pageCmds )
 
