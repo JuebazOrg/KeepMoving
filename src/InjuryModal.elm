@@ -13,6 +13,7 @@ import Html.Styled exposing (Html, a, div, li, map, span, text, ul)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick, onInput)
 import Http
+import Id exposing (noId)
 import Injury exposing (..)
 import Regions exposing (..)
 import RemoteData exposing (WebData, fromResult)
@@ -54,7 +55,7 @@ createNewInjuryFromForm model =
     , endDate = date
     , how = ""
     , injuryType = Sprains
-    , id = 3 -- todo pas le meme model en creation
+    , id = Id.noId -- todo pas le meme model en creation
     }
 
 

@@ -1,5 +1,6 @@
 module Assemblers.InjuryDecoder exposing (decode)
 
+import Assemblers.IdDecoder exposing (idDecoder)
 import Date exposing (..)
 import Injury exposing (..)
 import Json.Decode as D
@@ -9,7 +10,7 @@ import Regions exposing (BodyRegion, Region(..), Side(..))
 decode : D.Decoder Injury
 decode =
     D.map8 Injury
-        (D.field "id" D.int)
+        (D.field "id" idDecoder)
         (D.field "description" D.string)
         (D.field "bodyRegion" bodyRegionDecoder)
         (D.field "location" D.string)
@@ -115,3 +116,13 @@ dateDecoder =
                     Ok date ->
                         D.succeed date
             )
+
+
+
+-- postDecoder : Decoder Post
+-- postDecoder =
+--     Decode.succeed Post
+--         |> required "id" int
+--         |> required "title" string
+--         |> required "authorName" string
+--         |> required "authorUrl" string

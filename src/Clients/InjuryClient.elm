@@ -4,6 +4,7 @@ import Assemblers.InjuryDecoder as InjuryDecoder
 import Assemblers.InjuryEncoder as InjuryEncoder
 import Clients.Client exposing (Client, baseRoute, buildErrorMessage)
 import Http
+import Id as Id exposing (Id)
 import Injury exposing (Injury)
 import Json.Decode as Decode
 
@@ -11,9 +12,14 @@ import Json.Decode as Decode
 client : Client
 client =
     { baseRoute = baseRoute
-    , route = "injuries"
+    , route = "injuries/"
     , defaultErrorMessage = buildErrorMessage
     }
+
+
+injuryPath : Id -> String
+injuryPath id =
+    client.route ++ Id.toString id
 
 
 getInjuries : (Result Http.Error (List Injury) -> msg) -> Cmd msg
@@ -29,7 +35,7 @@ getInjuries onResult =
 getInjury : Int -> (Result Http.Error Injury -> msg) -> Cmd msg
 getInjury id onResult =
     Http.get
-        { url = client.baseRoute ++ client.route ++ "/" ++ String.fromInt id
+        { url = client.baseRoute ++ client.route ++ String.fromInt id
         , expect =
             InjuryDecoder.decode
                 |> Http.expectJson onResult

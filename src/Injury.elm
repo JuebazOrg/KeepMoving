@@ -1,6 +1,7 @@
 module Injury exposing (..)
 
 import Date exposing (Date)
+import Id exposing (Id)
 import Regions exposing (BodyRegion, Region(..))
 import Time exposing (Month(..))
 
@@ -15,7 +16,7 @@ type InjuryType
 
 
 type alias Injury =
-    { id : Int
+    { id : Id
     , description : String
     , bodyRegion : BodyRegion
     , location : String
@@ -46,16 +47,3 @@ injuryTypeToString injuryType =
 
         Other ->
             "Other"
-
-
-empty : Injury
-empty =
-    { id = 0
-    , description = ""
-    , bodyRegion = { region = Head, side = Nothing }
-    , location = ""
-    , startDate = Date.fromCalendarDate 2020 Jan 20
-    , endDate = Date.fromCalendarDate 2020 Jan 20
-    , how = ""
-    , injuryType = Other
-    }

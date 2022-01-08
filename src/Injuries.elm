@@ -156,10 +156,6 @@ filterInjuries filters injuries =
 
 viewInjury : Injury -> Html Msg
 viewInjury injury =
-    let
-        injuryPath =
-            "/injuries/" ++ String.fromInt injury.id
-    in
     card
         [ A.css [ borderRadius (px 5), marginTop (px 10), important (maxWidth (px 500)) ] ]
         [ cardHeader []
@@ -180,7 +176,7 @@ viewInjury injury =
                 ]
             ]
         , cardContent [] [ text injury.description ]
-        , a [ A.href injuryPath ] [ text "details" ]
+        , a [ A.href <| Client.injuryPath injury.id ] [ text "details" ]
         ]
 
 
