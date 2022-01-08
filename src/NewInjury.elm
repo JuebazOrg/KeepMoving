@@ -26,6 +26,7 @@ import Time exposing (Month(..))
 type alias Model =
     { regionDropdown : DD.Model Region
     , sideDropDown : DD.Model Side
+    , injuryTypeDropDown : DD.Model InjuryType
     , startDate : DP.Model
     , description : String
     , location : String
@@ -41,7 +42,7 @@ createNewInjuryFromForm : Model -> NewInjury
 createNewInjuryFromForm model =
     let
         date =
-            Maybe.withDefault (Date.fromCalendarDate 2018 Sep 26) model.startDate
+            Maybe.withDefault (Date.fromCalendarDate 2018 Sep 26) model.startDate.date
     in
     { bodyRegion =
         { region = Maybe.withDefault Head (DD.getSelectedValue model.regionDropdown)
@@ -60,6 +61,7 @@ init : Nav.Key -> Model
 init navKey =
     { regionDropdown = DD.init regionDropdownOptions "Region"
     , sideDropDown = DD.init sideDropDownOptions "Side"
+    , injuryTypeDropDown = DD.init injuryTypeDropDownOptions "Injury type"
     , startDate = DP.init
     , description = ""
     , location = ""
@@ -76,6 +78,7 @@ type Msg
     | InjuryCreated (Result Http.Error ())
     | UpdateDescription String
     | UpdateLocation String
+    | InjuryTypeDropDownMsg (DD.Msg InjuryType)
 
 
 update : Model -> Msg -> ( Model, Cmd Msg )
@@ -86,6 +89,9 @@ update model msg =
 
         SideDropDownMsg subMsg ->
             ( { model | sideDropDown = DD.update model.sideDropDown subMsg }, Cmd.none )
+
+        InjuryTypeDropDownMsg subMsg ->
+            ( { model | injuryTypeDropDown = DD.update model.injuryTypeDropDown subMsg }, Cmd.none )
 
         CalendarMsg subMsg ->
             ( { model | startDate = DP.update subMsg model.startDate }, Cmd.none )
@@ -118,8 +124,12 @@ createNewInjury newInjury =
 
 viewStartDate : Model -> Html Msg
 viewStartDate model =
-    -- field [] [ controlLabel [] [ text "start date" ], input [ A.type_ "date" ] [] ]
-    DP.datePicker [] [ ]
+    field [] [ controlLabel [] [ text "Start date" ], map CalendarMsg (DP.view model.startDate) ]
+
+
+viewEndDate : Model -> Html Msg
+viewEndDate model =
+    field [ A.css [ marginLeft (px 10) ] ] [ controlLabel [] [ text "End date" ], map CalendarMsg (DP.view model.startDate) ]
 
 
 viewDescriptionInput : Html Msg
@@ -167,17 +177,22 @@ view model =
         , cardContent [ A.css [ flex (int 1) ] ]
             [ div [ A.css [ displayFlex, alignItems center ] ]
                 [ span [ A.css [ marginRight (px 10) ] ] [ map DropDownMsg (DD.viewDropDown model.regionDropdown) ]
-                , map SideDropDownMsg (DD.viewDropDown model.sideDropDown)
+                , span [ A.css [ marginRight (px 10) ] ] [ map SideDropDownMsg (DD.viewDropDown model.sideDropDown) ]
+                , map InjuryTypeDropDownMsg (DD.viewDropDown model.injuryTypeDropDown)
                 ]
 
             -- , viewStartDate model
             , viewLocationInput
             , viewDescriptionInput
             , viewHowInput
-            , viewStartDate model
-            , viewProgressBar
+            , span [ A.css [ displayFlex, M.onMobile [ flexDirection column ] ] ]
+                [ viewStartDate model
+                , viewEndDate model
+                ]
+
+            -- , viewProgressBar
             ]
-        , cardFooter [ A.css [ important displayFlex, important <| justifyContent flexEnd ] ] [ C.lightButton [] [ text "cancel" ], C.saveButton [ onClick Save ] [ text "save" ] ]
+        , cardFooter [ A.css [ padding (px 10), important displayFlex, important <| justifyContent flexEnd ] ] [ C.lightButton [ A.css [ marginRight (px 10) ] ] [ text "cancel" ], C.saveButton [ onClick Save ] [ text "save" ] ]
         ]
 
 
@@ -200,3 +215,8 @@ regionDropdownOptions =
 sideDropDownOptions : List (DD.Option Side)
 sideDropDownOptions =
     sides |> List.map (\side -> { label = fromSide side, value = side })
+
+
+injuryTypeDropDownOptions : List (DD.Option InjuryType)
+injuryTypeDropDownOptions =
+    injuryTypes |> List.map (\injuryType -> { label = injuryTypeToString injuryType, value = injuryType })

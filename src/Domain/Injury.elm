@@ -58,3 +58,14 @@ injuryTypeToString injuryType =
 
         Other ->
             "Other"
+
+
+injuryTypes : List InjuryType
+injuryTypes =
+    [ Bruises
+    , Dislocation
+    , Fracture
+    , Sprains
+    , Strains
+    , Other
+    ]

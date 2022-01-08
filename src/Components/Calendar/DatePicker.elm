@@ -1,51 +1,45 @@
 module Components.Calendar.DatePicker exposing (..)
 
-import Date as Date
+import Date as Date exposing (Date)
+import DatePicker
+import Html.Attributes exposing (type_)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
-import Html.Styled.Events exposing (on, targetValue)
+import Html.Styled.Events exposing (on, onInput)
 import Json.Decode as Decode
 
 
 type alias Model =
-    Maybe Date.Date
-
-
-type Msg
-    = DateChange String
+    { date : Maybe Date }
 
 
 init : Model
 init =
-    Nothing
+    { date = Nothing }
+
+
+type Msg
+    = DatePicked String
 
 
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        DateChange newDate ->
+        DatePicked dateString ->
             let
                 date =
-                    Date.fromIsoString newDate
+                    case Date.fromIsoString dateString of
+                        Ok date_ ->
+                            Just date_
+
+                        Err _ ->
+                            Nothing
             in
-            case date of
-                Ok value ->
-                    Just value
-
-                Err _ ->
-                    model
-
-
-datePicker : List (Attribute a) -> List (Html a) -> Html a
-datePicker =
-    node "duet-date-picker"
-
-
-onDatePickerChange : (String -> msg) -> Attribute msg
-onDatePickerChange dateString =
-    on "select" (Decode.map dateString targetValue)
+            { model | date = date }
 
 
 view : Model -> Html Msg
 view model =
-    input [ A.type_ "date", A.attribute "id" "date-picker", onDatePickerChange DateChange ] []
+    div []
+        [ input [ A.class "input", A.type_ "date", onInput DatePicked ] []
+        ]
