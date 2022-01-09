@@ -4,6 +4,7 @@ import Browser.Navigation as Nav
 import Clients.InjuryClient as Client
 import Components.Card exposing (cardHeader)
 import Components.Elements as C
+import Components.Modal as CM
 import Css exposing (..)
 import Date
 import Domain.CheckPoint exposing (CheckPoint)
@@ -21,12 +22,12 @@ import Theme.Spacing as SP
 
 
 type alias Model =
-    { injury : WebData Injury, navKey : Nav.Key, checkPointModal : CheckPointModal.Model }
+    { injury : WebData Injury, navKey : Nav.Key, checkPointModal : CheckPointModal.Model, isModalOpen : Bool }
 
 
 init : Nav.Key -> Id -> ( Model, Cmd Msg )
 init navKey id =
-    ( { injury = RemoteData.Loading, navKey = navKey, checkPointModal = CheckPointModal.init }, getInjury id )
+    ( { injury = RemoteData.Loading, navKey = navKey, checkPointModal = CheckPointModal.init, isModalOpen = False }, getInjury id )
 
 
 type Msg
@@ -34,6 +35,9 @@ type Msg
     | GoBack
     | OpenAddCheckPoint
     | CheckPointModalMsg CheckPointModal.Msg
+    | OpenModal
+    | CloseModal
+    | Save
 
 
 getInjury : Id -> Cmd Msg
@@ -56,6 +60,15 @@ update msg model =
         CheckPointModalMsg subMsg ->
             ( { model | checkPointModal = CheckPointModal.update subMsg model.checkPointModal }, Cmd.none )
 
+        OpenModal ->
+            ( { model | isModalOpen = True }, Cmd.none )
+
+        CloseModal ->
+            ( { model | isModalOpen = False }, Cmd.none )
+
+        Save ->
+            ( model, Cmd.none )
+
 
 view : Model -> Html Msg
 view model =
@@ -71,19 +84,19 @@ viewHeader injury =
         ]
 
 
-viewContent : Injury -> CheckPointModal.Model -> Html Msg
-viewContent injury checkPointModal =
+viewContent : Injury -> CheckPointModal.Model -> Bool -> Html Msg
+viewContent injury checkPointModal isModalOpen =
     div []
         [ viewHeader injury
         , viewInfo injury
-        , map CheckPointModalMsg <| CheckPointModal.view True checkPointModal
+        , viewCheckPointModal isModalOpen checkPointModal
         ]
 
 
 viewCheckPoints : Injury -> Html Msg
 viewCheckPoints injury =
     article [ A.class "tile is-child notification is-primar" ]
-        [ p [ A.class "title" ] [ text "Checkpoints", C.addButton [ onClick OpenAddCheckPoint, A.css [ marginLeft SP.small ] ] [] ]
+        [ p [ A.class "title" ] [ text "Checkpoints", C.addButton [ onClick OpenModal, A.css [ marginLeft SP.small ] ] [] ]
         , div [ A.class "content", A.css [ displayFlex, flexDirection column ] ]
             [ CheckPoints.view injury.checkPoints
             ]
@@ -188,7 +201,19 @@ viewInjuryOrError model =
             h3 [] [ text "Loading..." ]
 
         RemoteData.Success injury ->
-            viewContent injury model.checkPointModal
+            viewContent injury model.checkPointModal model.isModalOpen
 
         RemoteData.Failure httpError ->
             div [] [ text <| Client.client.defaultErrorMessage httpError ]
+
+
+viewCheckPointModal : Bool -> CheckPointModal.Model -> Html Msg
+viewCheckPointModal isOpen model =
+    let
+        header =
+            CM.modalCardHead [] [ CM.modalCardTitle [] [ text "checkpoint" ], C.closeButton [ onClick CloseModal ] [] ]
+
+        footer =
+            CM.modalCardFoot [A.css [flexDirection rowReverse]] [ C.saveButton [ onClick Save ] [] ]
+    in
+    CM.simpleModal isOpen header [ map CheckPointModalMsg <| CheckPointModal.view model ] footer

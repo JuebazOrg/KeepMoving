@@ -28,4 +28,4 @@ trendToString trend =
             "Worst"
 
         Stable ->
-            "stable"
+            "Stable"

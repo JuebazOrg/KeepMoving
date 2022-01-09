@@ -41,28 +41,12 @@ update msg model =
             { model | date = DP.update sub model.date }
 
 
-view : Bool -> Model -> Html Msg
-view bool model =
-    CM.modal bool
-        []
-        [ CM.modalBackground [] []
-        , CM.modalContent [ A.css [ displayFlex, important <| overflow visible ] ]
-            [ CM.modalCard [ A.css [ important <| overflow visible ] ]
-                [ CM.modalCardHead [] [ C.h4Title [] [ text "checkpoint" ] ]
-                , CM.modalCardBody [ A.css [ important <| overflow visible ] ]
-                    [ viewContent model
-                    ]
-                ]
-            ]
-        ]
-
-
-viewContent : Model -> Html Msg
-viewContent model =
-    div [ A.css [ displayFlex, flexWrap wrap ] ]
-        [ span [ A.css [ margin SP.small ] ] [ map TrendDropDownMsg <| DD.viewDropDown model.trend ]
-        , span [ A.css [ margin SP.small ] ] [ map LevelDropDownMsg <| DD.viewDropDown model.level ]
-        , span [ A.css [ margin SP.small ] ] [ map DateChange <| DP.view model.date ]
+view : Model -> Html Msg
+view model =
+    div [ A.css [ displayFlex, flexDirection column ] ]
+        [ CF.field [ A.css [ margin SP.small, displayFlex, justifyContent spaceBetween ] ] [ CF.controlLabel [] [ text "Trend" ], map TrendDropDownMsg <| DD.viewDropDown model.trend ]
+        , CF.field [ A.css [ margin SP.small, displayFlex, justifyContent spaceBetween ] ] [ CF.controlLabel [] [ text "Pain Level" ], map LevelDropDownMsg <| DD.viewDropDown model.level ]
+        , CF.field [ A.css [ margin SP.small, displayFlex, justifyContent spaceBetween ] ] [ CF.controlLabel [] [ text "Date" ], map DateChange <| DP.view model.date ]
         ]
 
 

@@ -229,7 +229,7 @@ viewFilters model =
         [ span [ A.css [ marginRight SP.medium ] ] [ regionFilter model.filters ]
         , span [ A.css [ marginRight SP.medium ] ] [ sideFilter model.filters ]
         , span [ A.css [ marginRight SP.medium ] ] [ viewOrderDropDown model ]
-        , span [] [ controlCheckBox False [] [] [ onCheck ActiveFilterChecked ] [ text "active injuries" ] ]
+        , span [] [ controlCheckBox False [] [] [ onCheck ActiveFilterChecked ] [ text "actif injuries" ] ]
         ]
 
 
