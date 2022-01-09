@@ -16,3 +16,16 @@ type Trend
     = Better
     | Worst
     | Stable
+
+
+trendToString : Trend -> String
+trendToString trend =
+    case trend of
+        Better ->
+            "Better"
+
+        Worst ->
+            "Worst"
+
+        Stable ->
+            "stable"

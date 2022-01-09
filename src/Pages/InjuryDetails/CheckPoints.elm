@@ -2,9 +2,10 @@ module Pages.InjuryDetails.CheckPoints exposing (..)
 
 import Bulma.Styled.Elements exposing (..)
 import Components.Elements as C
+import Css exposing (displayFlex, maxWidth)
 import Date
 import Domain.CheckPoint exposing (CheckPoint, Trend(..))
-import Html.Styled exposing (Html, div, text)
+import Html.Styled exposing (Html, div, input, text)
 import Html.Styled.Attributes as A
 import List.FlatMap exposing (flatMap)
 
@@ -27,7 +28,6 @@ myTableBody checkPoints =
                 []
                 [ tableCell [] [ text "date" ]
                 , tableCell [] [ text "painLevel" ]
-                , tableCell [] [ text "resume" ]
                 , tableCell [] [ text "trend" ]
                 ]
     in
@@ -46,7 +46,6 @@ viewTableRow cp =
         []
         [ tableCell [] [ text <| Date.toIsoString cp.date ]
         , tableCell [] [ text <| String.fromInt cp.painLevel ]
-        , tableCell [] [ text cp.comment ]
         , tableCell [] [ viewTrend cp.trend ]
         ]
 
@@ -62,3 +61,5 @@ viewTrend trend =
 
         Stable ->
             C.warningTag [] [ text "Stable" ]
+
+

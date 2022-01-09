@@ -14,23 +14,26 @@ import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (..)
 import Id exposing (Id)
 import Navigation.Route as Route
+import Pages.InjuryDetails.AddCheckPoint as CheckPointModal
 import Pages.InjuryDetails.CheckPoints as CheckPoints
 import RemoteData exposing (RemoteData(..), WebData)
 import Theme.Spacing as SP
 
 
 type alias Model =
-    { injury : WebData Injury, navKey : Nav.Key }
+    { injury : WebData Injury, navKey : Nav.Key, checkPointModal : CheckPointModal.Model }
 
 
 init : Nav.Key -> Id -> ( Model, Cmd Msg )
 init navKey id =
-    ( { injury = RemoteData.Loading, navKey = navKey }, getInjury id )
+    ( { injury = RemoteData.Loading, navKey = navKey, checkPointModal = CheckPointModal.init }, getInjury id )
 
 
 type Msg
     = InjuryReceived (WebData Injury)
     | GoBack
+    | OpenAddCheckPoint
+    | CheckPointModalMsg CheckPointModal.Msg
 
 
 getInjury : Id -> Cmd Msg
@@ -47,6 +50,12 @@ update msg model =
         GoBack ->
             ( model, Route.pushUrl Route.Injuries model.navKey )
 
+        OpenAddCheckPoint ->
+            ( model, Cmd.none )
+
+        CheckPointModalMsg subMsg ->
+            ( { model | checkPointModal = CheckPointModal.update subMsg model.checkPointModal }, Cmd.none )
+
 
 view : Model -> Html Msg
 view model =
@@ -62,25 +71,26 @@ viewHeader injury =
         ]
 
 
-viewContent : Injury -> Html Msg
-viewContent injury =
+viewContent : Injury -> CheckPointModal.Model -> Html Msg
+viewContent injury checkPointModal =
     div []
         [ viewHeader injury
         , viewInfo injury
+        , map CheckPointModalMsg <| CheckPointModal.view True checkPointModal
         ]
 
 
-viewCheckPoints : Injury -> Html msg
+viewCheckPoints : Injury -> Html Msg
 viewCheckPoints injury =
     article [ A.class "tile is-child notification is-primar" ]
-        [ p [ A.class "title" ] [ text "Checkpoints" ]
+        [ p [ A.class "title" ] [ text "Checkpoints", C.addButton [ onClick OpenAddCheckPoint, A.css [ marginLeft SP.small ] ] [] ]
         , div [ A.class "content", A.css [ displayFlex, flexDirection column ] ]
             [ CheckPoints.view injury.checkPoints
             ]
         ]
 
 
-viewInfo : Injury -> Html msg
+viewInfo : Injury -> Html Msg
 viewInfo injury =
     div [ A.class "tile is-ancestor is-vertical" ]
         [ div [ A.class "tile" ]
@@ -101,7 +111,7 @@ viewInfo injury =
         ]
 
 
-viewTagInfo : Injury -> Html msg
+viewTagInfo : Injury -> Html Msg
 viewTagInfo injury =
     article [ A.class "tile is-child notification" ]
         [ div [ A.class "content", A.css [ displayFlex, flexDirection column ] ]
@@ -123,7 +133,7 @@ viewTagInfo injury =
         ]
 
 
-viewDescription : Injury -> Html msg
+viewDescription : Injury -> Html Msg
 viewDescription injury =
     article [ A.class "tile is-child notification is-primary" ]
         [ div [ A.class "content", A.css [ displayFlex, flexDirection column ] ]
@@ -133,7 +143,7 @@ viewDescription injury =
         ]
 
 
-viewHow : Injury -> Html msg
+viewHow : Injury -> Html Msg
 viewHow injury =
     article [ A.class "tile is-child notification is-primary is-light" ]
         [ div [ A.class "content", A.css [ displayFlex, flexDirection column ] ]
@@ -143,7 +153,7 @@ viewHow injury =
         ]
 
 
-viewDates : Injury -> Html msg
+viewDates : Injury -> Html Msg
 viewDates injury =
     let
         endDateToString =
@@ -160,7 +170,7 @@ viewDates injury =
         ]
 
 
-viewDateField : String -> String -> Html msg
+viewDateField : String -> String -> Html Msg
 viewDateField date label =
     div [ A.css [ displayFlex, width (pct 100), justifyContent spaceBetween ] ]
         [ C.h4Title [] [ text label ]
@@ -178,7 +188,7 @@ viewInjuryOrError model =
             h3 [] [ text "Loading..." ]
 
         RemoteData.Success injury ->
-            viewContent injury
+            viewContent injury model.checkPointModal
 
         RemoteData.Failure httpError ->
             div [] [ text <| Client.client.defaultErrorMessage httpError ]
