@@ -6,11 +6,11 @@ import Bulma.Styled.CDN exposing (..)
 import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
-import Injuries as Injuries exposing (Msg, view)
-import InjuryDetail as InjuryDetail
 import Navigation.NavBar exposing (myNavbarBurger, viewNavBar)
 import Navigation.Route as Route exposing (Route(..))
-import NewInjury
+import Pages.Injuries as Injuries exposing (Msg, view)
+import Pages.InjuryDetail as InjuryDetail
+import Pages.NewInjury as NewInjury
 import Url exposing (Url)
 
 
@@ -164,7 +164,7 @@ currentView model =
         [ stylesheet
         , fontAwesomeCDN
         , viewNavBar True
-        , div [ A.css [ padding (px 20), height (pct 100) ] ] [ content ]
+        , div [ A.css [ padding (px 20) ] ] [ content ]
         ]
 
 

@@ -1,4 +1,4 @@
-module InjuryDetail exposing (..)
+module Pages.InjuryDetail exposing (..)
 
 import Browser.Navigation as Nav
 import Clients.InjuryClient as Client
@@ -14,7 +14,7 @@ import Html.Styled.Events exposing (..)
 import Id exposing (Id)
 import Navigation.Route as Route
 import RemoteData exposing (RemoteData(..), WebData)
-
+import Theme.Spacing as SP
 
 type alias Model =
     { injury : WebData Injury, navKey : Nav.Key }
@@ -87,9 +87,20 @@ viewTagInfo : Injury -> Html msg
 viewTagInfo injury =
     article [ A.class "tile is-child notification" ]
         [ div [ A.class "content", A.css [ displayFlex, flexDirection column ] ]
-            [ div [ A.css [ displayFlex, marginBottom (px 10) ] ] [ div [] [ C.h4Title [ A.css [ marginRight (px 5) ] ] [ text "Region" ] ], C.bigPrimaryTag [ text <| bodyRegionToString injury.bodyRegion ] ]
-            , div [ A.css [ displayFlex, marginBottom (px 10) ] ] [ div [] [ C.h4Title [ A.css [ marginRight (px 5) ] ] [ text "Location" ] ], C.bigPrimaryTag [ text injury.location ] ]
-            , div [ A.css [ displayFlex, marginBottom (px 10) ] ] [ div [] [ C.h4Title [ A.css [ marginRight (px 5) ] ] [ text "Injury type" ] ], C.bigPrimaryTag [ text <| injuryTypeToString injury.injuryType ] ]
+            [ div [ A.css [ displayFlex, marginBottom SP.medium ] ] [ div [] [ C.h4Title [ A.css [ marginRight SP.small ] ] [ text "Region" ] ], C.bigPrimaryTag [ text <| bodyRegionToString injury.bodyRegion ] ]
+            , div [ A.css [ displayFlex, marginBottom SP.medium ] ] [ div [] [ C.h4Title [ A.css [ marginRight SP.small ] ] [ text "Location" ] ], C.bigPrimaryTag [ text injury.location ] ]
+            , div [ A.css [ displayFlex, marginBottom SP.medium ] ] [ div [] [ C.h4Title [ A.css [ marginRight SP.small ] ] [ text "Injury type" ] ], C.bigPrimaryTag [ text <| injuryTypeToString injury.injuryType ] ]
+            , div [ A.css [ displayFlex, marginBottom SP.medium ] ]
+                [ div [] [ C.h4Title [ A.css [ marginRight SP.small ] ] [ text "Status" ] ]
+                , C.bigWarningTag
+                    [ text <|
+                        if Domain.Injury.isActive injury then
+                            "Active"
+
+                        else
+                            "Healed"
+                    ]
+                ]
             ]
         ]
 
@@ -108,7 +119,7 @@ viewHow : Injury -> Html msg
 viewHow injury =
     article [ A.class "tile is-child notification is-primary is-light" ]
         [ div [ A.class "content", A.css [ displayFlex, flexDirection column ] ]
-            [ p [ A.class "title" ] [ text "How it happen" ]
+            [ p [ A.class "title" ] [ text "How it happened" ]
             , p [ A.class "content" ] [ text injury.how ]
             ]
         ]
@@ -116,26 +127,26 @@ viewHow injury =
 
 viewDates : Injury -> Html msg
 viewDates injury =
+    let
+        endDateToString =
+            Maybe.map Date.toIsoString >> Maybe.withDefault "-"
+    in
     article [ A.class "tile is-child notification is-primary is-warning" ]
         [ p [ A.class "title" ] [ text "When" ]
         , div [ A.class "content", A.css [ displayFlex, flexDirection column ] ]
             [ div [ A.css [ displayFlex, flexDirection column, alignItems flexStart ] ]
-                [ viewDateField injury.startDate "Start date"
-                , viewDateField injury.endDate "End date"
+                [ viewDateField (Date.toIsoString injury.startDate) "Start date"
+                , viewDateField (endDateToString injury.endDate) "End date"
                 ]
             ]
         ]
 
 
-viewDateField : Maybe Date.Date -> String -> Html msg
+viewDateField : String -> String -> Html msg
 viewDateField date label =
-    let
-        dateToString =
-            Maybe.map Date.toIsoString >> Maybe.withDefault "-"
-    in
     div [ A.css [ displayFlex, width (pct 100), justifyContent spaceBetween ] ]
         [ C.h4Title [] [ text label ]
-        , C.h4Title [] [ text <| dateToString date ]
+        , C.h4Title [] [ text date ]
         ]
 
 

@@ -15,7 +15,7 @@ decode =
         (D.field "bodyRegion" bodyRegionDecoder)
         (D.field "location" D.string)
         (D.field "startDate" dateDecoder)
-        (D.field "endDate" dateDecoder)
+        (D.field "endDate" <| D.nullable dateDecoder)
         (D.field "how" D.string)
         (D.field "injuryType" injuryTypeDecoder)
 
@@ -80,6 +80,18 @@ regionDecoder =
                     "Hand" ->
                         D.succeed Hand
 
+                    "Neck" ->
+                        D.succeed Neck
+
+                    "MiddleBack" ->
+                        D.succeed MiddleBack
+
+                    "LowerBack" ->
+                        D.succeed LowerBack
+
+                    "UpperBack" ->
+                        D.succeed UpperBack
+
                     "Other" ->
                         D.succeed Other
 
@@ -110,20 +122,18 @@ sideDecoder =
         )
 
 
-dateDecoder : D.Decoder (Maybe Date)
+dateDecoder : D.Decoder Date
 dateDecoder =
-    D.nullable
-        (D.string
-            |> D.andThen
-                (\str ->
-                    case Date.fromIsoString str of
-                        Err err ->
-                            D.fail err
+    D.string
+        |> D.andThen
+            (\str ->
+                case Date.fromIsoString str of
+                    Err err ->
+                        D.fail err
 
-                        Ok date ->
-                            D.succeed date
-                )
-        )
+                    Ok date ->
+                        D.succeed date
+            )
 
 
 

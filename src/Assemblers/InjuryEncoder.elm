@@ -21,7 +21,7 @@ encode injury =
                 ]
           )
         , ( "startDate", encodeDate injury.startDate )
-        , ( "endDate", encodeDate injury.endDate )
+        , ( "endDate", EncodeExtra.maybe encodeDate injury.endDate )
         , ( "how", Encode.string injury.how )
         , ( "injuryType", Encode.string <| injuryTypeToString injury.injuryType )
         ]
@@ -34,20 +34,20 @@ encodeNew injury =
         , ( "location", Encode.string injury.location )
         , ( "bodyRegion"
           , Encode.object
-                [ ( "region", encodeRegion injury.bodyRegion.region) -- todo: fct to encode dans encoder
+                [ ( "region", encodeRegion injury.bodyRegion.region ) -- todo: fct to encode dans encoder
                 , ( "side", EncodeExtra.maybe Encode.string (Maybe.map fromSide injury.bodyRegion.side) ) -- todo fct encode dans encoder
                 ]
           )
         , ( "startDate", encodeDate injury.startDate )
-        , ( "endDate", encodeDate injury.endDate )
+        , ( "endDate", EncodeExtra.maybe encodeDate injury.endDate )
         , ( "how", Encode.string injury.how )
         , ( "injuryType", Encode.string <| injuryTypeToString injury.injuryType )
         ]
 
 
-encodeDate : Maybe Date -> Encode.Value
+encodeDate : Date -> Encode.Value
 encodeDate date =
-    EncodeExtra.maybe Encode.string (Maybe.map Date.toIsoString date)
+    Encode.string (Date.toIsoString date)
 
 
 encodeRegion : Region -> Encode.Value

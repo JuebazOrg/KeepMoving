@@ -106,7 +106,16 @@ primaryTag messages =
         tagModifs =
             { defaultTagProps | color = BM.primary }
     in
-    Components.BulmaElements.tag tagModifs messages
+    Components.BulmaElements.tag tagModifs [] messages
+
+
+warningTag : List (S.Attribute msg) -> List (S.Html msg) -> S.Html msg
+warningTag attributes messages =
+    let
+        tagModifs =
+            { defaultTagProps | color = BM.warning }
+    in
+    Components.BulmaElements.tag tagModifs attributes messages
 
 
 bigPrimaryTag : List (S.Html msg) -> S.Html msg
@@ -115,7 +124,16 @@ bigPrimaryTag messages =
         tagModifs =
             { defaultTagProps | color = BM.primary, size = BM.large }
     in
-    Components.BulmaElements.tag tagModifs messages
+    Components.BulmaElements.tag tagModifs [] messages
+
+
+bigWarningTag : List (S.Html msg) -> S.Html msg
+bigWarningTag messages =
+    let
+        tagModifs =
+            { defaultTagProps | color = BM.warning, size = BM.large }
+    in
+    Components.BulmaElements.tag tagModifs [] messages
 
 
 roundedTag : BE.TagModifiers -> List (S.Attribute msg) -> List (S.Html msg) -> BE.Tag msg

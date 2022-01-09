@@ -1,4 +1,4 @@
-module NewInjury exposing (..)
+module Pages.NewInjury exposing (..)
 
 import Browser.Navigation as Nav
 import Clients.InjuryClient as Client
@@ -15,10 +15,7 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick, onInput)
 import Http
-import Id exposing (noId)
-import Material.Icons exposing (create)
 import Navigation.Route as Route
-import RemoteData exposing (WebData, fromResult)
 import Theme.Mobile as M
 import Time exposing (Month(..))
 
@@ -106,6 +103,10 @@ update model msg =
                     ( model, Cmd.none )
 
 
+
+-- todo : date from today
+
+
 createNewInjury : NewInjury -> Cmd Msg
 createNewInjury newInjury =
     Client.createInjury newInjury InjuryCreated
@@ -119,11 +120,16 @@ createNewInjuryFromForm model =
         }
     , location = model.location
     , description = model.description
-    , startDate = model.startDate.date
+    , startDate = Maybe.withDefault defaultDate model.startDate.date
     , endDate = model.endDate.date
     , how = model.how
     , injuryType = Maybe.withDefault OtherInjuryType (DD.getSelectedValue model.injuryTypeDropDown)
     }
+
+
+defaultDate : Date.Date
+defaultDate =
+    Date.fromCalendarDate 20 Jan 2020
 
 
 view : Model -> Html Msg

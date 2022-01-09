@@ -20,7 +20,7 @@ type alias Injury =
     , description : String
     , bodyRegion : BodyRegion
     , location : String
-    , startDate : Maybe Date
+    , startDate : Date
     , endDate : Maybe Date
     , how : String
     , injuryType : InjuryType
@@ -31,7 +31,7 @@ type alias NewInjury =
     { description : String
     , bodyRegion : BodyRegion
     , location : String
-    , startDate : Maybe Date
+    , startDate : Date
     , endDate : Maybe Date
     , how : String
     , injuryType : InjuryType
@@ -69,3 +69,13 @@ injuryTypes =
     , Strains
     , OtherInjuryType
     ]
+
+
+isActive : Injury -> Bool
+isActive injury =
+    case injury.endDate of
+        Just _ ->
+            False
+
+        Nothing ->
+            True

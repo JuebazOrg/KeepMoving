@@ -133,3 +133,12 @@ dropdownMenu attributes dropdownItems =
     BC.dropdownMenu attributes dropdownItems
 
 
+controlCheckBox :
+    BF.IsDisabled
+    -> List (Attribute msg)
+    -> List (Attribute msg)
+    -> List (Attribute msg)
+    -> List (Html msg)
+    -> BF.Control msg
+controlCheckBox isDisabled controlAttributes labelAttribute checkBoxAttributes =
+    BF.controlCheckBox isDisabled controlAttributes labelAttribute checkBoxAttributes
