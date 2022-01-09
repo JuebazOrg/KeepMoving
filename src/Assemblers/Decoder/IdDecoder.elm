@@ -1,4 +1,4 @@
-module Assemblers.IdDecoder exposing (..)
+module Assemblers.Decoder.IdDecoder exposing (..)
 
 import Id exposing (Id(..))
 import Json.Decode as D exposing (Decoder)

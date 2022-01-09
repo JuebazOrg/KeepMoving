@@ -1,7 +1,7 @@
 module Clients.InjuryClient exposing (..)
 
-import Assemblers.InjuryDecoder as InjuryDecoder
-import Assemblers.InjuryEncoder as InjuryEncoder
+import Assemblers.Decoder.InjuryDecoder as InjuryDecoder
+import Assemblers.Encoder.InjuryEncoder as InjuryEncoder
 import Clients.Client exposing (Client, baseRoute, buildErrorMessage)
 import Domain.Injury exposing (Injury, NewInjury)
 import Http

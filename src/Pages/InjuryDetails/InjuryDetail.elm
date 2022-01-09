@@ -1,4 +1,4 @@
-module Pages.InjuryDetail exposing (..)
+module Pages.InjuryDetails.InjuryDetail exposing (..)
 
 import Browser.Navigation as Nav
 import Clients.InjuryClient as Client
@@ -6,6 +6,7 @@ import Components.Card exposing (cardHeader)
 import Components.Elements as C
 import Css exposing (..)
 import Date
+import Domain.CheckPoint exposing (CheckPoint)
 import Domain.Injury exposing (..)
 import Domain.Regions exposing (..)
 import Html.Styled exposing (..)
@@ -13,8 +14,10 @@ import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (..)
 import Id exposing (Id)
 import Navigation.Route as Route
+import Pages.InjuryDetails.CheckPoints as CheckPoints
 import RemoteData exposing (RemoteData(..), WebData)
 import Theme.Spacing as SP
+
 
 type alias Model =
     { injury : WebData Injury, navKey : Nav.Key }
@@ -67,18 +70,33 @@ viewContent injury =
         ]
 
 
+viewCheckPoints : Injury -> Html msg
+viewCheckPoints injury =
+    article [ A.class "tile is-child notification is-primar" ]
+        [ p [ A.class "title" ] [ text "Checkpoints" ]
+        , div [ A.class "content", A.css [ displayFlex, flexDirection column ] ]
+            [ CheckPoints.view injury.checkPoints
+            ]
+        ]
+
+
 viewInfo : Injury -> Html msg
 viewInfo injury =
-    div [ A.class "tile is-ancestor" ]
-        [ div [ A.class "tile is-vertical is-4" ]
+    div [ A.class "tile is-ancestor is-vertical" ]
+        [ div [ A.class "tile" ]
             [ div [ A.class "tile is-parent is-vertical" ]
                 [ viewTagInfo injury
                 , viewDescription injury
+                ]
+            , div [ A.class "tile is-parent is-vertical" ]
+                [ viewHow injury
                 , viewDates injury
                 ]
             ]
-        , div [ A.class "tile is-parent " ]
-            [ viewHow injury
+        , div [ A.class "tile" ]
+            [ div [ A.class "tile is-parent" ]
+                [ viewCheckPoints injury
+                ]
             ]
         ]
 

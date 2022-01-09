@@ -1,6 +1,6 @@
 module Tests exposing (..)
 
-import Assemblers.InjuryDecoder as InjuryDecoder
+import Assemblers.Decoder.InjuryDecoder as InjuryDecoder
 import Decodes.InjuryEncoder as InjuryEncoder
 import Expect
 import Json.Decode exposing (decodeValue)

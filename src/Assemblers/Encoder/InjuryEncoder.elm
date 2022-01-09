@@ -1,6 +1,7 @@
-module Assemblers.InjuryEncoder exposing (..)
+module Assemblers.Encoder.InjuryEncoder exposing (..)
 
-import Assemblers.IdEncoder exposing (idEncoder)
+import Assemblers.Encoder.CheckPointEncoder as CheckPointEncoder
+import Assemblers.Encoder.IdEncoder exposing (idEncoder)
 import Date exposing (Date)
 import Domain.Injury exposing (Injury, InjuryType(..), NewInjury)
 import Domain.Regions exposing (..)
@@ -24,6 +25,7 @@ encode injury =
         , ( "endDate", EncodeExtra.maybe encodeDate injury.endDate )
         , ( "how", Encode.string injury.how )
         , ( "injuryType", Encode.string <| injuryTypeToString injury.injuryType )
+        , ( "checkPoints", Encode.list CheckPointEncoder.encode injury.checkPoints )
         ]
 
 

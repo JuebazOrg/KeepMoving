@@ -118,6 +118,15 @@ warningTag attributes messages =
     Components.BulmaElements.tag tagModifs attributes messages
 
 
+dangerTag : List (S.Attribute msg) -> List (S.Html msg) -> S.Html msg
+dangerTag attributes messages =
+    let
+        tagModifs =
+            { defaultTagProps | color = BM.danger }
+    in
+    Components.BulmaElements.tag tagModifs attributes messages
+
+
 bigPrimaryTag : List (S.Html msg) -> S.Html msg
 bigPrimaryTag messages =
     let

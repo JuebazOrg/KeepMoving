@@ -1,4 +1,4 @@
-module Assemblers.IdEncoder exposing (..)
+module Assemblers.Encoder.IdEncoder exposing (..)
 
 import Id exposing (Id(..), toInt)
 

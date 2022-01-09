@@ -1,6 +1,7 @@
 module Domain.Injury exposing (..)
 
 import Date exposing (Date)
+import Domain.CheckPoint exposing (CheckPoint)
 import Domain.Regions exposing (BodyRegion, Region(..))
 import Id exposing (Id)
 import Time exposing (Month(..))
@@ -24,6 +25,7 @@ type alias Injury =
     , endDate : Maybe Date
     , how : String
     , injuryType : InjuryType
+    , checkPoints : List CheckPoint
     }
 
 
@@ -35,6 +37,7 @@ type alias NewInjury =
     , endDate : Maybe Date
     , how : String
     , injuryType : InjuryType
+    , checkPoints : List CheckPoint -- to be initialise by backend ? 
     }
 
 

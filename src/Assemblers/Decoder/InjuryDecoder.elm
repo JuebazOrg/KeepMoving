@@ -1,23 +1,27 @@
-module Assemblers.InjuryDecoder exposing (decode)
+module Assemblers.Decoder.InjuryDecoder exposing (decode)
 
-import Assemblers.IdDecoder exposing (idDecoder)
+import Assemblers.Decoder.CheckPointDecoder as CheckPointDecoder
+import Assemblers.Decoder.DateDecoder exposing (dateDecoder)
+import Assemblers.Decoder.IdDecoder exposing (idDecoder)
 import Date exposing (..)
 import Domain.Injury exposing (..)
 import Domain.Regions exposing (BodyRegion, Region(..), Side(..))
 import Json.Decode as D
+import Json.Decode.Pipeline exposing (required)
 
 
 decode : D.Decoder Injury
 decode =
-    D.map8 Injury
-        (D.field "id" idDecoder)
-        (D.field "description" D.string)
-        (D.field "bodyRegion" bodyRegionDecoder)
-        (D.field "location" D.string)
-        (D.field "startDate" dateDecoder)
-        (D.field "endDate" <| D.nullable dateDecoder)
-        (D.field "how" D.string)
-        (D.field "injuryType" injuryTypeDecoder)
+    D.succeed Injury
+        |> required "id" idDecoder
+        |> required "description" D.string
+        |> required "bodyRegion" bodyRegionDecoder
+        |> required "location" D.string
+        |> required "startDate" dateDecoder
+        |> required "endDate" (D.nullable dateDecoder)
+        |> required "how" D.string
+        |> required "injuryType" injuryTypeDecoder
+        |> required "checkPoints" (D.list CheckPointDecoder.decode)
 
 
 injuryTypeDecoder : D.Decoder InjuryType
@@ -120,27 +124,3 @@ sideDecoder =
                             D.fail "unknow side"
                 )
         )
-
-
-dateDecoder : D.Decoder Date
-dateDecoder =
-    D.string
-        |> D.andThen
-            (\str ->
-                case Date.fromIsoString str of
-                    Err err ->
-                        D.fail err
-
-                    Ok date ->
-                        D.succeed date
-            )
-
-
-
--- postDecoder : Decoder Post
--- postDecoder =
---     Decode.succeed Post
---         |> required "id" int
---         |> required "title" string
---         |> required "authorName" string
---         |> required "authorUrl" string
