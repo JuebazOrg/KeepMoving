@@ -19,7 +19,10 @@ type alias Model =
 
 init : Model
 init =
-    { trend = DD.init trendOptions "Trend", level = DD.init levelOptions "Pain level", date = DP.init }
+    { trend = DD.init trendOptions "Trend" { hasDefaulTitleOption = False }
+    , level = DD.init levelOptions "Pain level" { hasDefaulTitleOption = False }
+    , date = DP.init
+    }
 
 
 type Msg

@@ -46,12 +46,12 @@ init : Nav.Key -> ( Model, Cmd Msg )
 init navKey =
     ( { injuries = RemoteData.NotAsked
       , filters =
-            { region = DD.init regionDropdownOptions "Regions"
-            , side = DD.init sideDropdownOptions "Side"
+            { region = DD.init regionDropdownOptions "Regions" DD.defaultProps
+            , side = DD.init sideDropdownOptions "Side" DD.defaultProps
             , active = False
             }
       , navKey = navKey
-      , orders = DD.init ordersDropdownOptions "Order by"
+      , orders = DD.init ordersDropdownOptions "Order by" DD.defaultProps
       }
     , getInjuries
     )

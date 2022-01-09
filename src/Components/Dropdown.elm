@@ -2,9 +2,9 @@ module Components.Dropdown exposing (..)
 
 import Components.BulmaElements exposing (..)
 import Components.Elements as C
+import Domain.Regions exposing (Side(..))
 import Html.Styled exposing (Html, a, option, text)
 import Html.Styled.Events exposing (onClick)
-import Domain.Regions exposing (Side(..))
 
 
 type alias Option a =
@@ -16,6 +16,7 @@ type alias Model a =
     , selectedOption : Maybe (Option a)
     , options : List (Option a)
     , defaultTitle : String
+    , props : Props
     }
 
 
@@ -25,6 +26,15 @@ type Msg a
     | Reset
 
 
+type alias Props =
+    { hasDefaulTitleOption : Bool }
+
+
+defaultProps : Props
+defaultProps =
+    { hasDefaulTitleOption = True }
+
+
 getSelectedValue : Model a -> Maybe a
 getSelectedValue model =
     model.selectedOption
@@ -32,9 +42,9 @@ getSelectedValue model =
             (\option -> option.value)
 
 
-init : List (Option a) -> String -> Model a
-init optionsValues title =
-    { options = optionsValues, isActive = False, selectedOption = Nothing, defaultTitle = title }
+init : List (Option a) -> String -> Props -> Model a
+init optionsValues title props =
+    { options = optionsValues, isActive = False, selectedOption = Nothing, defaultTitle = title, props = props }
 
 
 update : Model a -> Msg a -> Model a
@@ -87,11 +97,15 @@ myDropdownMenu model =
     in
     dropdownMenu []
         []
-        (dropdownItemLink
-            False
-            [ onClick <| Reset ]
-            [ text model.defaultTitle ]
-            :: dropdownItems
+        (if model.props.hasDefaulTitleOption then
+            dropdownItemLink
+                False
+                [ onClick <| Reset ]
+                [ text model.defaultTitle ]
+                :: dropdownItems
+
+         else
+            dropdownItems
         )
 
 

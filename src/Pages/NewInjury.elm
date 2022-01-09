@@ -39,9 +39,9 @@ type alias Model =
 
 init : Nav.Key -> Model
 init navKey =
-    { regionDropdown = DD.init regionDropdownOptions "Region"
-    , sideDropDown = DD.init sideDropDownOptions "Side"
-    , injuryTypeDropDown = DD.init injuryTypeDropDownOptions "Injury type"
+    { regionDropdown = DD.init regionDropdownOptions "Region" DD.defaultProps
+    , sideDropDown = DD.init sideDropDownOptions "Side" DD.defaultProps
+    , injuryTypeDropDown = DD.init injuryTypeDropDownOptions "Injury type" DD.defaultProps
     , startDate = DP.init
     , endDate = DP.init
     , description = ""
