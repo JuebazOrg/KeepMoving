@@ -44,6 +44,7 @@ encodeNew injury =
         , ( "endDate", EncodeExtra.maybe encodeDate injury.endDate )
         , ( "how", Encode.string injury.how )
         , ( "injuryType", Encode.string <| injuryTypeToString injury.injuryType )
+        , ( "checkPoints", Encode.list CheckPointEncoder.encode injury.checkPoints )
         ]
 
 

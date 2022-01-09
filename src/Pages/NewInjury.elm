@@ -17,6 +17,7 @@ import Html.Styled.Events exposing (onClick, onInput)
 import Http
 import Navigation.Route as Route
 import Theme.Mobile as M
+import Theme.Spacing as SP
 import Time exposing (Month(..))
 
 
@@ -41,7 +42,7 @@ init : Nav.Key -> Model
 init navKey =
     { regionDropdown = DD.init regionDropdownOptions "Region" DD.defaultProps
     , sideDropDown = DD.init sideDropDownOptions "Side" DD.defaultProps
-    , injuryTypeDropDown = DD.init injuryTypeDropDownOptions "Injury type" DD.defaultProps
+    , injuryTypeDropDown = DD.init injuryTypeDropDownOptions "Type" DD.defaultProps
     , startDate = DP.init
     , endDate = DP.init
     , description = ""
@@ -138,11 +139,11 @@ view model =
     div
         [ A.css [ height (pct 100), displayFlex, flexDirection column, justifyContent spaceBetween ] ]
         [ viewHeader model
-        , cardContent [ A.css [ flex (int 1) ] ]
-            [ div [ A.css [ displayFlex, alignItems center, marginBottom (px 10) ] ]
-                [ span [ A.css [ marginRight (px 10) ] ] [ map DropDownMsg (DD.viewDropDown model.regionDropdown) ]
-                , span [ A.css [ marginRight (px 10) ] ] [ map SideDropDownMsg (DD.viewDropDown model.sideDropDown) ]
-                , map InjuryTypeDropDownMsg (DD.viewDropDown model.injuryTypeDropDown)
+        , cardContent [ A.css [ flex (int 1), M.onMobile [ important <| padding (px 0) ] ] ]
+            [ div [ A.css [ displayFlex, alignItems center, M.onMobile [ flexDirection column, alignItems flexStart ] ] ]
+                [ span [ A.css [ margin SP.small ] ] [ map DropDownMsg (DD.viewDropDown model.regionDropdown) ]
+                , span [ A.css [ margin SP.small ] ] [ map SideDropDownMsg (DD.viewDropDown model.sideDropDown) ]
+                , span [ A.css [ margin SP.small ] ] [ map InjuryTypeDropDownMsg (DD.viewDropDown model.injuryTypeDropDown) ]
                 ]
             , viewLocationInput
             , viewDescriptionInput

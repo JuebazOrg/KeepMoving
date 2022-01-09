@@ -263,10 +263,10 @@ ordersDropdownOptions =
                 { label =
                     case order of
                         LeastRecent ->
-                            "Least Recent"
+                            "older"
 
                         MostRecent ->
-                            "Most recent"
+                            "recent"
                 , value = order
                 }
             )

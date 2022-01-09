@@ -1,5 +1,6 @@
 module Domain.CheckPoint exposing (..)
 
+import Bulma.Styled.Layout exposing (Level)
 import Date exposing (Date)
 import Id exposing (Id)
 
@@ -29,3 +30,8 @@ trendToString trend =
 
         Stable ->
             "Stable"
+
+
+levels : List Int
+levels =
+    [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]

@@ -6,7 +6,7 @@ import Components.Elements as C
 import Components.Form as CF
 import Components.Modal as CM
 import Css exposing (..)
-import Domain.CheckPoint exposing (Trend(..), trendToString)
+import Domain.CheckPoint exposing (Trend(..), levels, trendToString)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick, onInput)
@@ -60,4 +60,4 @@ trendOptions =
 
 levelOptions : List (DD.Option Int)
 levelOptions =
-    [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ] |> List.map (\i -> { label = String.fromInt i, value = i })
+    levels |> List.map (\i -> { label = String.fromInt i, value = i })
