@@ -8,7 +8,7 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Navigation.NavBar exposing (myNavbarBurger, viewNavBar)
 import Navigation.Route as Route exposing (Route(..))
-import Pages.Injuries as Injuries exposing (Msg, view)
+import Pages.Injuries.Injuries as Injuries exposing (Msg, view)
 import Pages.InjuryDetails.InjuryDetail as InjuryDetail
 import Pages.NewInjury as NewInjury
 import Url exposing (Url)
