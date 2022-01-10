@@ -170,6 +170,11 @@ icon attributes iconBodyMsgs =
     BE.icon BM.standard attributes iconBodyMsgs
 
 
+simpleIcon : String -> BE.Icon msg
+simpleIcon class =
+    icon [] [ S.i [ A.class class ] [] ]
+
+
 empty : S.Html msg
 empty =
     S.text ""

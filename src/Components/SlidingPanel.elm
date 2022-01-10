@@ -10,11 +10,11 @@ import Html.Styled.Events exposing (onClick)
 import Theme.Icons as I
 
 
-view : Bool -> msg -> List (Html msg) -> String -> Html msg
-view isOpen msg content title =
+view : Bool -> msg -> List (Html msg) -> List (Html msg) -> Html msg
+view isOpen msg content header =
     Card.staticCard []
         [ Card.cardHeader [ A.css [ displayFlex ] ]
-            [ Card.cardTitle [] [ text title ]
+            [ Card.cardTitle [] header
             , button [ A.class "card-header-icon", onClick msg ]
                 [ C.icon [] [ i [ A.class I.caretDown ] [] ]
                 ]

@@ -92,3 +92,8 @@ region =
 caretDown : String
 caretDown =
     "fa fa-caret-down"
+
+
+filter : String
+filter =
+    "fa fa-filter"

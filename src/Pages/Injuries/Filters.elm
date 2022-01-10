@@ -2,6 +2,7 @@ module Pages.Injuries.Filters exposing (..)
 
 import Compare exposing (Comparator)
 import Components.Dropdown as DD
+import Components.Elements as C
 import Components.Form exposing (controlCheckBox)
 import Components.SlidingPanel as CS
 import Css exposing (..)
@@ -83,7 +84,7 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    CS.view model.isOpen Trigger [ viewContent model ] "Filters"
+    CS.view model.isOpen Trigger [ viewContent model ] [ C.simpleIcon I.filter ]
 
 
 viewContent : Model -> Html Msg
