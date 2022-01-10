@@ -69,18 +69,14 @@ update msg model =
             ( { model | isModalOpen = False }, Cmd.none )
 
         Save ->
-            let
-                newInjury =
-                    RemoteData.map
-                        (\injury ->
-                            { injury | checkPoints = injury.checkPoints }
-                        )
-                        model.injury
-            in
             ( model
             , case model.injury of
                 RemoteData.Success injury ->
-                    Client.updateInjury injury (RemoteData.fromResult >> InjuryReceived)
+                    let
+                        newInjury =
+                            { injury | checkPoints = CheckPointModal.getNewCheckPoint model.checkPointModal :: injury.checkPoints }
+                    in
+                    Client.updateInjury newInjury (RemoteData.fromResult >> InjuryReceived)
 
                 _ ->
                     Cmd.none

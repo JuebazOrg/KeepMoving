@@ -11,6 +11,7 @@ import Domain.CheckPoint exposing (CheckPoint, NewCheckPoint, Trend(..), levels,
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick, onInput)
+import Id
 import Theme.Spacing as SP
 import Time exposing (Month(..))
 
@@ -65,10 +66,11 @@ levelOptions =
     levels |> List.map (\i -> { label = String.fromInt i, value = i })
 
 
-getNewCheckPoint : Model -> NewCheckPoint
+getNewCheckPoint : Model -> CheckPoint
 getNewCheckPoint model =
     { comment = ""
     , trend = Maybe.withDefault Stable <| DD.getSelectedValue model.trend
     , painLevel = Maybe.withDefault 5 <| DD.getSelectedValue model.level
     , date = Date.fromCalendarDate 2020 Jan 3
+    , id = Id.noId
     }

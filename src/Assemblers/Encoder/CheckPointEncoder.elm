@@ -12,7 +12,7 @@ encode checkPoint =
     Encode.object
         [ ( "id", Encode.int <| idEncoder checkPoint.id )
         , ( "date", encodeDate checkPoint.date )
-        , ( "resume", Encode.string checkPoint.comment )
+        , ( "comment", Encode.string checkPoint.comment )
         , ( "painLevel", Encode.int checkPoint.painLevel )
         , ( "trend", encodeTrend checkPoint.trend )
         ]
