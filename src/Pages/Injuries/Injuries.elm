@@ -115,7 +115,7 @@ viewInjuries injuries filterModel =
     div [ A.css [ displayFlex, flexDirection column ] ]
         (injuries
             |> Filters.filterInjuries filterModel.filters
-            -- |> Filters.orderInjuries 
+            |> Filters.orderInjuries filterModel.order
             |> List.map
                 (\i -> viewInjury i)
         )

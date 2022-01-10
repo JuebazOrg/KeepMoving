@@ -12,6 +12,7 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onCheck, onClick)
 import Theme.Icons as I
+import Theme.Mobile as M
 import Theme.Spacing as SP
 
 
@@ -20,7 +21,7 @@ type alias Filters =
 
 
 type alias Model =
-    { filters : Filters, isOpen : Bool }
+    { filters : Filters, isOpen : Bool, order : DD.Model Order }
 
 
 type Order
@@ -49,6 +50,7 @@ init =
         , active = False
         }
     , isOpen = False
+    , order = DD.init ordersDropdownOptions "Order By" DD.defaultProps
     }
 
 
@@ -57,6 +59,9 @@ update msg model =
     let
         filters =
             model.filters
+
+        order =
+            model.order
     in
     case msg of
         RegionFilterMsg subMsg ->
@@ -66,7 +71,7 @@ update msg model =
             { model | filters = { filters | side = DD.update model.filters.side subMsg } }
 
         OrderMsg subMsg ->
-            model
+            { model | order = DD.update model.order subMsg }
 
         -- todo
         ActiveFilterChecked bool ->
@@ -83,11 +88,11 @@ view model =
 
 viewContent : Model -> Html Msg
 viewContent model =
-    div [ A.css [ displayFlex, alignItems center, flexWrap wrap ] ]
-        [ span [ A.css [ marginRight SP.medium ] ] [ regionFilter model.filters ]
-        , span [ A.css [ marginRight SP.medium ] ] [ sideFilter model.filters ]
-
-        -- , span [ A.css [ marginRight SP.medium ] ] [ viewOrderDropDown model ]
+    div [ A.css [ displayFlex, M.onMobile [ flexDirection column ] ] ]
+        [ span [ A.css [ displayFlex, justifyContent spaceBetween, alignItems center, margin SP.small ] ] [ label [ A.css [ marginRight SP.small ] ] [ text "region" ], regionFilter model.filters ]
+        , span [ A.css [ displayFlex, justifyContent spaceBetween, alignItems center, margin SP.small ] ] [ label [ A.css [ marginRight SP.small ] ] [ text "side" ], sideFilter model.filters ]
+        , span [ A.css [ displayFlex, justifyContent spaceBetween, alignItems center, margin SP.small ] ] [ label [ A.css [ marginRight SP.small ] ] [ text "orderBy" ], viewOrderDropDown model ]
+        , hr [] []
         , span [] [ controlCheckBox False [] [] [ onCheck ActiveFilterChecked ] [ text "actif injuries" ] ]
         ]
 
@@ -123,9 +128,9 @@ filterInjuries filters injuries =
         filterBySide
 
 
-orderInjuries : Maybe Order -> List Injury -> List Injury
+orderInjuries : DD.Model Order -> List Injury -> List Injury
 orderInjuries order injuries =
-    order
+    DD.getSelectedValue order
         |> Maybe.map
             (\o ->
                 case o of
@@ -152,10 +157,9 @@ regionFilter filters =
     map RegionFilterMsg (DD.viewDropDown filters.region)
 
 
-
--- viewOrderDropDown : Model -> Html Msg
--- viewOrderDropDown model =
---     map OrderMsg (DD.viewDropDown model.orders)
+viewOrderDropDown : Model -> Html Msg
+viewOrderDropDown model =
+    map OrderMsg (DD.viewDropDown model.order)
 
 
 sideDropdownOptions : List (DD.Option Side)
@@ -172,10 +176,10 @@ ordersDropdownOptions =
                 { label =
                     case order of
                         LeastRecent ->
-                            "older"
+                            "Least recent"
 
                         MostRecent ->
-                            "recent"
+                            "More recent"
                 , value = order
                 }
             )
