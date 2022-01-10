@@ -6,11 +6,13 @@ import Components.Elements as C
 import Components.Form as CF
 import Components.Modal as CM
 import Css exposing (..)
-import Domain.CheckPoint exposing (Trend(..), levels, trendToString)
+import Date
+import Domain.CheckPoint exposing (CheckPoint, NewCheckPoint, Trend(..), levels, trendToString)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick, onInput)
 import Theme.Spacing as SP
+import Time exposing (Month(..))
 
 
 type alias Model =
@@ -61,3 +63,12 @@ trendOptions =
 levelOptions : List (DD.Option Int)
 levelOptions =
     levels |> List.map (\i -> { label = String.fromInt i, value = i })
+
+
+getNewCheckPoint : Model -> NewCheckPoint
+getNewCheckPoint model =
+    { comment = ""
+    , trend = Maybe.withDefault Stable <| DD.getSelectedValue model.trend
+    , painLevel = Maybe.withDefault 5 <| DD.getSelectedValue model.level
+    , date = Date.fromCalendarDate 2020 Jan 3
+    }

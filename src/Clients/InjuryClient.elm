@@ -49,3 +49,18 @@ createInjury injury onResult =
         , body = Http.jsonBody (InjuryEncoder.encodeNew injury)
         , expect = Http.expectWhatever onResult
         }
+
+
+updateInjury : Injury -> (Result Http.Error Injury -> msg) -> Cmd msg
+updateInjury injury onResult =
+    Http.request
+        { method = "PUT"
+        , headers = []
+        , url = client.baseRoute ++ client.route ++ Id.toString injury.id
+        , body = Http.jsonBody (InjuryEncoder.encode injury)
+        , expect =
+            InjuryDecoder.decode
+                |> Http.expectJson onResult
+        , timeout = Nothing
+        , tracker = Nothing
+        }

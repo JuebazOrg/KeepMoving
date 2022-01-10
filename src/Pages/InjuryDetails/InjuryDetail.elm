@@ -13,11 +13,12 @@ import Domain.Regions exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (..)
+import Http
 import Id exposing (Id)
 import Navigation.Route as Route
 import Pages.InjuryDetails.AddCheckPoint as CheckPointModal
 import Pages.InjuryDetails.CheckPoints as CheckPoints
-import RemoteData exposing (RemoteData(..), WebData)
+import RemoteData as RemoteData exposing (RemoteData(..), WebData)
 import Theme.Mobile as M
 import Theme.Spacing as SP
 
@@ -68,7 +69,22 @@ update msg model =
             ( { model | isModalOpen = False }, Cmd.none )
 
         Save ->
-            ( model, Cmd.none )
+            let
+                newInjury =
+                    RemoteData.map
+                        (\injury ->
+                            { injury | checkPoints = injury.checkPoints }
+                        )
+                        model.injury
+            in
+            ( model
+            , case model.injury of
+                RemoteData.Success injury ->
+                    Client.updateInjury injury (RemoteData.fromResult >> InjuryReceived)
+
+                _ ->
+                    Cmd.none
+            )
 
 
 view : Model -> Html Msg
@@ -127,7 +143,7 @@ viewInfo injury =
 
 viewTagInfo : Injury -> Html Msg
 viewTagInfo injury =
-    article [ A.class "tile is-child notification" ]
+    article [ A.class "tile is-child notification", A.css [ important <| padding SP.medium ] ]
         [ div [ A.class "content", A.css [ displayFlex, flexDirection column ] ]
             [ div [ A.css [ displayFlex, marginBottom SP.medium ] ] [ div [] [ C.h4Title [ A.css [ marginRight SP.small ] ] [ text "Region" ] ], C.bigPrimaryTag [ text <| bodyRegionToString injury.bodyRegion ] ]
             , div [ A.css [ displayFlex, marginBottom SP.medium ] ] [ div [] [ C.h4Title [ A.css [ marginRight SP.small ] ] [ text "Location" ] ], C.bigPrimaryTag [ text injury.location ] ]
