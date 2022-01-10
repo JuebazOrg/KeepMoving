@@ -12,7 +12,7 @@ import Theme.Icons as I
 
 view : Bool -> msg -> List (Html msg) -> String -> Html msg
 view isOpen msg content title =
-    Card.card []
+    Card.staticCard []
         [ Card.cardHeader [ A.css [ displayFlex ] ]
             [ Card.cardTitle [] [ text title ]
             , button [ A.class "card-header-icon", onClick msg ]

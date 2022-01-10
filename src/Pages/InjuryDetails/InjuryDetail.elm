@@ -18,6 +18,7 @@ import Navigation.Route as Route
 import Pages.InjuryDetails.AddCheckPoint as CheckPointModal
 import Pages.InjuryDetails.CheckPoints as CheckPoints
 import RemoteData exposing (RemoteData(..), WebData)
+import Theme.Mobile as M
 import Theme.Spacing as SP
 
 
@@ -95,7 +96,7 @@ viewContent injury checkPointModal isModalOpen =
 
 viewCheckPoints : Injury -> Html Msg
 viewCheckPoints injury =
-    article [ A.class "tile is-child notification is-primar" ]
+    article [ A.class "tile is-child notification is-primar", A.css [ important <| padding SP.medium ] ]
         [ p [ A.class "title" ] [ text "Checkpoints", C.addButton [ onClick OpenModal, A.css [ marginLeft SP.small ] ] [] ]
         , div [ A.class "content", A.css [ displayFlex, flexDirection column ] ]
             [ CheckPoints.view injury.checkPoints
@@ -211,9 +212,9 @@ viewCheckPointModal : Bool -> CheckPointModal.Model -> Html Msg
 viewCheckPointModal isOpen model =
     let
         header =
-            CM.modalCardHead [] [ CM.modalCardTitle [] [ text "checkpoint" ], C.closeButton [ onClick CloseModal ] [] ]
+            CM.modalCardHead [] [ CM.modalCardTitle [] [ text "Checkpoint" ], C.closeButton [ onClick CloseModal ] [] ]
 
         footer =
-            CM.modalCardFoot [A.css [flexDirection rowReverse]] [ C.saveButton [ onClick Save ] [] ]
+            CM.modalCardFoot [ A.css [ flexDirection rowReverse ] ] [ C.saveButton [ onClick Save ] [] ]
     in
     CM.simpleModal isOpen header [ map CheckPointModalMsg <| CheckPointModal.view model ] footer

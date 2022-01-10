@@ -14,6 +14,11 @@ card attributes cardPartition =
     BC.card (List.append attributes cardStyle) cardPartition
 
 
+staticCard : List (S.Attribute msg) -> List (BC.CardPartition msg) -> BC.Card msg
+staticCard attributes cardPartition =
+    BC.card attributes cardPartition
+
+
 cardHeader : List (S.Attribute msg) -> List (S.Html msg) -> BC.CardPartition msg
 cardHeader attributes messages =
     BC.cardHeader attributes messages
