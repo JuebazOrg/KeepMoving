@@ -30,6 +30,25 @@ img {
   max-width: 200px;
 }
 
-html{
+html {
   height: 100vh;
+}
+
+.slidein {
+  padding: 2em 3em;
+  position: fixed;
+  z-index: 100;
+  top: 100%;
+  background: #ddd;
+  height: 100%;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, .7);
+  transition: all .5s ease-in-out;
+  right: 0px;
+  width: 100%;
+}
+
+.open {
+  top: 50%;
+  right: 0px;
+  width: 100%;
 }

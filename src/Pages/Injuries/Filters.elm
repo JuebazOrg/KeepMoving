@@ -1,7 +1,7 @@
 module Pages.Injuries.Filters exposing (..)
 
 import Compare exposing (Comparator)
-import Components.Dropdown as DD
+import Components.Dropdown as DD exposing (defaultProps)
 import Components.Elements as C
 import Components.Form exposing (controlCheckBox)
 import Components.SlidingPanel as CS
@@ -36,6 +36,7 @@ type Msg
     | SideFilterMsg (DD.Msg Side)
     | OrderMsg (DD.Msg Order)
     | ActiveFilterChecked Bool
+    | ClearAll
 
 
 orders : List Order
@@ -46,7 +47,7 @@ orders =
 init : Model
 init =
     { filters =
-        { region = DD.init regionDropdownOptions "Regions" DD.defaultProps
+        { region = DD.init regionDropdownOptions "Regions" { defaultProps | maxSize = Just 200 }
         , side = DD.init sideDropdownOptions "Side" DD.defaultProps
         , active = False
         }
@@ -81,20 +82,31 @@ update msg model =
         Trigger ->
             { model | isOpen = not model.isOpen }
 
+        ClearAll ->
+            init
+
 
 view : Model -> Html Msg
 view model =
-    CS.view model.isOpen Trigger [ viewContent model ] [ C.simpleIcon I.filter ]
+    div [ A.css [ displayFlex, flexDirection rowReverse ] ]
+        [ C.roundIconButton I.filter [ onClick Trigger ] []
+        , CS.view model.isOpen Trigger [ viewContent model ] [ C.simpleIcon I.filter ]
+        ]
 
 
 viewContent : Model -> Html Msg
 viewContent model =
     div [ A.css [ displayFlex, M.onMobile [ flexDirection column ] ] ]
-        [ span [ A.css [ displayFlex, justifyContent spaceBetween, alignItems center, margin SP.small ] ] [ label [ A.css [ marginRight SP.small ] ] [ text "region" ], regionFilter model.filters ]
-        , span [ A.css [ displayFlex, justifyContent spaceBetween, alignItems center, margin SP.small ] ] [ label [ A.css [ marginRight SP.small ] ] [ text "side" ], sideFilter model.filters ]
-        , span [ A.css [ displayFlex, justifyContent spaceBetween, alignItems center, margin SP.small ] ] [ label [ A.css [ marginRight SP.small ] ] [ text "orderBy" ], viewOrderDropDown model ]
+        [ div [ A.css [ displayFlex, flexDirection rowReverse, margin SP.small ] ] [ C.closeButton [ onClick Trigger ] [] ]
+        , div [ A.css [ displayFlex ] ]
+            [ span [ A.css [ marginRight SP.small ] ] [ regionFilter model.filters ]
+            , span [ A.css [ marginRight SP.small ] ] [ sideFilter model.filters ]
+            , span [ A.css [ marginRight SP.small ] ] [ viewOrderDropDown model ]
+            ]
         , hr [] []
         , span [] [ controlCheckBox False [] [] [ onCheck ActiveFilterChecked ] [ text "actif injuries" ] ]
+        , hr [] []
+        , a [ onClick ClearAll ] [ text "clear all" ]
         ]
 
 

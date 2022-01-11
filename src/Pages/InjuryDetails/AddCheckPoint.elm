@@ -1,7 +1,7 @@
 module Pages.InjuryDetails.AddCheckPoint exposing (..)
 
 import Components.Calendar.DatePicker as DP
-import Components.Dropdown as DD
+import Components.Dropdown as DD exposing (defaultProps)
 import Components.Elements as C
 import Components.Form as CF
 import Components.Modal as CM
@@ -22,8 +22,12 @@ type alias Model =
 
 init : Model
 init =
-    { trend = DD.init trendOptions "Trend" { hasDefaulTitleOption = False }
-    , level = DD.init levelOptions "Pain level" { hasDefaulTitleOption = False }
+    let
+        props =
+            { defaultProps | hasDefaulTitleOption = False }
+    in
+    { trend = DD.init trendOptions "Trend" props
+    , level = DD.init levelOptions "Pain level" props
     , date = DP.init
     }
 

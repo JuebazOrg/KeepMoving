@@ -175,6 +175,18 @@ simpleIcon class =
     icon [] [ S.i [ A.class class ] [] ]
 
 
+roundIconButton : String -> List (S.Attribute msg) -> List (S.Html msg) -> S.Html msg
+roundIconButton className attributes messages =
+    let
+        myIcon =
+            Just ( BM.standard, [], icon [] [ S.i [ A.class className ] [] ] )
+
+        buttonProps =
+            { defaultButtonProps | color = BM.light, iconLeft = myIcon }
+    in
+    Components.BulmaElements.button buttonProps (List.append attributes [ A.css [ round ] ]) messages
+
+
 empty : S.Html msg
 empty =
     S.text ""

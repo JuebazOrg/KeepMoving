@@ -2,8 +2,10 @@ module Components.Dropdown exposing (..)
 
 import Components.BulmaElements exposing (..)
 import Components.Elements as C
+import Css exposing (Style, batch, maxHeight, overflow, overflowY, px, scroll)
 import Domain.Regions exposing (Side(..))
 import Html.Styled exposing (Html, a, option, text)
+import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick)
 
 
@@ -27,12 +29,12 @@ type Msg a
 
 
 type alias Props =
-    { hasDefaulTitleOption : Bool }
+    { hasDefaulTitleOption : Bool, maxSize : Maybe Float }
 
 
 defaultProps : Props
 defaultProps =
-    { hasDefaulTitleOption = True }
+    { hasDefaulTitleOption = True, maxSize = Nothing }
 
 
 getSelectedValue : Model a -> Maybe a
@@ -95,7 +97,7 @@ myDropdownMenu model =
                                 dropdownItemLink False [ onClick <| UpdateOption item ] [ text item.label ]
                     )
     in
-    dropdownMenu []
+    dropdownMenu [ A.css [ styled model.props.maxSize ] ]
         []
         (if model.props.hasDefaulTitleOption then
             dropdownItemLink
@@ -117,3 +119,16 @@ viewDropDown model =
         [ myDropdownTrigger model
         , myDropdownMenu model
         ]
+
+
+styled : Maybe Float -> Style
+styled i =
+    case i of
+        Just size ->
+            batch
+                [ maxHeight (px size)
+                , overflowY scroll
+                ]
+
+        Nothing ->
+            batch []
