@@ -6,7 +6,7 @@ import Components.Card exposing (cardHeader)
 import Components.Elements as C
 import Components.Modal as CM
 import Css exposing (..)
-import Date
+import Date as Date
 import Domain.CheckPoint exposing (CheckPoint)
 import Domain.Injury exposing (..)
 import Domain.Regions exposing (..)
@@ -20,6 +20,7 @@ import Pages.InjuryDetails.AddCheckPoint as CheckPointModal
 import Pages.InjuryDetails.CheckPoints as CheckPoints
 import Pages.InjuryDetails.DetailsComponents exposing (..)
 import RemoteData as RemoteData exposing (RemoteData(..), WebData)
+import Task
 import Theme.Mobile as M
 import Theme.Spacing as SP
 
@@ -54,6 +55,7 @@ type Msg
     | CloseModal
     | SaveCheckpoint
     | CheckPointsMsg CheckPoints.Msg
+    | SetDate (Maybe Date.Date)
 
 
 getInjury : Id -> Cmd Msg
@@ -61,11 +63,19 @@ getInjury id =
     Client.getInjury id (RemoteData.fromResult >> InjuryReceived)
 
 
+now : Cmd Msg
+now =
+    Task.perform (Just >> SetDate) Date.today
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         InjuryReceived response ->
-            ( { model | injury = response }, Cmd.none )
+            ( { model | injury = response }, now )
+
+        SetDate date -> 
+            (model, Cmd.none)
 
         GoBack ->
             ( model, Route.pushUrl Route.Injuries model.navKey )
@@ -158,6 +168,7 @@ viewInfo injury checkPointsModel =
                 ]
             ]
         ]
+
 
 
 viewCheckPoints : Injury -> CheckPoints.Model -> Html Msg
