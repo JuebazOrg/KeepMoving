@@ -14,6 +14,7 @@ import Json.Decode exposing (bool)
 import List.FlatMap exposing (flatMap)
 import Theme.Colors as ColorTheme
 import Theme.Icons as I
+import Util.Date as DateUtil
 
 
 type alias Model =
@@ -94,7 +95,7 @@ viewTableRow cp =
     tableRow
         False
         []
-        [ tableCell [] [ text <| Date.toIsoString cp.date ]
+        [ tableCell [] [ text <| DateUtil.formatMMDY cp.date ]
         , tableCell [] [ text <| String.fromInt cp.painLevel ]
         , tableCell [] [ viewTrend cp.trend ]
         , tableCell []
