@@ -90,7 +90,7 @@ view : Model -> Html Msg
 view model =
     div [ A.css [ displayFlex, flexDirection rowReverse ] ]
         [ C.roundIconButton I.filter [ onClick Trigger ] []
-        , CS.view model.isOpen Trigger [ viewContent model ] [ C.simpleIcon I.filter ]
+        , CS.view model.isOpen 50 [ viewContent model ]
         ]
 
 

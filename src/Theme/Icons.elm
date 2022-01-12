@@ -97,3 +97,8 @@ caretDown =
 filter : String
 filter =
     "fa fa-filter"
+
+
+comment : String
+comment =
+    "fa fa-comment"

@@ -3,9 +3,10 @@ module Components.Elements exposing (..)
 import Bulma.Styled.Elements as BE
 import Bulma.Styled.Modifiers as BM
 import Components.BulmaElements exposing (..)
-import Css exposing (Style, batch, borderRadius, height, important, pct, px, width)
+import Css exposing (Style, batch, borderRadius, color, height, hover, important, pct, px, width)
 import Html.Styled as S
 import Html.Styled.Attributes as A
+import Theme.Colors as ColorTheme
 import Theme.Icons as I
 
 
@@ -136,11 +137,20 @@ bigPrimaryTag messages =
     Components.BulmaElements.tag tagModifs [] messages
 
 
-bigWarningTag : List (S.Html msg) -> S.Html msg
-bigWarningTag messages =
+mediumPrimaryTag : List (S.Html msg) -> S.Html msg
+mediumPrimaryTag messages =
     let
         tagModifs =
-            { defaultTagProps | color = BM.warning, size = BM.large }
+            { defaultTagProps | color = BM.primary, size = BM.medium }
+    in
+    Components.BulmaElements.tag tagModifs [] messages
+
+
+mediumWarningTag : List (S.Html msg) -> S.Html msg
+mediumWarningTag messages =
+    let
+        tagModifs =
+            { defaultTagProps | color = BM.warning, size = BM.medium }
     in
     Components.BulmaElements.tag tagModifs [] messages
 
@@ -170,9 +180,22 @@ icon attributes iconBodyMsgs =
     BE.icon BM.standard attributes iconBodyMsgs
 
 
-simpleIcon : String -> BE.Icon msg
-simpleIcon class =
-    icon [] [ S.i [ A.class class ] [] ]
+simpleIcon : String -> Css.Color -> BE.Icon msg
+simpleIcon class colorValue =
+    icon [ A.css [ color colorValue ] ] [ S.i [ A.class class ] [] ]
+
+
+simpleHoverIcon : String -> List (S.Attribute msg) -> S.Html msg
+simpleHoverIcon class messages =
+    let
+        style =
+            List.append
+                messages
+                [ A.css
+                    [ color ColorTheme.primary, hover [ color ColorTheme.primaryDark ] ]
+                ]
+    in
+    icon style [ S.i [ A.class class ] [] ]
 
 
 roundIconButton : String -> List (S.Attribute msg) -> List (S.Html msg) -> S.Html msg

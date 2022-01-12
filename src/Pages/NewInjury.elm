@@ -7,6 +7,7 @@ import Components.Card exposing (..)
 import Components.Dropdown as DD
 import Components.Elements as C
 import Components.Form exposing (..)
+import Components.SlidingPanel as SlidingPanel
 import Css exposing (..)
 import Date as Date
 import Domain.Injury exposing (..)
@@ -136,8 +137,7 @@ defaultDate =
 
 view : Model -> Html Msg
 view model =
-    div
-        [ A.css [ height (pct 100), displayFlex, flexDirection column, justifyContent spaceBetween ] ]
+    div [ A.css [ height (pct 100), displayFlex, flexDirection column, justifyContent spaceBetween ] ]
         [ viewHeader model
         , cardContent [ A.css [ flex (int 1), M.onMobile [ important <| padding (px 0) ] ] ]
             [ div [ A.css [ displayFlex, alignItems center, M.onMobile [ flexDirection column, alignItems flexStart ] ] ]

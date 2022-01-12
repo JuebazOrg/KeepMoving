@@ -24,12 +24,24 @@ import Theme.Spacing as SP
 
 
 type alias Model =
-    { injury : WebData Injury, navKey : Nav.Key, checkPointModal : CheckPointModal.Model, isModalOpen : Bool }
+    { injury : WebData Injury
+    , navKey : Nav.Key
+    , checkPointModal : CheckPointModal.Model
+    , isModalOpen : Bool
+    , checkPoints : CheckPoints.Model
+    }
 
 
 init : Nav.Key -> Id -> ( Model, Cmd Msg )
 init navKey id =
-    ( { injury = RemoteData.Loading, navKey = navKey, checkPointModal = CheckPointModal.init, isModalOpen = False }, getInjury id )
+    ( { injury = RemoteData.Loading
+      , navKey = navKey
+      , checkPointModal = CheckPointModal.init
+      , isModalOpen = False
+      , checkPoints = CheckPoints.init
+      }
+    , getInjury id
+    )
 
 
 type Msg
@@ -39,7 +51,8 @@ type Msg
     | CheckPointModalMsg CheckPointModal.Msg
     | OpenModal
     | CloseModal
-    | Save
+    | SaveCheckpoint
+    | CheckPointsMsg CheckPoints.Msg
 
 
 getInjury : Id -> Cmd Msg
@@ -68,8 +81,11 @@ update msg model =
         CloseModal ->
             ( { model | isModalOpen = False }, Cmd.none )
 
-        Save ->
-            ( model
+        CheckPointsMsg subMsg ->
+            ( { model | checkPoints = CheckPoints.update subMsg model.checkPoints }, Cmd.none )
+
+        SaveCheckpoint ->
+            ( { model | isModalOpen = False }
             , case model.injury of
                 RemoteData.Success injury ->
                     let
@@ -109,9 +125,9 @@ viewContent injury checkPointModal isModalOpen =
 viewCheckPoints : Injury -> Html Msg
 viewCheckPoints injury =
     article [ A.class "tile is-child notification is-primar", A.css [ important <| padding SP.medium ] ]
-        [ p [ A.class "title" ] [ text "Checkpoints", C.addButton [ onClick OpenModal, A.css [ marginLeft SP.small ] ] [] ]
+        [ p [ A.class "subtitle" ] [ text "Checkpoints", C.addButton [ onClick OpenModal, A.css [ marginLeft SP.small ] ] [] ]
         , div [ A.class "content", A.css [ displayFlex, flexDirection column ] ]
-            [ CheckPoints.view injury.checkPoints
+            [ map CheckPointsMsg (CheckPoints.view injury.checkPoints)
             ]
         ]
 
@@ -141,12 +157,12 @@ viewTagInfo : Injury -> Html Msg
 viewTagInfo injury =
     article [ A.class "tile is-child notification", A.css [ important <| padding SP.medium ] ]
         [ div [ A.class "content", A.css [ displayFlex, flexDirection column ] ]
-            [ div [ A.css [ displayFlex, marginBottom SP.medium ] ] [ div [] [ C.h4Title [ A.css [ marginRight SP.small ] ] [ text "Region" ] ], C.bigPrimaryTag [ text <| bodyRegionToString injury.bodyRegion ] ]
-            , div [ A.css [ displayFlex, marginBottom SP.medium ] ] [ div [] [ C.h4Title [ A.css [ marginRight SP.small ] ] [ text "Location" ] ], C.bigPrimaryTag [ text injury.location ] ]
-            , div [ A.css [ displayFlex, marginBottom SP.medium ] ] [ div [] [ C.h4Title [ A.css [ marginRight SP.small ] ] [ text "Injury type" ] ], C.bigPrimaryTag [ text <| injuryTypeToString injury.injuryType ] ]
-            , div [ A.css [ displayFlex, marginBottom SP.medium ] ]
-                [ div [] [ C.h4Title [ A.css [ marginRight SP.small ] ] [ text "Status" ] ]
-                , C.bigWarningTag
+            [ div [ tagsContainerStyle ] [ div [] [ label [ A.css [ marginRight SP.small ] ] [ text "Region" ] ], C.mediumPrimaryTag [ text <| bodyRegionToString injury.bodyRegion ] ]
+            , div [ tagsContainerStyle ] [ div [] [ label [ A.css [ marginRight SP.small ] ] [ text "Location" ] ], C.mediumPrimaryTag [ text injury.location ] ]
+            , div [ tagsContainerStyle ] [ div [] [ label [ A.css [ marginRight SP.small ] ] [ text "Injury type" ] ], C.mediumPrimaryTag [ text <| injuryTypeToString injury.injuryType ] ]
+            , div [ tagsContainerStyle ]
+                [ div [] [ label [ A.css [ marginRight SP.small ] ] [ text "Status" ] ]
+                , C.mediumWarningTag
                     [ text <|
                         if Domain.Injury.isActive injury then
                             "Active"
@@ -163,7 +179,7 @@ viewDescription : Injury -> Html Msg
 viewDescription injury =
     article [ A.class "tile is-child notification is-primary" ]
         [ div [ A.class "content", A.css [ displayFlex, flexDirection column ] ]
-            [ p [ A.class "title" ] [ text "Description" ]
+            [ p [ A.class "subtitle" ] [ text "Description" ]
             , p [ A.class "content" ] [ text injury.description ]
             ]
         ]
@@ -173,7 +189,7 @@ viewHow : Injury -> Html Msg
 viewHow injury =
     article [ A.class "tile is-child notification is-primary is-light" ]
         [ div [ A.class "content", A.css [ displayFlex, flexDirection column ] ]
-            [ p [ A.class "title" ] [ text "How it happened" ]
+            [ p [ A.class "subtitle" ] [ text "How it happened" ]
             , p [ A.class "content" ] [ text injury.how ]
             ]
         ]
@@ -186,7 +202,7 @@ viewDates injury =
             Maybe.map Date.toIsoString >> Maybe.withDefault "-"
     in
     article [ A.class "tile is-child notification is-primary is-warning" ]
-        [ p [ A.class "title" ] [ text "When" ]
+        [ p [ A.class "subtitle" ] [ text "When" ]
         , div [ A.class "content", A.css [ displayFlex, flexDirection column ] ]
             [ div [ A.css [ displayFlex, flexDirection column, alignItems flexStart ] ]
                 [ viewDateField (Date.toIsoString injury.startDate) "Start date"
@@ -197,10 +213,10 @@ viewDates injury =
 
 
 viewDateField : String -> String -> Html Msg
-viewDateField date label =
+viewDateField date titleLabel =
     div [ A.css [ displayFlex, width (pct 100), justifyContent spaceBetween ] ]
-        [ C.h4Title [] [ text label ]
-        , C.h4Title [] [ text date ]
+        [ label [] [ text titleLabel ]
+        , label [] [ text date ]
         ]
 
 
@@ -227,6 +243,15 @@ viewCheckPointModal isOpen model =
             CM.modalCardHead [] [ CM.modalCardTitle [] [ text "Checkpoint" ], C.closeButton [ onClick CloseModal ] [] ]
 
         footer =
-            CM.modalCardFoot [ A.css [ flexDirection rowReverse ] ] [ C.saveButton [ onClick Save ] [] ]
+            CM.modalCardFoot [ A.css [ flexDirection rowReverse ] ] [ C.saveButton [ onClick SaveCheckpoint ] [] ]
     in
     CM.simpleModal isOpen header [ map CheckPointModalMsg <| CheckPointModal.view model ] footer
+
+
+
+-- style --
+
+
+tagsContainerStyle : Attribute msg
+tagsContainerStyle =
+    A.css [ displayFlex, marginBottom SP.medium, justifyContent spaceBetween ]

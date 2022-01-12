@@ -12,18 +12,18 @@ import Html.Styled.Events exposing (onClick)
 import Theme.Icons as I
 
 
-view : Bool -> msg -> List (Html msg) -> List (Html msg) -> Html msg
-view isOpen msg content header =
+view : Bool -> Float -> List (Html msg) -> Html msg
+view isOpen height content =
     if isOpen then
-        box [ A.class "slidein open", A.css [ styled ] ] content
+        box [ A.class "slidein open", A.css [ styled height ] ] content
 
     else
         box [ A.class "slidein" ] content
 
 
-styled : Style
-styled =
+styled : Float -> Style
+styled openPercentage =
     batch
         [ important <| borderRadius (Css.em 3)
-        
+        , important <| top (pct openPercentage)
         ]
