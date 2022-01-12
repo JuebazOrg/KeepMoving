@@ -113,27 +113,27 @@ viewHeader injury =
         ]
 
 
-viewContent : Injury -> CheckPointModal.Model -> Bool -> Html Msg
-viewContent injury checkPointModal isModalOpen =
+viewContent : Injury -> CheckPointModal.Model -> CheckPoints.Model -> Bool -> Html Msg
+viewContent injury checkPointModal checkPointsModel isModalOpen =
     div []
         [ viewHeader injury
-        , viewInfo injury
+        , viewInfo injury checkPointsModel
         , viewCheckPointModal isModalOpen checkPointModal
         ]
 
 
-viewCheckPoints : Injury -> Html Msg
-viewCheckPoints injury =
+viewCheckPoints : Injury -> CheckPoints.Model -> Html Msg
+viewCheckPoints injury checkPointsModel =
     article [ A.class "tile is-child notification is-primar", A.css [ important <| padding SP.medium ] ]
         [ p [ A.class "subtitle" ] [ text "Checkpoints", C.addButton [ onClick OpenModal, A.css [ marginLeft SP.small ] ] [] ]
         , div [ A.class "content", A.css [ displayFlex, flexDirection column ] ]
-            [ map CheckPointsMsg (CheckPoints.view injury.checkPoints)
+            [ map CheckPointsMsg (CheckPoints.view checkPointsModel injury.checkPoints)
             ]
         ]
 
 
-viewInfo : Injury -> Html Msg
-viewInfo injury =
+viewInfo : Injury -> CheckPoints.Model -> Html Msg
+viewInfo injury checkPointsModel =
     div [ A.class "tile is-ancestor is-vertical" ]
         [ div [ A.class "tile" ]
             [ div [ A.class "tile is-parent is-vertical" ]
@@ -147,7 +147,7 @@ viewInfo injury =
             ]
         , div [ A.class "tile" ]
             [ div [ A.class "tile is-parent" ]
-                [ viewCheckPoints injury
+                [ viewCheckPoints injury checkPointsModel
                 ]
             ]
         ]
@@ -230,7 +230,7 @@ viewInjuryOrError model =
             h3 [] [ text "Loading..." ]
 
         RemoteData.Success injury ->
-            viewContent injury model.checkPointModal model.isModalOpen
+            viewContent injury model.checkPointModal model.checkPoints model.isModalOpen
 
         RemoteData.Failure httpError ->
             div [] [ text <| Client.client.defaultErrorMessage httpError ]
@@ -245,7 +245,7 @@ viewCheckPointModal isOpen model =
         footer =
             CM.modalCardFoot [ A.css [ flexDirection rowReverse ] ] [ C.saveButton [ onClick SaveCheckpoint ] [] ]
     in
-    CM.simpleModal isOpen header [ map CheckPointModalMsg <| CheckPointModal.view model ] footer
+    CM.simpleModal isOpen CloseModal header [ map CheckPointModalMsg <| CheckPointModal.view model ] footer
 
 
 

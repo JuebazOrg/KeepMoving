@@ -3,6 +3,7 @@ module Pages.InjuryDetails.CheckPoints exposing (..)
 import Bulma.Styled.Elements exposing (..)
 import Bulma.Styled.Modifiers as BM
 import Components.Elements as C
+import Components.Modal exposing (modalContent, simpleModal)
 import Css exposing (displayFlex, maxWidth)
 import Date as Date
 import Domain.CheckPoint exposing (CheckPoint, Trend(..))
@@ -16,31 +17,50 @@ import Theme.Icons as I
 
 
 type alias Model =
-    Bool
+    { comment : Maybe String }
 
 
 init : Model
 init =
-    False
+    { comment = Nothing }
 
 
 type Msg
-    = OpenComment
+    = OpenComment String
     | CloseComment
 
 
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        OpenComment ->
-            True
+        OpenComment comment ->
+            { model | comment = Just comment }
 
         CloseComment ->
-            model
+            { model | comment = Nothing }
 
 
-view : List CheckPoint -> Html Msg
-view checkPoints =
+view : Model -> List CheckPoint -> Html Msg
+view model checkPoints =
+    div []
+        [ viewTable checkPoints
+        , model.comment
+            |> Maybe.map (\comment -> viewComment comment)
+            |> Maybe.withDefault C.empty
+        ]
+
+
+viewComment : String -> Html Msg
+viewComment comment =
+    let
+        header =
+            C.empty
+    in
+    simpleModal True CloseComment header [ modalContent [] [ text comment ] ] header
+
+
+viewTable : List CheckPoint -> Html Msg
+viewTable checkPoints =
     table tableModifiers
         []
         [ tableHead [] []
@@ -82,7 +102,7 @@ viewTableRow cp =
                 C.empty
 
               else
-                C.simpleHoverIcon I.comment [ onClick OpenComment ]
+                C.simpleHoverIcon I.comment [ onClick (OpenComment cp.comment) ]
             ]
         ]
 
