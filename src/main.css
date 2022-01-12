@@ -1,3 +1,5 @@
+@import "../node_modules/bulma/css/bulma.css";
+@import "../node_modules/bulma-o-steps/bulma-steps.min.css";
 /*
   elm-hot creates an additional div wrapper around the app to make HMR possible.
   This could break styling in development mode if you are using Elm UI.
@@ -5,6 +7,8 @@
   More context in the issue:
     https://github.com/halfzebra/create-elm-app/issues/320
 */
+
+
 [data-elm-hot="true"] {
   height: inherit;
 }
@@ -14,6 +18,7 @@ body {
   margin: 0;
   text-align: center;
   color: #293c4b;
+  height: 100%;
 }
 
 h1 {
@@ -23,4 +28,27 @@ h1 {
 img {
   margin: 20px 0;
   max-width: 200px;
+}
+
+html {
+  height: 100vh;
+}
+
+.slidein {
+  padding: 2em 3em;
+  position: fixed;
+  z-index: 100;
+  top: 100%;
+  background: #ddd;
+  height: 100%;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, .7);
+  transition: all .5s ease-in-out;
+  right: 0px;
+  width: 100%;
+}
+
+.open {
+  top: 50%;
+  right: 0px;
+  width: 100%;
 }

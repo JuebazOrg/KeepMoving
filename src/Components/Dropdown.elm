@@ -2,16 +2,15 @@ module Components.Dropdown exposing (..)
 
 import Components.BulmaElements exposing (..)
 import Components.Elements as C
-import Html.Styled exposing (Html, option, text)
+import Css exposing (Style, batch, maxHeight, overflow, overflowY, px, scroll)
+import Domain.Regions exposing (Side(..))
+import Html.Styled exposing (Html, a, option, text)
+import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick)
 
 
-type DropDownOption a
-    = Value a
-
-
 type alias Option a =
-    { label : String, value : DropDownOption a }
+    { label : String, value : a }
 
 
 type alias Model a =
@@ -19,16 +18,35 @@ type alias Model a =
     , selectedOption : Maybe (Option a)
     , options : List (Option a)
     , defaultTitle : String
+    , props : Props
     }
 
 
 type Msg a
     = ToggleDropdown
     | UpdateOption (Option a)
+    | Reset
 
-init : List (Option a) -> String -> Model a
-init optionsValues title =
-    { options = optionsValues, isActive = False, selectedOption = Nothing, defaultTitle = title }
+
+type alias Props =
+    { hasDefaulTitleOption : Bool, maxSize : Maybe Float }
+
+
+defaultProps : Props
+defaultProps =
+    { hasDefaulTitleOption = True, maxSize = Nothing }
+
+
+getSelectedValue : Model a -> Maybe a
+getSelectedValue model =
+    model.selectedOption
+        |> Maybe.map
+            (\option -> option.value)
+
+
+init : List (Option a) -> String -> Props -> Model a
+init optionsValues title props =
+    { options = optionsValues, isActive = False, selectedOption = Nothing, defaultTitle = title, props = props }
 
 
 update : Model a -> Msg a -> Model a
@@ -39,6 +57,9 @@ update model msg =
 
         ToggleDropdown ->
             { model | isActive = not model.isActive }
+
+        Reset ->
+            { model | selectedOption = Nothing, isActive = False }
 
 
 myDropdownTrigger : Model a -> Html (Msg a)
@@ -76,10 +97,18 @@ myDropdownMenu model =
                                 dropdownItemLink False [ onClick <| UpdateOption item ] [ text item.label ]
                     )
     in
-    dropdownMenu []
+    dropdownMenu [ A.css [ styled model.props.maxSize ] ]
         []
-        dropdownItems
+        (if model.props.hasDefaulTitleOption then
+            dropdownItemLink
+                False
+                [ onClick <| Reset ]
+                [ text model.defaultTitle ]
+                :: dropdownItems
 
+         else
+            dropdownItems
+        )
 
 
 viewDropDown : Model a -> Html (Msg a)
@@ -90,3 +119,16 @@ viewDropDown model =
         [ myDropdownTrigger model
         , myDropdownMenu model
         ]
+
+
+styled : Maybe Float -> Style
+styled i =
+    case i of
+        Just size ->
+            batch
+                [ maxHeight (px size)
+                , overflowY scroll
+                ]
+
+        Nothing ->
+            batch []

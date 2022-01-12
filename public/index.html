@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="has-navbar-fixed-top">
 
 <head>
   <meta charset="utf-8">
@@ -12,16 +12,18 @@
     -->
   <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
   <link rel="icon" href="%PUBLIC_URL%/favicon.ico">
+  
   <title>Keep Moving</title>
 </head>
 
 <body>
 
+  <!-- <script src="~bulma-calendar/dist/js/bulma-calendar.min.js"></script> -->
   <script type=module src="https://cdn.skypack.dev/calendar-native-web-component@0.0.32"></script>
-  <script type="module" src="https://cdn.jsdelivr.net/npm/@duetds/date-picker@1.3.0/dist/duet/duet.esm.js"></script>
-  <script nomodule src="https://cdn.jsdelivr.net/npm/@duetds/date-picker@1.3.0/dist/duet/duet.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@duetds/date-picker@1.3.0/dist/duet/themes/default.css" />
-  <div id="root"></div>
+
+  <link href="~bulma-calendar/dist/css/bulma-calendar.min.css" rel="stylesheet" />
+
+  <div id="root" ></div>
 </body>
 
 </html>

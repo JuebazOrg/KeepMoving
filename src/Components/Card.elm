@@ -3,12 +3,19 @@ module Components.Card exposing (..)
 import Bulma.Styled.Components as BC
 import Bulma.Styled.Elements as BE
 import Bulma.Styled.Modifiers as BM
+import Css exposing (..)
 import Html.Styled as S
 import Html.Styled.Attributes as A
+import Theme.Colors as Colors
 
 
 card : List (S.Attribute msg) -> List (BC.CardPartition msg) -> BC.Card msg
 card attributes cardPartition =
+    BC.card (List.append attributes cardStyle) cardPartition
+
+
+staticCard : List (S.Attribute msg) -> List (BC.CardPartition msg) -> BC.Card msg
+staticCard attributes cardPartition =
     BC.card attributes cardPartition
 
 
@@ -43,3 +50,11 @@ cardFooter attributes cardFooterItems =
 cardFooterItemLink : List (S.Attribute msg) -> List (S.Html msg) -> BC.CardFooterItem msg
 cardFooterItemLink attributes messages =
     BC.cardFooterItemLink attributes messages
+
+
+cardStyle : List (S.Attribute msg)
+cardStyle =
+    [ A.css
+        [ hover [ backgroundColor Colors.lightestGrey ]
+        ]
+    ]

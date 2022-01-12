@@ -1,4 +1,4 @@
-module Regions exposing (..)
+module Domain.Regions exposing (..)
 
 import Maybe exposing (withDefault)
 
@@ -7,13 +7,14 @@ type Region
     = Leg
     | Arm
     | Neck
-    | Hands
+    | Hand
     | Wrist
     | UpperBack
     | MiddleBack
     | LowerBack
     | Feet
     | Head
+    | Other
 
 
 type Side
@@ -28,7 +29,7 @@ type alias BodyRegion =
 
 regions : List Region
 regions =
-    [ Leg, Arm, Neck, Hands, Wrist, UpperBack, MiddleBack, LowerBack, Feet, Head ]
+    [ Leg, Arm, Neck, Hand, Wrist, UpperBack, MiddleBack, LowerBack, Feet, Head, Other ]
 
 
 sides : List Side
@@ -51,13 +52,13 @@ fromSide : Side -> String
 fromSide side =
     case side of
         Right ->
-            "right"
+            "Right"
 
         Left ->
-            "left"
+            "Left"
 
         Middle ->
-            "middle"
+            "Middle"
 
 
 fromRegion : Region -> String
@@ -67,28 +68,31 @@ fromRegion region =
             "Leg"
 
         Arm ->
-            "arm"
+            "Arm"
 
         Neck ->
-            "neck"
+            "Neck"
 
-        Hands ->
-            "hands"
+        Hand ->
+            "Hands"
 
         Wrist ->
-            "wrist"
+            "Wrist"
 
         UpperBack ->
-            "upper back"
+            "Upper back"
 
         MiddleBack ->
-            "middle back"
+            "Middle back"
 
         LowerBack ->
-            "lower back"
+            "Lower back"
 
         Feet ->
-            "foot"
+            "Feet"
 
         Head ->
-            "head"
+            "Head"
+
+        Other ->
+            "Other"

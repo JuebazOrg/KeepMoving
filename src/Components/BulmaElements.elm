@@ -9,9 +9,13 @@ import Html.Styled as S
 import Html.Styled.Attributes as A
 
 
-tag : TagProps -> List (S.Html msg) -> S.Html msg
-tag tagProps messages =
-    BE.tag tagProps [ A.css [ maxWidth fitContent ] ] messages
+tag : TagProps -> List (S.Attribute msg) -> List (S.Html msg) -> S.Html msg
+tag tagProps attributes messages =
+    let
+        styled =
+            List.append [ A.css [ maxWidth fitContent ] ] attributes
+    in
+    BE.tag tagProps styled messages
 
 
 button : ButtonProps msg -> List (S.Attribute msg) -> List (S.Html msg) -> S.Html msg

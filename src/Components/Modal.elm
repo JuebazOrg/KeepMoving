@@ -3,6 +3,7 @@ module Components.Modal exposing (..)
 import Bulma.Styled.Components as BC
 import Bulma.Styled.Elements as BE
 import Bulma.Styled.Modifiers as BM
+import Css exposing (..)
 import Html.Styled as S
 import Html.Styled.Attributes as A
 
@@ -52,3 +53,18 @@ modalContent attributes messages =
 modalBackground : List (S.Attribute msg) -> List (S.Html msg) -> BC.ModalPartition msg
 modalBackground attributes messages =
     BC.modalBackground attributes messages
+
+
+simpleModal : Bool -> BC.ModalCardPartition msg -> List (S.Html msg) -> BC.ModalCardPartition msg -> S.Html msg
+simpleModal isOpen header content footer =
+    modal isOpen
+        []
+        [ modalBackground [] []
+        , modalContent [ A.css [ displayFlex, important <| overflow visible ] ]
+            [ modalCard [ A.css [ important <| overflow visible ] ]
+                [ header
+                , modalCardBody [ A.css [ important <| overflow visible ] ] content
+                , footer
+                ]
+            ]
+        ]

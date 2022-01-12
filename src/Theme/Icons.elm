@@ -54,6 +54,11 @@ dynamicIconStyle colorValue hoverColor =
         ]
 
 
+back : String
+back =
+    "fa fa-arrow-left"
+
+
 add : String
 add =
     "fa fa-plus"
@@ -78,8 +83,22 @@ close : String
 close =
     "fa fa-close"
 
+
 region : String
-region = "fa fa-compass"
+region =
+    "fa fa-compass"
+
 
 caretDown : String
-caretDown = "fa fa-caret-down"
+caretDown =
+    "fa fa-caret-down"
+
+
+filter : String
+filter =
+    "fa fa-filter"
+
+
+comment : String
+comment =
+    "fa fa-comment"

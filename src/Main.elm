@@ -1,71 +1,176 @@
 module Main exposing (..)
 
-import Browser
+import Browser exposing (Document, UrlRequest)
+import Browser.Navigation as Nav
 import Bulma.Styled.CDN exposing (..)
-import Components.Elements exposing (h4Title, roundButton)
 import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
-import Injuries exposing (Injury, Msg, view)
-import Mock.InjuryMock as M
-import SideBarNav exposing (Msg, viewSideNav)
-import Theme.Colors exposing (..)
-import Theme.Icons as I
+import Navigation.NavBar exposing (myNavbarBurger, viewNavBar)
+import Navigation.Route as Route exposing (Route(..))
+import Pages.Injuries.Injuries as Injuries exposing (Msg, view)
+import Pages.InjuryDetails.InjuryDetail as InjuryDetail
+import Pages.NewInjury as NewInjury
+import Url exposing (Url)
 
 
 type alias Model =
-    { injuries : Injuries.Model
+    { route : Route
+    , page : Page
+    , navKey : Nav.Key
     }
 
 
-init : ( Model, Cmd Msg )
-init =
-    let
-        model =
-            Injuries.init [ M.anInjury, M.anInjury2 ]
-    in
-    ( { injuries = model }, Cmd.none )
+type Page
+    = NotFoundPage
+    | InjuriesPage Injuries.Model
+    | InjuryPage InjuryDetail.Model
+    | NewInjuryPage NewInjury.Model
 
 
 type Msg
-    = SideBarNavMsg SideBarNav.Msg
-    | InjuriesMsg Injuries.Msg
+    = InjuriesMsg Injuries.Msg
+    | LinkClicked UrlRequest
+    | UrlChanged Url
+    | InjuryDetailMsg InjuryDetail.Msg
+    | NewInjuryPageMsg NewInjury.Msg
+
+
+init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
+init flags url navKey =
+    let
+        model =
+            { route = Route.parseUrl url
+            , page = NotFoundPage
+            , navKey = navKey
+            }
+    in
+    initCurrentPage ( model, Cmd.none )
+
+
+initCurrentPage : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
+initCurrentPage ( model, existingCmds ) =
+    let
+        ( currentPage, mappedPageCmds ) =
+            case model.route of
+                Route.NotFound ->
+                    ( NotFoundPage, Cmd.none )
+
+                Route.Injuries ->
+                    let
+                        ( pageModel, pageCmds ) =
+                            Injuries.init model.navKey
+                    in
+                    ( InjuriesPage pageModel, Cmd.map InjuriesMsg pageCmds )
+
+                Route.Injury id ->
+                    let
+                        ( pageModel, pageCmds ) =
+                            InjuryDetail.init model.navKey id
+                    in
+                    ( InjuryPage pageModel, Cmd.map InjuryDetailMsg pageCmds )
+
+                Route.NewInjury ->
+                    ( NewInjuryPage <| NewInjury.init model.navKey, Cmd.none )
+    in
+    ( { model | page = currentPage }
+    , Cmd.batch [ existingCmds, mappedPageCmds ]
+    )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of
-        InjuriesMsg subMsg ->
-            ( { model | injuries = Injuries.update model.injuries subMsg }, Cmd.none )
+    case ( msg, model.page ) of
+        ( InjuriesMsg subMsg, InjuriesPage pageModel ) ->
+            let
+                ( updatedPageModel, updatedCmd ) =
+                    Injuries.update pageModel subMsg
+            in
+            ( { model | page = InjuriesPage updatedPageModel }
+            , Cmd.map InjuriesMsg updatedCmd
+            )
 
-        SideBarNavMsg subMsg ->
+        ( InjuryDetailMsg subMsg, InjuryPage pageModel ) ->
+            let
+                ( updatedPageModel, updatedCmd ) =
+                    InjuryDetail.update subMsg pageModel
+            in
+            ( { model | page = InjuryPage updatedPageModel }
+            , Cmd.map InjuryDetailMsg updatedCmd
+            )
+
+        ( NewInjuryPageMsg subMsg, NewInjuryPage pageModel ) ->
+            let
+                ( updatedPageModel, updatedCmd ) =
+                    NewInjury.update pageModel subMsg
+            in
+            ( { model | page = NewInjuryPage updatedPageModel }
+            , Cmd.map NewInjuryPageMsg updatedCmd
+            )
+
+        ( LinkClicked urlRequest, _ ) ->
+            case urlRequest of
+                Browser.Internal url ->
+                    ( model
+                    , Nav.pushUrl model.navKey (Url.toString url)
+                    )
+
+                Browser.External url ->
+                    ( model
+                    , Cmd.none
+                      -- todo : wierd behavior
+                    )
+
+        ( UrlChanged url, _ ) ->
+            let
+                newRoute =
+                    Route.parseUrl url
+            in
+            ( { model | route = newRoute }, Cmd.none )
+                |> initCurrentPage
+
+        ( _, _ ) ->
             ( model, Cmd.none )
 
 
-viewHeader : Html Msg
-viewHeader =
-    div [ A.css [ backgroundColor white, padding2 (px 10) (px 20), displayFlex, justifyContent spaceBetween, alignItems center ] ]
-        [ div [ A.css [ displayFlex, alignItems center ] ]
-            [ I.yogaIcon 45, h4Title [] [ text "Keep Moving" ] ]
-        , div
-            []
-            [ roundButton 45 [ text "JB" ] ]
-        ]
-
-
-view : Model -> Html Msg
+view : Model -> Document Msg
 view model =
-    div [ A.css [ displayFlex, flexDirection column, height (vh 100) ] ]
-        [ viewHeader
-        , div [ A.css [ displayFlex, flex (int 1) ] ]
-            [ stylesheet
-            , fontAwesomeCDN
-            , map SideBarNavMsg viewSideNav
-            , div
-                [ A.css [ backgroundColor primaryLightest, flex (int 6), padding (px 20) ] ]
-                [ map InjuriesMsg (Injuries.view model.injuries) ]
-            ]
+    { title = "KeepMoving"
+    , body =
+        currentView model
+            |> toUnstyled
+            |> List.singleton
+    }
+
+
+currentView : Model -> Html Msg
+currentView model =
+    let
+        content =
+            case model.page of
+                NotFoundPage ->
+                    notFoundView
+
+                InjuriesPage pageModel ->
+                    map InjuriesMsg (Injuries.view pageModel)
+
+                InjuryPage pageModel ->
+                    map InjuryDetailMsg (InjuryDetail.view pageModel)
+
+                NewInjuryPage pageModel ->
+                    map NewInjuryPageMsg (NewInjury.view pageModel)
+    in
+    div [ A.css [ height (pct 100) ] ]
+        [ stylesheet
+        , fontAwesomeCDN
+        , viewNavBar True
+        , div [ A.css [ padding (px 20) ] ] [ content ]
         ]
+
+
+notFoundView : Html msg
+notFoundView =
+    h3 [] [ text "Oops! The page you requested was not found!" ]
 
 
 fontAwesomeCDN =
@@ -82,9 +187,11 @@ fontAwesomeCDN =
 
 main : Program () Model Msg
 main =
-    Browser.element
-        { view = view >> toUnstyled
-        , init = \_ -> init
+    Browser.application
+        { init = init
+        , view = view
         , update = update
-        , subscriptions = always Sub.none
+        , subscriptions = \_ -> Sub.none
+        , onUrlRequest = LinkClicked
+        , onUrlChange = UrlChanged
         }
