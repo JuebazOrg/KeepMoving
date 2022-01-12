@@ -18,6 +18,7 @@ import Id exposing (Id)
 import Navigation.Route as Route
 import Pages.InjuryDetails.AddCheckPoint as CheckPointModal
 import Pages.InjuryDetails.CheckPoints as CheckPoints
+import Pages.InjuryDetails.DetailsComponents exposing (..)
 import RemoteData as RemoteData exposing (RemoteData(..), WebData)
 import Theme.Mobile as M
 import Theme.Spacing as SP
@@ -104,13 +105,20 @@ view model =
     viewInjuryOrError model
 
 
-viewHeader : Injury -> Html Msg
-viewHeader injury =
-    div [ A.css [ displayFlex, justifyContent spaceBetween ] ]
-        [ C.backButton [ onClick GoBack ] []
-        , C.h3Title [] [ text "Injury Details" ]
-        , div [] []
-        ]
+viewInjuryOrError : Model -> Html Msg
+viewInjuryOrError model =
+    case model.injury of
+        RemoteData.NotAsked ->
+            text "not asked for yet"
+
+        RemoteData.Loading ->
+            h3 [] [ text "Loading..." ]
+
+        RemoteData.Success injury ->
+            viewContent injury model.checkPointModal model.checkPoints model.isModalOpen
+
+        RemoteData.Failure httpError ->
+            div [] [ text <| Client.client.defaultErrorMessage httpError ]
 
 
 viewContent : Injury -> CheckPointModal.Model -> CheckPoints.Model -> Bool -> Html Msg
@@ -122,13 +130,12 @@ viewContent injury checkPointModal checkPointsModel isModalOpen =
         ]
 
 
-viewCheckPoints : Injury -> CheckPoints.Model -> Html Msg
-viewCheckPoints injury checkPointsModel =
-    article [ A.class "tile is-child notification is-primar", A.css [ important <| padding SP.medium ] ]
-        [ p [ A.class "subtitle" ] [ text "Checkpoints", C.addButton [ onClick OpenModal, A.css [ marginLeft SP.small ] ] [] ]
-        , div [ A.class "content", A.css [ displayFlex, flexDirection column ] ]
-            [ map CheckPointsMsg (CheckPoints.view checkPointsModel injury.checkPoints)
-            ]
+viewHeader : Injury -> Html Msg
+viewHeader injury =
+    div [ A.css [ displayFlex, justifyContent spaceBetween ] ]
+        [ C.backButton [ onClick GoBack ] []
+        , C.h3Title [] [ text "Injury Details" ]
+        , div [] []
         ]
 
 
@@ -153,87 +160,14 @@ viewInfo injury checkPointsModel =
         ]
 
 
-viewTagInfo : Injury -> Html Msg
-viewTagInfo injury =
-    article [ A.class "tile is-child notification", A.css [ important <| padding SP.medium ] ]
-        [ div [ A.class "content", A.css [ displayFlex, flexDirection column ] ]
-            [ div [ tagsContainerStyle ] [ div [] [ label [ A.css [ marginRight SP.small ] ] [ text "Region" ] ], C.mediumPrimaryTag [ text <| bodyRegionToString injury.bodyRegion ] ]
-            , div [ tagsContainerStyle ] [ div [] [ label [ A.css [ marginRight SP.small ] ] [ text "Location" ] ], C.mediumPrimaryTag [ text injury.location ] ]
-            , div [ tagsContainerStyle ] [ div [] [ label [ A.css [ marginRight SP.small ] ] [ text "Injury type" ] ], C.mediumPrimaryTag [ text <| injuryTypeToString injury.injuryType ] ]
-            , div [ tagsContainerStyle ]
-                [ div [] [ label [ A.css [ marginRight SP.small ] ] [ text "Status" ] ]
-                , C.mediumWarningTag
-                    [ text <|
-                        if Domain.Injury.isActive injury then
-                            "Active"
-
-                        else
-                            "Healed"
-                    ]
-                ]
-            ]
-        ]
-
-
-viewDescription : Injury -> Html Msg
-viewDescription injury =
-    article [ A.class "tile is-child notification is-primary" ]
-        [ div [ A.class "content", A.css [ displayFlex, flexDirection column ] ]
-            [ p [ A.class "subtitle" ] [ text "Description" ]
-            , p [ A.class "content" ] [ text injury.description ]
-            ]
-        ]
-
-
-viewHow : Injury -> Html Msg
-viewHow injury =
-    article [ A.class "tile is-child notification is-primary is-light" ]
-        [ div [ A.class "content", A.css [ displayFlex, flexDirection column ] ]
-            [ p [ A.class "subtitle" ] [ text "How it happened" ]
-            , p [ A.class "content" ] [ text injury.how ]
-            ]
-        ]
-
-
-viewDates : Injury -> Html Msg
-viewDates injury =
-    let
-        endDateToString =
-            Maybe.map Date.toIsoString >> Maybe.withDefault "-"
-    in
-    article [ A.class "tile is-child notification is-primary is-warning" ]
-        [ p [ A.class "subtitle" ] [ text "When" ]
+viewCheckPoints : Injury -> CheckPoints.Model -> Html Msg
+viewCheckPoints injury checkPointsModel =
+    article [ A.class "tile is-child notification is-primar", A.css [ important <| padding SP.medium ] ]
+        [ p [ A.class "subtitle", A.css [ displayFlex, alignItems center, justifyContent center ] ] [ text "Checkpoints", C.addButton [ onClick OpenModal, A.css [ marginLeft SP.small ] ] [] ]
         , div [ A.class "content", A.css [ displayFlex, flexDirection column ] ]
-            [ div [ A.css [ displayFlex, flexDirection column, alignItems flexStart ] ]
-                [ viewDateField (Date.toIsoString injury.startDate) "Start date"
-                , viewDateField (endDateToString injury.endDate) "End date"
-                ]
+            [ map CheckPointsMsg (CheckPoints.view checkPointsModel injury.checkPoints)
             ]
         ]
-
-
-viewDateField : String -> String -> Html Msg
-viewDateField date titleLabel =
-    div [ A.css [ displayFlex, width (pct 100), justifyContent spaceBetween ] ]
-        [ label [] [ text titleLabel ]
-        , label [] [ text date ]
-        ]
-
-
-viewInjuryOrError : Model -> Html Msg
-viewInjuryOrError model =
-    case model.injury of
-        RemoteData.NotAsked ->
-            text "not asked for yet"
-
-        RemoteData.Loading ->
-            h3 [] [ text "Loading..." ]
-
-        RemoteData.Success injury ->
-            viewContent injury model.checkPointModal model.checkPoints model.isModalOpen
-
-        RemoteData.Failure httpError ->
-            div [] [ text <| Client.client.defaultErrorMessage httpError ]
 
 
 viewCheckPointModal : Bool -> CheckPointModal.Model -> Html Msg
@@ -246,12 +180,3 @@ viewCheckPointModal isOpen model =
             CM.modalCardFoot [ A.css [ flexDirection rowReverse ] ] [ C.saveButton [ onClick SaveCheckpoint ] [] ]
     in
     CM.simpleModal isOpen CloseModal header [ map CheckPointModalMsg <| CheckPointModal.view model ] footer
-
-
-
--- style --
-
-
-tagsContainerStyle : Attribute msg
-tagsContainerStyle =
-    A.css [ displayFlex, marginBottom SP.medium, justifyContent spaceBetween ]
