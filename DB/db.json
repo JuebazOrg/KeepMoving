@@ -1,0 +1,148 @@
+{
+  "injuries": [
+    {
+      "id": 1,
+      "bodyRegion": {
+        "region": "Head",
+        "side": null
+      },
+      "location": "sur le front",
+      "description": "mal a la tete, halo, difficulté a concentrer",
+      "startDate": "2020-02-02",
+      "endDate": "2020-02-02",
+      "how": "cogner la tete en jouant a cache cahe",
+      "injuryType": "Other",
+      "checkPoints": [
+        {
+          "id": 1,
+          "date": "2020-02-03",
+          "comment": "pas vraiment changer",
+          "painLevel": 4,
+          "trend": "stable"
+        },
+        {
+          "id": 2,
+          "date": "2020-02-04",
+          "comment": "",
+          "painLevel": 5,
+          "trend": "stable"
+        },
+        {
+          "id": 2,
+          "date": "2020-02-04",
+          "comment": "",
+          "painLevel": 5,
+          "trend": "worst"
+        },
+        {
+          "id": 2,
+          "date": "2020-02-04",
+          "comment": "pas vraiment changer",
+          "painLevel": 5,
+          "trend": "better"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "description": "brule quand movement de coté",
+      "location": "sur l'extérieur",
+      "bodyRegion": {
+        "region": "Wrist",
+        "side": "Left"
+      },
+      "startDate": "2020-02-02",
+      "endDate": "2020-02-02",
+      "how": "mauvais mouvement en escalade",
+      "injuryType": "Sprains",
+      "checkPoints": [
+        {
+          "id": -1,
+          "date": "2020-01-03",
+          "comment": "jai plus mal a l'epaul que il y a 2 semaine. ",
+          "painLevel": 2,
+          "trend": "worst"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "description": "sdf sdlfj laksdjf askdjflskdf lakjsdfl asdflk sfkdlj",
+      "location": "sdff",
+      "bodyRegion": {
+        "region": "Leg",
+        "side": "Left"
+      },
+      "startDate": "2022-01-04",
+      "endDate": null,
+      "how": "",
+      "injuryType": "Dislocation",
+      "checkPoints": [
+        {
+          "id": -1,
+          "date": "2020-01-03",
+          "comment": "",
+          "painLevel": 2,
+          "trend": "worst"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "description": "juewlrj slkdfj slkdfjsd",
+      "location": "sdfsd",
+      "bodyRegion": {
+        "region": "Arm",
+        "side": "Right"
+      },
+      "startDate": "2021-12-15",
+      "endDate": null,
+      "how": "",
+      "injuryType": "Bruises",
+      "checkPoints": [
+        {
+          "id": -1,
+          "date": "2020-01-03",
+          "comment": "",
+          "painLevel": 3,
+          "trend": "worst"
+        },
+        {
+          "id": -1,
+          "date": "2020-01-03",
+          "comment": "",
+          "painLevel": 4,
+          "trend": "worst"
+        }
+      ]
+    },
+    {
+      "description": "Les licornes font des gros cacs",
+      "location": "Licorne",
+      "bodyRegion": {
+        "region": "Leg",
+        "side": "Left"
+      },
+      "startDate": "2022-01-11",
+      "endDate": null,
+      "how": "",
+      "injuryType": "Bruises",
+      "checkPoints": [],
+      "id": 5
+    },
+    {
+      "description": "s",
+      "location": "cz",
+      "bodyRegion": {
+        "region": "Arm",
+        "side": null
+      },
+      "startDate": "2022-01-13",
+      "endDate": null,
+      "how": "",
+      "injuryType": "Dislocation",
+      "checkPoints": [],
+      "id": 6
+    }
+  ]
+}

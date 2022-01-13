@@ -1,4 +1,4 @@
-module Pages.InjuryDetails.AddCheckPoint exposing (..)
+module Pages.InjuryDetails.Components.AddCheckPoint exposing (Model, Msg, getNewCheckPoint, init, update, view)
 
 import Components.Calendar.DatePicker as DP
 import Components.Dropdown as DD exposing (defaultProps)
@@ -8,6 +8,7 @@ import Components.Modal as CM
 import Css exposing (..)
 import Date
 import Domain.CheckPoint exposing (CheckPoint, NewCheckPoint, Trend(..), levels, trendToString)
+import Domain.Injury exposing (Injury)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick, onInput)
@@ -54,9 +55,9 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div [ A.css [ displayFlex, flexDirection column ] ]
-        [ CF.field [ A.css [ margin SP.small, displayFlex, justifyContent spaceBetween ] ] [ CF.controlLabel [] [ text "Trend" ], map TrendDropDownMsg <| DD.viewDropDown model.trend ]
-        , CF.field [ A.css [ margin SP.small, displayFlex, justifyContent spaceBetween ] ] [ CF.controlLabel [] [ text "Pain Level" ], map LevelDropDownMsg <| DD.viewDropDown model.level ]
-        , CF.field [ A.css [ margin SP.small, displayFlex, justifyContent spaceBetween ] ] [ CF.controlLabel [] [ text "Date" ], map DateChange <| DP.view model.date ]
+        [ CF.field [ fieldAttribute ] [ CF.controlLabel [] [ text "Trend" ], map TrendDropDownMsg <| DD.viewDropDown model.trend ]
+        , CF.field [ fieldAttribute ] [ CF.controlLabel [] [ text "Pain Level" ], map LevelDropDownMsg <| DD.viewDropDown model.level ]
+        , CF.field [ fieldAttribute ] [ CF.controlLabel [] [ text "Date" ], map DateChange <| DP.view model.date ]
         ]
 
 
@@ -75,6 +76,11 @@ getNewCheckPoint model =
     { comment = ""
     , trend = Maybe.withDefault Stable <| DD.getSelectedValue model.trend
     , painLevel = Maybe.withDefault 5 <| DD.getSelectedValue model.level
-    , date = Date.fromCalendarDate 2020 Jan 3
+    , date = Maybe.withDefault (Date.fromCalendarDate 2 Jan 2020) model.date
     , id = Id.noId
     }
+
+
+fieldAttribute : Attribute msg
+fieldAttribute =
+    A.css [ margin SP.small, displayFlex, justifyContent spaceBetween ]

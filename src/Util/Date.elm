@@ -13,3 +13,17 @@ orderByLeastRecent dates =
     dates
         |> List.sortWith D.compare
         |> List.reverse
+
+
+formatMMDY : D.Date -> String 
+formatMMDY date = 
+    D.format "MMM d, y" date
+
+formatMMMMDY : D.Date -> String 
+formatMMMMDY date = 
+    D.format "MMMM d, y" date
+
+
+formatMMDD: D.Date -> String
+formatMMDD date = 
+    D.format "MMM d" date

@@ -1,6 +1,8 @@
 module Domain.Injury exposing (..)
 
 import Date exposing (Date)
+import Dict exposing (Dict)
+import Dict.Extra as Dict
 import Domain.CheckPoint exposing (CheckPoint)
 import Domain.Regions exposing (BodyRegion, Region(..))
 import Id exposing (Id)
@@ -37,7 +39,7 @@ type alias NewInjury =
     , endDate : Maybe Date
     , how : String
     , injuryType : InjuryType
-    , checkPoints : List CheckPoint -- to be initialise by backend ? 
+    , checkPoints : List CheckPoint -- to be initialise by backend ?
     }
 
 
@@ -82,3 +84,16 @@ isActive injury =
 
         Nothing ->
             True
+
+
+injuriesByYear : List Injury -> Dict Int (List Injury)
+injuriesByYear injuries =
+    injuries
+        |> List.map
+            (\i ->
+                { date = Date.year i.startDate, injuries = [ i ] }
+            )
+        |> Dict.groupBy (\i -> i.date)
+        |> Dict.map (\_ -> List.map .injuries)
+        |> Dict.map (\_ -> List.concat)
+
