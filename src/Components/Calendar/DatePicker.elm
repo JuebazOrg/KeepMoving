@@ -10,12 +10,12 @@ import Json.Decode as Decode
 
 
 type alias Model =
-    { date : Maybe Date }
+    Maybe Date
 
 
 init : Model
 init =
-    { date = Nothing }
+    Nothing
 
 
 type Msg
@@ -26,16 +26,12 @@ update : Msg -> Model -> Model
 update msg model =
     case msg of
         DatePicked dateString ->
-            let
-                date =
-                    case Date.fromIsoString dateString of
-                        Ok date_ ->
-                            Just date_
+            case Date.fromIsoString dateString of
+                Ok date_ ->
+                    Just date_
 
-                        Err _ ->
-                            Nothing
-            in
-            { model | date = date }
+                Err _ ->
+                    Nothing
 
 
 view : Model -> Html Msg

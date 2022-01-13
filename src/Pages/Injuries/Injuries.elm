@@ -10,8 +10,7 @@ import Components.Form exposing (controlCheckBox)
 import Components.SlidingPanel as CS
 import Css exposing (..)
 import Date exposing (..)
-import Dict exposing (Dict)
-import Dict.Extra as Dict
+import Dict as Dict
 import Domain.Injury exposing (..)
 import Domain.Regions exposing (..)
 import Html.Styled exposing (..)
@@ -63,10 +62,6 @@ type Msg
 
 update : Model -> Msg -> ( Model, Cmd Msg )
 update model msg =
-    let
-        filters =
-            model.filters
-    in
     case msg of
         FetchInjuries ->
             ( model, getInjuries )
@@ -128,7 +123,7 @@ viewInjuriesByYear : List Injury -> Html Msg
 viewInjuriesByYear injuries =
     let
         iByY =
-            formatToYearList injuries
+            injuriesByYear injuries
     in
     div []
         (iByY
@@ -175,21 +170,3 @@ viewInjury injury =
             ]
         , cardContent [] [ text <| injury.location ]
         ]
-
-
-formatToYearList : List Injury -> Dict Int (List Injury)
-formatToYearList injuries =
-    injuries
-        |> List.map
-            (\i ->
-                { date = Date.year i.startDate, injuries = [ i ] }
-            )
-        |> concat
-
-
-concat : List { date : Int, injuries : List Injury } -> Dict Int (List Injury)
-concat list =
-    list
-        |> Dict.groupBy (\i -> i.date)
-        |> Dict.map (\_ -> List.map .injuries)
-        |> Dict.map (\_ -> List.concat)

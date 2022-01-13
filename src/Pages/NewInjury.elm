@@ -122,8 +122,8 @@ createNewInjuryFromForm model =
         }
     , location = model.location
     , description = model.description
-    , startDate = Maybe.withDefault defaultDate model.startDate.date
-    , endDate = model.endDate.date
+    , startDate = Maybe.withDefault defaultDate model.startDate
+    , endDate = model.endDate
     , how = model.how
     , injuryType = Maybe.withDefault OtherInjuryType (DD.getSelectedValue model.injuryTypeDropDown)
     , checkPoints = []
