@@ -57,11 +57,19 @@ viewHow injury =
         ]
 
 
-viewDates : Injury -> Html msg
-viewDates injury =
+viewDates : Injury -> Maybe Date -> Html msg
+viewDates injury today =
     let
         endDateToString =
             Maybe.map formatMMMMDY >> Maybe.withDefault "-"
+
+        endDate =
+            case injury.endDate of
+                Nothing ->
+                    today
+
+                Just date ->
+                    Just date
     in
     article [ A.class "tile is-child notification is-primary is-warning" ]
         [ p [ A.class "subtitle" ] [ text "When" ]
@@ -69,15 +77,20 @@ viewDates injury =
             [ div [ A.css [ displayFlex, flexDirection column, alignItems flexStart ] ]
                 [ viewDateField (formatMMMMDY injury.startDate) "Start date"
                 , viewDateField (endDateToString injury.endDate) "End date"
-                , viewDateField (String.fromInt (diffInDaysOfInjury injury.startDate injury.endDate)) "Days of injury"
+                , viewDateField (diffInDaysOfInjury injury.startDate endDate) "Days of injury"
                 ]
             ]
         ]
 
 
-diffInDaysOfInjury : Date -> Maybe Date -> Int
+diffInDaysOfInjury : Date -> Maybe Date -> String
 diffInDaysOfInjury startDate endDate =
-    diff Days startDate startDate
+    case endDate of
+        Nothing ->
+            "not available"
+
+        Just a ->
+            String.fromInt <| diff Days startDate a
 
 
 viewDateField : String -> String -> Html msg

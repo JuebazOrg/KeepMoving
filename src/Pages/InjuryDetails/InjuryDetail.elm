@@ -31,6 +31,7 @@ type alias Model =
     , checkPointModal : CheckPointModal.Model
     , isModalOpen : Bool
     , checkPoints : CheckPoints.Model
+    , today : Maybe Date.Date
     }
 
 
@@ -41,6 +42,7 @@ init navKey id =
       , checkPointModal = CheckPointModal.init
       , isModalOpen = False
       , checkPoints = CheckPoints.init
+      , today = Nothing
       }
     , getInjury id
     )
@@ -74,8 +76,8 @@ update msg model =
         InjuryReceived response ->
             ( { model | injury = response }, now )
 
-        SetDate date -> 
-            (model, Cmd.none)
+        SetDate date ->
+            ( { model | today = date }, Cmd.none )
 
         GoBack ->
             ( model, Route.pushUrl Route.Injuries model.navKey )
@@ -125,18 +127,18 @@ viewInjuryOrError model =
             h3 [] [ text "Loading..." ]
 
         RemoteData.Success injury ->
-            viewContent injury model.checkPointModal model.checkPoints model.isModalOpen
+            viewContent injury model
 
         RemoteData.Failure httpError ->
             div [] [ text <| Client.client.defaultErrorMessage httpError ]
 
 
-viewContent : Injury -> CheckPointModal.Model -> CheckPoints.Model -> Bool -> Html Msg
-viewContent injury checkPointModal checkPointsModel isModalOpen =
+viewContent : Injury -> Model -> Html Msg
+viewContent injury model =
     div []
         [ viewHeader injury
-        , viewInfo injury checkPointsModel
-        , viewCheckPointModal isModalOpen checkPointModal
+        , viewInfo injury model
+        , viewCheckPointModal model.isModalOpen model.checkPointModal
         ]
 
 
@@ -149,8 +151,8 @@ viewHeader injury =
         ]
 
 
-viewInfo : Injury -> CheckPoints.Model -> Html Msg
-viewInfo injury checkPointsModel =
+viewInfo : Injury -> Model -> Html Msg
+viewInfo injury model =
     div [ A.class "tile is-ancestor is-vertical" ]
         [ div [ A.class "tile" ]
             [ div [ A.class "tile is-parent is-vertical" ]
@@ -159,16 +161,15 @@ viewInfo injury checkPointsModel =
                 ]
             , div [ A.class "tile is-parent is-vertical" ]
                 [ viewHow injury
-                , viewDates injury
+                , viewDates injury model.today
                 ]
             ]
         , div [ A.class "tile" ]
             [ div [ A.class "tile is-parent" ]
-                [ viewCheckPoints injury checkPointsModel
+                [ viewCheckPoints injury model.checkPoints
                 ]
             ]
         ]
-
 
 
 viewCheckPoints : Injury -> CheckPoints.Model -> Html Msg
