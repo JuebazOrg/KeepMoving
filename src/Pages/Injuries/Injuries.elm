@@ -10,6 +10,8 @@ import Components.Form exposing (controlCheckBox)
 import Components.SlidingPanel as CS
 import Css exposing (..)
 import Date exposing (..)
+import Dict exposing (Dict)
+import Dict.Extra as Dict
 import Domain.Injury exposing (..)
 import Domain.Regions exposing (..)
 import Html.Styled exposing (..)
@@ -18,8 +20,10 @@ import Html.Styled.Events exposing (onCheck, onClick)
 import Navigation.Route as Route
 import Pages.Injuries.Filters as Filters
 import RemoteData exposing (RemoteData(..), WebData)
+import Theme.Colors exposing (grey)
 import Theme.Icons as I
 import Theme.Spacing as SP
+import Util.Date exposing (formatMMDD)
 
 
 
@@ -113,21 +117,39 @@ viewInjuriesOrError model =
 viewInjuries : List Injury -> Filters.Model -> Html Msg
 viewInjuries injuries filterModel =
     div [ A.css [ displayFlex, flexDirection column ] ]
-        (injuries
+        [ injuries
             |> Filters.filterInjuries filterModel.filters
             |> Filters.orderInjuries filterModel.order
+            |> viewInjuriesByYear
+        ]
+
+
+viewInjuriesByYear : List Injury -> Html Msg
+viewInjuriesByYear injuries =
+    let
+        iByY =
+            formatToYearList injuries
+    in
+    div []
+        (iByY
+            |> Dict.toList
             |> List.map
-                (\i -> viewInjury i)
+                (\( k, v ) ->
+                    div [ A.css [ margin SP.medium ] ]
+                        [ viewYear k
+                        , div [] <| List.map (\i -> viewInjury i) v
+                        ]
+                )
         )
+
+
+viewYear : Int -> Html msg
+viewYear year =
+    div [] [ hr [] [], label [ A.css [ color grey ] ] [ text <| String.fromInt year ], hr [] [] ]
 
 
 viewInjury : Injury -> Html Msg
 viewInjury injury =
-    let
-        startDate =
-            injury.startDate
-                |> Date.toIsoString
-    in
     card
         [ onClick <| OpenDetail injury, A.css [ borderRadius SP.small, marginTop SP.medium, important (maxWidth (px 500)) ] ]
         [ cardHeader []
@@ -144,7 +166,7 @@ viewInjury injury =
                     []
                     [ i [ A.class I.calendar ] []
                     ]
-                , span [] [ text startDate ]
+                , span [] [ text <| formatMMDD injury.startDate ]
                 , C.icon
                     [ A.css [ paddingLeft SP.small ] ]
                     [ i [ A.class I.edit ] []
@@ -153,3 +175,21 @@ viewInjury injury =
             ]
         , cardContent [] [ text <| injury.location ]
         ]
+
+
+formatToYearList : List Injury -> Dict Int (List Injury)
+formatToYearList injuries =
+    injuries
+        |> List.map
+            (\i ->
+                { date = Date.year i.startDate, injuries = [ i ] }
+            )
+        |> concat
+
+
+concat : List { date : Int, injuries : List Injury } -> Dict Int (List Injury)
+concat list =
+    list
+        |> Dict.groupBy (\i -> i.date)
+        |> Dict.map (\_ -> List.map .injuries)
+        |> Dict.map (\_ -> List.concat)

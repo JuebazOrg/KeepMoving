@@ -23,3 +23,7 @@ formatMMMMDY : D.Date -> String
 formatMMMMDY date = 
     D.format "MMMM d, y" date
 
+
+formatMMDD: D.Date -> String
+formatMMDD date = 
+    D.format "MMM d" date
