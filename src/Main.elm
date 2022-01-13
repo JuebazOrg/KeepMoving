@@ -8,9 +8,11 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Navigation.NavBar exposing (myNavbarBurger, viewNavBar)
 import Navigation.Route as Route exposing (Route(..))
+import Pages.AddInjury.Update as AddInjury
+import Pages.AddInjury.View as AddInjuryView
 import Pages.Injuries.Injuries as Injuries exposing (Msg, view)
-import Pages.InjuryDetails.InjuryDetail as InjuryDetail
-import Pages.NewInjury as NewInjury
+import Pages.InjuryDetails.Update as InjuryDetail
+import Pages.InjuryDetails.View as InjuryDetailView
 import Url exposing (Url)
 
 
@@ -25,7 +27,7 @@ type Page
     = NotFoundPage
     | InjuriesPage Injuries.Model
     | InjuryPage InjuryDetail.Model
-    | NewInjuryPage NewInjury.Model
+    | NewInjuryPage AddInjury.Model
 
 
 type Msg
@@ -33,7 +35,7 @@ type Msg
     | LinkClicked UrlRequest
     | UrlChanged Url
     | InjuryDetailMsg InjuryDetail.Msg
-    | NewInjuryPageMsg NewInjury.Msg
+    | NewInjuryPageMsg AddInjury.Msg
 
 
 init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -71,7 +73,7 @@ initCurrentPage ( model, existingCmds ) =
                     ( InjuryPage pageModel, Cmd.map InjuryDetailMsg pageCmds )
 
                 Route.NewInjury ->
-                    ( NewInjuryPage <| NewInjury.init model.navKey, Cmd.none )
+                    ( NewInjuryPage <| AddInjury.init model.navKey, Cmd.none )
     in
     ( { model | page = currentPage }
     , Cmd.batch [ existingCmds, mappedPageCmds ]
@@ -102,7 +104,7 @@ update msg model =
         ( NewInjuryPageMsg subMsg, NewInjuryPage pageModel ) ->
             let
                 ( updatedPageModel, updatedCmd ) =
-                    NewInjury.update pageModel subMsg
+                    AddInjury.update pageModel subMsg
             in
             ( { model | page = NewInjuryPage updatedPageModel }
             , Cmd.map NewInjuryPageMsg updatedCmd
@@ -155,10 +157,10 @@ currentView model =
                     map InjuriesMsg (Injuries.view pageModel)
 
                 InjuryPage pageModel ->
-                    map InjuryDetailMsg (InjuryDetail.view pageModel)
+                    map InjuryDetailMsg (InjuryDetailView.view pageModel)
 
                 NewInjuryPage pageModel ->
-                    map NewInjuryPageMsg (NewInjury.view pageModel)
+                    map NewInjuryPageMsg (AddInjuryView.view pageModel)
     in
     div [ A.css [ height (pct 100) ] ]
         [ stylesheet

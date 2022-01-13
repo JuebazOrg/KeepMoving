@@ -1,15 +1,13 @@
-module Pages.InjuryDetails.DetailsComponents exposing (..)
+module Pages.InjuryDetails.Components.InjuryInfoCard exposing (..)
 
 import Components.Elements as C
 import Css exposing (..)
 import Date exposing (Date, Unit(..), diff)
-import Domain.CheckPoint exposing (CheckPoint)
-import Domain.Injury exposing (..)
-import Domain.Regions exposing (..)
+import Domain.Injury exposing (Injury, injuryTypeToString)
+import Domain.Regions exposing (bodyRegionToString)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (..)
-import Pages.InjuryDetails.CheckPoints as CheckPoints
 import Theme.Icons as I
 import Theme.Spacing as SP
 import Util.Date exposing (formatMMMMDY)

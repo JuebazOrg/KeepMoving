@@ -1,4 +1,4 @@
-module Pages.InjuryDetails.AddCheckPoint exposing (..)
+module Pages.InjuryDetails.Components.AddCheckPoint exposing (Model, Msg, getNewCheckPoint, init, update, view)
 
 import Components.Calendar.DatePicker as DP
 import Components.Dropdown as DD exposing (defaultProps)
@@ -8,6 +8,7 @@ import Components.Modal as CM
 import Css exposing (..)
 import Date
 import Domain.CheckPoint exposing (CheckPoint, NewCheckPoint, Trend(..), levels, trendToString)
+import Domain.Injury exposing (Injury)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick, onInput)

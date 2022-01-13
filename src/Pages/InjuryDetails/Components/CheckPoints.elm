@@ -1,4 +1,4 @@
-module Pages.InjuryDetails.CheckPoints exposing (..)
+module Pages.InjuryDetails.Components.CheckPoints exposing (..)
 
 import Bulma.Styled.Elements exposing (..)
 import Bulma.Styled.Modifiers as BM
