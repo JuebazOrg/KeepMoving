@@ -2,11 +2,11 @@ module Pages.InjuryDetails.Update exposing (..)
 
 import Browser.Navigation as Nav
 import Clients.InjuryClient as Client
+import Cmd.Extra as Cmd
 import Date as Date
 import Domain.CheckPoint exposing (CheckPoint)
 import Domain.Injury exposing (..)
 import Domain.Regions exposing (..)
-import Http
 import Id exposing (Id)
 import Navigation.Route as Route
 import Pages.InjuryDetails.Components.AddCheckPoint as CheckPointModal
@@ -67,13 +67,13 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         InjuryReceived response ->
-            ( { model | injury = response }, now )
+            Cmd.pure { model | injury = response }
 
         InjuryUpdated response ->
             ( { model | isModalOpen = False, injury = response }, now )
 
         SetDate date ->
-            ( { model | today = date }, Cmd.none )
+            Cmd.pure { model | today = date }
 
         GoBack ->
             ( model, Route.pushUrl Route.Injuries model.navKey )
@@ -85,36 +85,33 @@ update msg model =
             ( model, Cmd.none )
 
         CheckPointModalMsg subMsg ->
-            ( { model | checkPointModal = CheckPointModal.update subMsg model.checkPointModal }, Cmd.none )
+            Cmd.pure { model | checkPointModal = CheckPointModal.update subMsg model.checkPointModal }
 
         OpenModal ->
-            ( { model | isModalOpen = True }, Cmd.none )
+            Cmd.pure { model | isModalOpen = True }
 
         CloseModal ->
-            ( { model | isModalOpen = False }, Cmd.none )
+            Cmd.pure { model | isModalOpen = False }
 
         CheckPointsMsg subMsg ->
-            ( { model | checkPoints = CheckPoints.update subMsg model.checkPoints }, Cmd.none )
+            Cmd.pure { model | checkPoints = CheckPoints.update subMsg model.checkPoints }
 
         SaveCheckpoint ->
             ( model
-            , cmd model.injury
-                (\i ->
-                    Client.updateInjury
-                        (getNewInjury model.checkPointModal i)
-                        (RemoteData.fromResult >> InjuryUpdated)
-                )
+            , model.injury
+                |> RemoteData.toMaybe
+                |> Maybe.map (\i -> updateInjury model.checkPointModal i)
+                |> Maybe.withDefault Cmd.none
             )
+
+
+updateInjury : CheckPointModal.Model -> Injury -> Cmd Msg
+updateInjury model injury =
+    Client.updateInjury
+        (getNewInjury model injury)
+        (RemoteData.fromResult >> InjuryUpdated)
 
 
 getNewInjury : CheckPointModal.Model -> Injury -> Injury
 getNewInjury checkPointModal i =
     { i | checkPoints = CheckPointModal.getNewCheckPoint checkPointModal :: i.checkPoints }
-
-
-cmd : WebData Injury -> (Injury -> Cmd msg) -> Cmd msg
-cmd remoteData toCmd =
-    remoteData
-        |> RemoteData.map
-            (\i -> toCmd i)
-        |> RemoteData.withDefault Cmd.none

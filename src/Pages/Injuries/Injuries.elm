@@ -29,16 +29,6 @@ type alias Model =
     { injuries : WebData (List Injury), filters : Filters.Model, navKey : Nav.Key }
 
 
-type Order
-    = LeastRecent
-    | MostRecent
-
-
-orders : List Order
-orders =
-    [ LeastRecent, MostRecent ]
-
-
 init : Nav.Key -> ( Model, Cmd Msg )
 init navKey =
     ( { injuries = RemoteData.NotAsked
