@@ -47,12 +47,12 @@ orders =
 init : Model
 init =
     { filters =
-        { region = DD.init regionDropdownOptions "Regions" { defaultProps | maxSize = Just 200 }
-        , side = DD.init sideDropdownOptions "Side" DD.defaultProps
+        { region = DD.init regionDropdownOptions Nothing "Regions" { defaultProps | maxSize = Just 200 }
+        , side = DD.init sideDropdownOptions Nothing "Side" DD.defaultProps
         , active = False
         }
     , isOpen = False
-    , order = DD.init ordersDropdownOptions "Order By" DD.defaultProps
+    , order = DD.init ordersDropdownOptions Nothing "Order By" DD.defaultProps
     }
 
 

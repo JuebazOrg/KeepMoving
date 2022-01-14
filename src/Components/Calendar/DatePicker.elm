@@ -13,9 +13,9 @@ type alias Model =
     Maybe Date
 
 
-init : Model
-init =
-    Nothing
+init : Model -> Model
+init maybeInitialDate =
+    maybeInitialDate
 
 
 type Msg
@@ -36,6 +36,13 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ input [ A.class "input", A.type_ "date", onInput DatePicked ] []
-        ]
+    case model of
+        Nothing ->
+            div []
+                [ input [ A.class "input", A.type_ "date", onInput DatePicked ] []
+                ]
+
+        Just a ->
+            div []
+                [ input [ A.class "input", A.type_ "date", onInput DatePicked, A.value (Date.toIsoString a) ] []
+                ]

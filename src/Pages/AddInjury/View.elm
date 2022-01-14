@@ -73,7 +73,7 @@ viewHowInput =
         [ controlLabel [] [ text "how it happen" ]
         , controlTextArea
             defaultTextAreaProps
-            []
+            [ onInput UpdateHow ]
             []
             []
         ]
@@ -100,4 +100,3 @@ viewProgressBar =
         , li [ A.class "steps-segment", A.css [ width (px 50) ] ] [ a [ A.class "steps-marker" ] [] ]
         , li [ A.class "steps-segment", A.css [ width (px 50) ] ] [ a [ A.class "steps-marker" ] [] ]
         ]
-

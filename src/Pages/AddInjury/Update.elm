@@ -33,11 +33,11 @@ type alias Model =
 
 init : Nav.Key -> Model
 init navKey =
-    { regionDropdown = DD.init regionDropdownOptions "Region" DD.defaultProps
-    , sideDropDown = DD.init sideDropDownOptions "Side" DD.defaultProps
-    , injuryTypeDropDown = DD.init injuryTypeDropDownOptions "Type" DD.defaultProps
-    , startDate = DP.init
-    , endDate = DP.init
+    { regionDropdown = DD.init regionDropdownOptions Nothing "Region" DD.defaultProps
+    , sideDropDown = DD.init sideDropDownOptions Nothing "Side" DD.defaultProps
+    , injuryTypeDropDown = DD.init injuryTypeDropDownOptions Nothing "Type" DD.defaultProps
+    , startDate = DP.init Nothing
+    , endDate = DP.init Nothing
     , description = ""
     , location = ""
     , how = ""
@@ -55,6 +55,7 @@ type Msg
     | InjuryCreated (Result Http.Error ())
     | UpdateDescription String
     | UpdateLocation String
+    | UpdateHow String
     | InjuryTypeDropDownMsg (DD.Msg InjuryType)
 
 
@@ -87,6 +88,9 @@ update model msg =
 
         UpdateLocation content ->
             ( { model | location = content }, Cmd.none )
+
+        UpdateHow content ->
+            ( { model | how = content }, Cmd.none )
 
         InjuryCreated res ->
             case res of

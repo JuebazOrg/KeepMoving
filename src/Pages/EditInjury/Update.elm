@@ -2,6 +2,7 @@ module Pages.EditInjury.Update exposing (..)
 
 import Browser.Navigation as Nav
 import Clients.InjuryClient as Client
+import Cmd.Extra as Cmd
 import Components.Calendar.DatePicker as DP
 import Components.Dropdown as DD
 import Components.Elements as C
@@ -12,6 +13,7 @@ import Domain.Regions exposing (..)
 import Http
 import Id exposing (Id)
 import Navigation.Route as Route
+import Pages.Injuries.Filters exposing (sideDropdownOptions)
 import RemoteData exposing (RemoteData(..), WebData)
 import Time exposing (Month(..))
 
@@ -29,6 +31,7 @@ type alias FormModel =
     , description : String
     , location : String
     , how : String
+    , oldInjury : Injury
     }
 
 
@@ -37,23 +40,48 @@ init navKey id =
     ( { navKey = navKey, form = Nothing }, getInjury id )
 
 
-initForm : Injury -> Model -> FormModel
-initForm injury model =
-    { regionDropdown = DD.init regionDropdownOptions "Region" DD.defaultProps
-    , sideDropDown = DD.init sideDropDownOptions "Side" DD.defaultProps
-    , injuryTypeDropDown = DD.init injuryTypeDropDownOptions "Type" DD.defaultProps
-    , startDate = DP.init
-    , endDate = DP.init
+initForm : Injury -> FormModel
+initForm injury =
+    { regionDropdown = initRegionDD injury
+    , sideDropDown = initSideDD injury
+    , injuryTypeDropDown = initInjuryTypeDD injury
+    , startDate = DP.init (Just injury.startDate)
+    , endDate = DP.init injury.endDate
     , description = injury.description
-    , location = ""
-    , how = ""
+    , location = injury.location
+    , how = injury.how
+    , oldInjury = injury
     }
+
+
+initRegionDD : Injury -> DD.Model Region
+initRegionDD injury =
+    DD.init regionDropdownOptions (selectedToOption injury.bodyRegion.region regionDropdownOptions) "Region" DD.defaultProps
+
+
+initSideDD : Injury -> DD.Model Side
+initSideDD injury =
+    let
+        selectedSide =
+            case injury.bodyRegion.side of
+                Nothing ->
+                    Nothing
+
+                Just a ->
+                    selectedToOption a sideDropDownOptions
+    in
+    DD.init sideDropDownOptions selectedSide "Side" DD.defaultProps
+
+
+initInjuryTypeDD : Injury -> DD.Model InjuryType
+initInjuryTypeDD injury =
+    DD.init injuryTypeDropDownOptions (selectedToOption injury.injuryType injuryTypeDropDownOptions) "Type" DD.defaultProps
 
 
 type Msg
     = FormMsg SubMsg
     | InjuryReceived (WebData Injury)
-    | InjuryCreated (Result Http.Error ())
+    | InjuryUpdated (WebData Injury)
     | Save
     | CloseModal
 
@@ -68,37 +96,40 @@ type SubMsg
     | InjuryTypeDropDownMsg (DD.Msg InjuryType)
 
 
-
 update : Model -> Msg -> ( Model, Cmd Msg )
 update model msg =
     case msg of
         InjuryReceived response ->
             case response of
                 RemoteData.Success injury ->
-                    ( { model | form = Just (initForm injury model) }, Cmd.none )
+                    Cmd.pure { model | form = Just (initForm injury) }
 
                 _ ->
-                    ( model, Cmd.none )
+                    Cmd.pure model
 
         FormMsg subMsg ->
             let
                 newform =
                     Maybe.map (\f -> updateForm f subMsg) model.form
             in
-            ( { model | form = newform }, Cmd.none )
+            Cmd.pure { model | form = newform }
 
-        InjuryCreated res ->
+        InjuryUpdated res ->
             case res of
-                Ok _ ->
-                    ( model, Route.pushUrl Route.Injuries model.navKey )
+                RemoteData.Success injury ->
+                    ( model, Route.pushUrl (Route.Injury injury.id) model.navKey )
 
-                Err error ->
+                _ ->
                     ( model, Cmd.none )
 
         Save ->
-            ( model, Cmd.none )
+            case model.form of
+                Nothing ->
+                    ( model, Cmd.none )
 
-        -- ( model, createNewInjury <| createNewInjuryFromForm model )
+                Just form ->
+                    ( model, updateInjury <| createNewInjuryFromForm form )
+
         CloseModal ->
             ( model, Route.pushUrl Route.Injuries model.navKey )
 
@@ -110,7 +141,8 @@ updateForm model msg =
             { model | regionDropdown = DD.update model.regionDropdown subMsg }
 
         SideDropDownMsg subMsg ->
-            { model | sideDropDown = DD.update model.sideDropDown subMsg }
+            -- { model | sideDropDown = DD.update model.sideDropDown subMsg }
+            model
 
         InjuryTypeDropDownMsg subMsg ->
             { model | injuryTypeDropDown = DD.update model.injuryTypeDropDown subMsg }
@@ -133,29 +165,30 @@ getInjury id =
     Client.getInjury id (RemoteData.fromResult >> InjuryReceived)
 
 
+
 -- todo : date from today
 
 
-createNewInjury : NewInjury -> Cmd Msg
-createNewInjury newInjury =
-    Client.createInjury newInjury InjuryCreated
+updateInjury : Injury -> Cmd Msg
+updateInjury injury =
+    Client.updateInjury injury (RemoteData.fromResult >> InjuryUpdated)
 
 
-
--- createNewInjuryFromForm : Model -> NewInjury
--- createNewInjuryFromForm model =
---     { bodyRegion =
---         { region = Maybe.withDefault Other (DD.getSelectedValue model.regionDropdown)
---         , side = DD.getSelectedValue model.sideDropDown
---         }
---     , location = model.location
---     , description = model.description
---     , startDate = Maybe.withDefault defaultDate model.startDate
---     , endDate = model.endDate
---     , how = model.how
---     , injuryType = Maybe.withDefault OtherInjuryType (DD.getSelectedValue model.injuryTypeDropDown)
---     , checkPoints = []
---     }
+createNewInjuryFromForm : FormModel -> Injury
+createNewInjuryFromForm model =
+    { bodyRegion =
+        { region = Maybe.withDefault Other (DD.getSelectedValue model.regionDropdown)
+        , side = DD.getSelectedValue model.sideDropDown
+        }
+    , location = model.location
+    , description = model.description
+    , startDate = Maybe.withDefault defaultDate model.startDate
+    , endDate = model.endDate
+    , how = model.how
+    , injuryType = Maybe.withDefault OtherInjuryType (DD.getSelectedValue model.injuryTypeDropDown)
+    , checkPoints = model.oldInjury.checkPoints
+    , id = model.oldInjury.id
+    }
 
 
 defaultDate : Date.Date
@@ -177,3 +210,10 @@ sideDropDownOptions =
 injuryTypeDropDownOptions : List (DD.Option InjuryType)
 injuryTypeDropDownOptions =
     injuryTypes |> List.map (\injuryType -> { label = injuryTypeToString injuryType, value = injuryType })
+
+
+selectedToOption : a -> List (DD.Option a) -> Maybe (DD.Option a)
+selectedToOption element values =
+    values
+        |> List.filter (\i -> i.value == element)
+        |> List.head

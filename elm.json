@@ -6,6 +6,7 @@
     "elm-version": "0.19.1",
     "dependencies": {
         "direct": {
+            "GlobalWebIndex/cmd-extra": "1.4.0",
             "MichaelCombs28/elm-css-bulma": "1.0.0",
             "NoRedInk/elm-compare": "2.0.0",
             "NoRedInk/elm-json-decode-pipeline": "1.0.1",

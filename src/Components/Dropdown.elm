@@ -44,9 +44,14 @@ getSelectedValue model =
             (\option -> option.value)
 
 
-init : List (Option a) -> String -> Props -> Model a
-init optionsValues title props =
-    { options = optionsValues, isActive = False, selectedOption = Nothing, defaultTitle = title, props = props }
+init : List (Option a) -> Maybe (Option a) -> String -> Props -> Model a
+init optionsValues selected title props =
+    { options = optionsValues
+    , isActive = False
+    , selectedOption = selected
+    , defaultTitle = title
+    , props = props
+    }
 
 
 update : Model a -> Msg a -> Model a

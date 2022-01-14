@@ -27,9 +27,9 @@ init =
         props =
             { defaultProps | hasDefaulTitleOption = False }
     in
-    { trend = DD.init trendOptions "Trend" props
-    , level = DD.init levelOptions "Pain level" props
-    , date = DP.init
+    { trend = DD.init trendOptions Nothing "Trend" props
+    , level = DD.init levelOptions Nothing "Pain level" props
+    , date = DP.init Nothing
     }
 
 
