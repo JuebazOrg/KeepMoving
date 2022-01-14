@@ -18,13 +18,14 @@ import Html.Styled.Events exposing (on, onClick, onInput)
 import Http
 import Json.Decode exposing (maybe)
 import Navigation.Route as Route
-import Pages.EditInjury.Update exposing (FormModel, Model, Msg(..), SubMsg(..))
+import Pages.EditInjury.Update exposing (Model, Msg(..))
+
 import Theme.Mobile as M
 import Theme.Spacing as SP
 import Time exposing (Month(..))
 
 
-view : Maybe FormModel -> Html Msg
+view : Maybe  -> Html Msg
 view maybeForm =
     maybeForm
         |> Maybe.map (\f -> viewContent f)
