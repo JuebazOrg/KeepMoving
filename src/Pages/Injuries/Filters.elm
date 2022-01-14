@@ -32,11 +32,15 @@ type Order
 
 type Msg
     = Trigger
-    | RegionFilterMsg (DD.Msg Region)
-    | SideFilterMsg (DD.Msg Side)
     | OrderMsg (DD.Msg Order)
-    | ActiveFilterChecked Bool
     | ClearAll
+    | Filter FilterMsg
+
+
+type FilterMsg
+    = RegionFilterMsg (DD.Msg Region)
+    | SideFilterMsg (DD.Msg Side)
+    | ActiveFilterChecked Bool
 
 
 orders : List Order
@@ -59,31 +63,36 @@ init =
 update : Msg -> Model -> Model
 update msg model =
     let
-        filters =
-            model.filters
-
         order =
             model.order
     in
     case msg of
-        RegionFilterMsg subMsg ->
-            { model | filters = { filters | region = DD.update model.filters.region subMsg } }
-
-        SideFilterMsg subMsg ->
-            { model | filters = { filters | side = DD.update model.filters.side subMsg } }
-
         OrderMsg subMsg ->
             { model | order = DD.update model.order subMsg }
-
-        -- todo
-        ActiveFilterChecked bool ->
-            { model | filters = { filters | active = bool } }
 
         Trigger ->
             { model | isOpen = not model.isOpen }
 
         ClearAll ->
             init
+
+        Filter sub ->
+            { model | filters = updateFilter sub model.filters }
+
+
+updateFilter : FilterMsg -> Filters -> Filters
+updateFilter msg filters =
+    case msg of
+        RegionFilterMsg subMsg ->
+            { filters | region = DD.update filters.region subMsg }
+
+        SideFilterMsg subMsg ->
+            { filters | side = DD.update filters.side subMsg }
+
+        -- todo
+        ActiveFilterChecked bool ->
+            { filters | active = bool }
+
 
 view : Model -> Html Msg
 view model =
@@ -103,7 +112,7 @@ viewContent model =
             , span [ A.css [ marginRight SP.small ] ] [ viewOrderDropDown model ]
             ]
         , hr [] []
-        , span [] [ controlCheckBox False [] [] [ onCheck ActiveFilterChecked ] [ text "actif injuries" ] ]
+        , span [] [ controlCheckBox False [] [] [ onCheck ActiveFilterChecked ] [ text "actif injuries" ] ] |> map Filter
         , hr [] []
         , a [ onClick ClearAll ] [ text "clear all" ]
         ]
@@ -166,7 +175,7 @@ regionDropdownOptions =
 
 regionFilter : Filters -> Html Msg
 regionFilter filters =
-    map RegionFilterMsg (DD.viewDropDown filters.region)
+    map RegionFilterMsg (DD.viewDropDown filters.region) |> map Filter
 
 
 viewOrderDropDown : Model -> Html Msg
@@ -199,4 +208,4 @@ ordersDropdownOptions =
 
 sideFilter : Filters -> Html Msg
 sideFilter filters =
-    map SideFilterMsg (DD.viewDropDown filters.side)
+    map SideFilterMsg (DD.viewDropDown filters.side) |> map Filter
