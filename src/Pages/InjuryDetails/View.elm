@@ -22,6 +22,7 @@ import Pages.InjuryDetails.Components.InjuryInfoCard exposing (..)
 import Pages.InjuryDetails.Update exposing (Model, Msg(..))
 import RemoteData as RemoteData exposing (RemoteData(..), WebData)
 import Task
+import Theme.Icons as I
 import Theme.Mobile as M
 import Theme.Spacing as SP
 
@@ -61,7 +62,7 @@ viewHeader injury =
     div [ A.css [ displayFlex, justifyContent spaceBetween ] ]
         [ C.backButton [ onClick GoBack ] []
         , C.h3Title [] [ text "Injury Details" ]
-        , div [] []
+        , div [] [ C.roundIconButton I.edit [ onClick <| EditInjury injury ] [] ]
         ]
 
 

@@ -50,6 +50,7 @@ type Msg
     | SaveCheckpoint
     | CheckPointsMsg CheckPoints.Msg
     | SetDate (Maybe Date.Date)
+    | EditInjury Injury
 
 
 getInjury : Id -> Cmd Msg
@@ -76,6 +77,9 @@ update msg model =
 
         GoBack ->
             ( model, Route.pushUrl Route.Injuries model.navKey )
+
+        EditInjury injury ->
+            ( model, Route.pushUrl (Route.EditInjury injury.id) model.navKey )
 
         OpenAddCheckPoint ->
             ( model, Cmd.none )

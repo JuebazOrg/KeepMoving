@@ -3,16 +3,22 @@ module Main exposing (..)
 import Browser exposing (Document, UrlRequest)
 import Browser.Navigation as Nav
 import Bulma.Styled.CDN exposing (..)
+import Clients.InjuryClient as Client
 import Css exposing (..)
+import Domain.Injury exposing (Injury)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
+import Id exposing (Id)
 import Navigation.NavBar exposing (myNavbarBurger, viewNavBar)
 import Navigation.Route as Route exposing (Route(..))
 import Pages.AddInjury.Update as AddInjury
 import Pages.AddInjury.View as AddInjuryView
+import Pages.EditInjury.Update as EditInjury
+import Pages.EditInjury.View as EditInjuryView
 import Pages.Injuries.Injuries as Injuries exposing (Msg, view)
 import Pages.InjuryDetails.Update as InjuryDetail
 import Pages.InjuryDetails.View as InjuryDetailView
+import RemoteData exposing (WebData)
 import Url exposing (Url)
 
 
@@ -23,11 +29,22 @@ type alias Model =
     }
 
 
+type alias Data =
+    { injuries : WebData (List Injury)
+    , injury : WebData Injury
+    }
+
+
 type Page
     = NotFoundPage
     | InjuriesPage Injuries.Model
     | InjuryPage InjuryDetail.Model
     | NewInjuryPage AddInjury.Model
+    | EditInjuryPage EditInjury.Model
+
+
+type DomainMsg
+    = InjuryReceived (WebData Injury)
 
 
 type Msg
@@ -36,6 +53,7 @@ type Msg
     | UrlChanged Url
     | InjuryDetailMsg InjuryDetail.Msg
     | NewInjuryPageMsg AddInjury.Msg
+    | EditInjuryPageMsg EditInjury.Msg
 
 
 init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -74,6 +92,15 @@ initCurrentPage ( model, existingCmds ) =
 
                 Route.NewInjury ->
                     ( NewInjuryPage <| AddInjury.init model.navKey, Cmd.none )
+
+                Route.EditInjury id ->
+                    let
+                        ( pageModel, pageCmd ) =
+                            EditInjury.init model.navKey id
+                    in
+                    ( EditInjuryPage <| pageModel
+                    , Cmd.map EditInjuryPageMsg pageCmd
+                    )
     in
     ( { model | page = currentPage }
     , Cmd.batch [ existingCmds, mappedPageCmds ]
@@ -108,6 +135,15 @@ update msg model =
             in
             ( { model | page = NewInjuryPage updatedPageModel }
             , Cmd.map NewInjuryPageMsg updatedCmd
+            )
+
+        ( EditInjuryPageMsg subMsg, EditInjuryPage pageModel ) ->
+            let
+                ( updatedPageModel, updatedCmd ) =
+                    EditInjury.update pageModel subMsg
+            in
+            ( { model | page = EditInjuryPage updatedPageModel }
+            , Cmd.map EditInjuryPageMsg updatedCmd
             )
 
         ( LinkClicked urlRequest, _ ) ->
@@ -161,6 +197,9 @@ currentView model =
 
                 NewInjuryPage pageModel ->
                     map NewInjuryPageMsg (AddInjuryView.view pageModel)
+
+                EditInjuryPage pageModel ->
+                    map EditInjuryPageMsg (EditInjuryView.view pageModel.form)
     in
     div [ A.css [ height (pct 100) ] ]
         [ stylesheet

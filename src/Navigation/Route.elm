@@ -12,6 +12,7 @@ type Route
     | Injuries
     | Injury Id
     | NewInjury
+    | EditInjury Id
 
 
 parseUrl : Url -> Route
@@ -31,15 +32,12 @@ matchRoute =
         , map Injuries (s "injuries")
         , map Injury (s "injuries" </> idParser)
         , map NewInjury (s "injuries" </> s "new")
+        , map EditInjury (s "injuries" </> idParser </> s "edit")
         ]
 
 
 pushUrl : Route -> Nav.Key -> Cmd msg
 pushUrl route navKey =
-    let
-        log =
-            Debug.log "navKey" navKey
-    in
     routeToString route
         |> Nav.pushUrl navKey
 
@@ -58,3 +56,6 @@ routeToString route =
 
         NewInjury ->
             "injuries/new"
+
+        EditInjury id ->
+            Id.toString id ++ "/edit"
