@@ -11,10 +11,8 @@ import Html.Styled.Attributes as A
 import Id exposing (Id)
 import Navigation.NavBar exposing (myNavbarBurger, viewNavBar)
 import Navigation.Route as Route exposing (Route(..))
-import Pages.AddInjury.Update as AddInjury
-import Pages.AddInjury.View as AddInjuryView
-import Pages.EditInjury.Update as EditInjury
-import Pages.EditInjury.View as EditInjuryView
+import Pages.AddInjury as AddInjury
+import Pages.EditInjury as EditInjury
 import Pages.Injuries.Injuries as Injuries exposing (Msg, view)
 import Pages.InjuryDetails.Update as InjuryDetail
 import Pages.InjuryDetails.View as InjuryDetailView
@@ -196,10 +194,10 @@ currentView model =
                     map InjuryDetailMsg (InjuryDetailView.view pageModel)
 
                 NewInjuryPage pageModel ->
-                    map NewInjuryPageMsg (AddInjuryView.view pageModel)
+                    map NewInjuryPageMsg (AddInjury.view pageModel)
 
                 EditInjuryPage pageModel ->
-                    map EditInjuryPageMsg (EditInjuryView.view pageModel.form)
+                    map EditInjuryPageMsg (EditInjury.view pageModel)
     in
     div [ A.css [ height (pct 100) ] ]
         [ stylesheet

@@ -25,10 +25,6 @@ import Theme.Spacing as SP
 import Util.Date exposing (formatMMDD)
 
 
-
--- todo : Modal se gere tout seul
-
-
 type alias Model =
     { injuries : WebData (List Injury), filters : Filters.Model, navKey : Nav.Key }
 
@@ -121,12 +117,8 @@ viewInjuries injuries filterModel =
 
 viewInjuriesByYear : List Injury -> Html Msg
 viewInjuriesByYear injuries =
-    let
-        iByY =
-            injuriesByYear injuries
-    in
     div []
-        (iByY
+        (injuriesByYear injuries
             |> Dict.toList
             |> List.map
                 (\( k, v ) ->
@@ -135,6 +127,7 @@ viewInjuriesByYear injuries =
                         , div [] <| List.map (\i -> viewInjury i) v
                         ]
                 )
+            |> List.reverse
         )
 
 
@@ -162,10 +155,6 @@ viewInjury injury =
                     [ i [ A.class I.calendar ] []
                     ]
                 , span [] [ text <| formatMMDD injury.startDate ]
-                , C.icon
-                    [ A.css [ paddingLeft SP.small ] ]
-                    [ i [ A.class I.edit ] []
-                    ]
                 ]
             ]
         , cardContent [] [ text <| injury.location ]

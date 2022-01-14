@@ -85,7 +85,6 @@ update msg model =
         ClearAll ->
             init
 
-
 view : Model -> Html Msg
 view model =
     div [ A.css [ displayFlex, flexDirection rowReverse ] ]

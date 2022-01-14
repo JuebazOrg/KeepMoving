@@ -1,29 +1,20 @@
 module Pages.InjuryDetails.View exposing (..)
 
-import Browser.Navigation as Nav
 import Clients.InjuryClient as Client
-import Components.Card exposing (cardHeader)
 import Components.Elements as C
 import Components.Modal as CM
 import Css exposing (..)
-import Date as Date
-import Domain.CheckPoint exposing (CheckPoint)
 import Domain.Injury exposing (..)
 import Domain.Regions exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (..)
-import Http
-import Id exposing (Id)
-import Navigation.Route as Route
 import Pages.InjuryDetails.Components.AddCheckPoint as CheckPointModal
 import Pages.InjuryDetails.Components.CheckPoints as CheckPoints
 import Pages.InjuryDetails.Components.InjuryInfoCard exposing (..)
 import Pages.InjuryDetails.Update exposing (Model, Msg(..))
-import RemoteData as RemoteData exposing (RemoteData(..), WebData)
-import Task
+import RemoteData as RemoteData exposing (RemoteData(..))
 import Theme.Icons as I
-import Theme.Mobile as M
 import Theme.Spacing as SP
 
 
