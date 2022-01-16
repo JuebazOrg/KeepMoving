@@ -5,31 +5,50 @@ import Bulma.Styled.Modifiers as BM
 import Components.Elements exposing (h4Title, roundButton)
 import Css exposing (..)
 import Html.Styled exposing (..)
+import Html.Styled.Events exposing (onClick)
 
 
-myNavbarBurger : Html msg
-myNavbarBurger =
-    BC.navbarBurger False
-        []
+type alias Model =
+    Bool
+
+
+init : Model
+init =
+    False
+
+
+type Msg
+    = BurgerMenuTrigger
+
+
+update : Msg -> Model -> Model
+update msg model =
+    not model
+
+
+myNavbarBurger : Bool -> Html Msg
+myNavbarBurger isOpen =
+    BC.navbarBurger isOpen
+        [ onClick BurgerMenuTrigger ]
         [ span [] []
         , span [] []
         , span [] []
         ]
 
 
-viewNavBar : Bool -> Html msg
+viewNavBar : Model -> Html Msg
 viewNavBar isOpen =
     BC.fixedNavbar BM.top
         BC.navbarModifiers
         []
         [ BC.navbarBrand []
-            myNavbarBurger
+            (myNavbarBurger isOpen)
             [ BC.navbarItem False
                 []
                 [ h4Title [] [ text "Keep Moving" ]
                 ]
             ]
-        , BC.navbarMenu False
+        , BC.navbarMenu isOpen
             []
             [ BC.navbarStart []
                 [ BC.navbarItemLink False [] [ text "Home" ]

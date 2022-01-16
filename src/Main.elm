@@ -9,7 +9,7 @@ import Domain.Injury exposing (Injury)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Id exposing (Id)
-import Navigation.NavBar exposing (myNavbarBurger, viewNavBar)
+import Navigation.NavBar as NavBar exposing ( viewNavBar) 
 import Navigation.Route as Route exposing (Route(..))
 import Pages.AddInjury as AddInjury
 import Pages.EditInjury as EditInjury
@@ -24,12 +24,7 @@ type alias Model =
     { route : Route
     , page : Page
     , navKey : Nav.Key
-    }
-
-
-type alias Data =
-    { injuries : WebData (List Injury)
-    , injury : WebData Injury
+    , navBar: NavBar.Model
     }
 
 
@@ -52,6 +47,7 @@ type Msg
     | InjuryDetailMsg InjuryDetail.Msg
     | NewInjuryPageMsg AddInjury.Msg
     | EditInjuryPageMsg EditInjury.Msg
+    | NavBarMsg NavBar.Msg
 
 
 init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -61,6 +57,7 @@ init flags url navKey =
             { route = Route.parseUrl url
             , page = NotFoundPage
             , navKey = navKey
+            , navBar = NavBar.init
             }
     in
     initCurrentPage ( model, Cmd.none )
@@ -165,6 +162,9 @@ update msg model =
             ( { model | route = newRoute }, Cmd.none )
                 |> initCurrentPage
 
+        (NavBarMsg sub,_) -> 
+            ({model| navBar = NavBar.update sub model.navBar },Cmd.none)
+
         ( _, _ ) ->
             ( model, Cmd.none )
 
@@ -202,7 +202,7 @@ currentView model =
     div [ A.css [ height (pct 100) ] ]
         [ stylesheet
         , fontAwesomeCDN
-        , viewNavBar True
+        , map NavBarMsg (viewNavBar model.navBar )
         , div [ A.css [ padding (px 20) ] ] [ content ]
         ]
 
