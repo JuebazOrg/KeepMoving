@@ -117,6 +117,7 @@
       ]
     },
     {
+      "id": 5,
       "description": "Les licornes font des gros cacs",
       "location": "Licorne",
       "bodyRegion": {
@@ -125,10 +126,9 @@
       },
       "startDate": "2022-01-11",
       "endDate": null,
-      "how": "",
+      "how": "licorne ma foncer dedant",
       "injuryType": "Bruises",
-      "checkPoints": [],
-      "id": 5
+      "checkPoints": []
     },
     {
       "description": "s",

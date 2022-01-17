@@ -96,4 +96,3 @@ injuriesByYear injuries =
         |> Dict.groupBy (\i -> i.date)
         |> Dict.map (\_ -> List.map .injuries)
         |> Dict.map (\_ -> List.concat)
-

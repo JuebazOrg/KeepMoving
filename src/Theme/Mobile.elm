@@ -4,7 +4,6 @@ import Css exposing (..)
 import Css.Media as M
 
 
-
 onMobile : List Style -> Style
 onMobile =
     M.withMedia [ M.only M.screen [ M.maxWidth (px 450) ] ]

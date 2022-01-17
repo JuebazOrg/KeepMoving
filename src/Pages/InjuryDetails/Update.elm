@@ -35,7 +35,7 @@ init navKey id =
       , checkPoints = CheckPoints.init
       , today = Nothing
       }
-    , getInjury id
+    , Cmd.batch [ getInjury id, now ]
     )
 
 
@@ -70,7 +70,7 @@ update msg model =
             Cmd.pure { model | injury = response }
 
         InjuryUpdated response ->
-            ( { model | isModalOpen = False, injury = response }, now )
+            Cmd.pure { model | isModalOpen = False, injury = response }
 
         SetDate date ->
             Cmd.pure { model | today = date }

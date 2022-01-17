@@ -4,9 +4,9 @@ import Bulma.Styled.Components as BC
 import Bulma.Styled.Elements as BE
 import Bulma.Styled.Modifiers as BM
 import Css exposing (..)
-import Html.Styled.Events exposing (onClick)
 import Html.Styled as S
 import Html.Styled.Attributes as A
+import Html.Styled.Events exposing (onClick)
 
 
 modalCard :
@@ -56,7 +56,7 @@ modalBackground attributes messages =
     BC.modalBackground attributes messages
 
 
-simpleModal : Bool -> msg-> BC.ModalCardPartition msg -> List (S.Html msg) -> BC.ModalCardPartition msg -> S.Html msg
+simpleModal : Bool -> msg -> BC.ModalCardPartition msg -> List (S.Html msg) -> BC.ModalCardPartition msg -> S.Html msg
 simpleModal isOpen callback header content footer =
     modal isOpen
         []

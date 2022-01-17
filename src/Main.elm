@@ -9,7 +9,7 @@ import Domain.Injury exposing (Injury)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Id exposing (Id)
-import Navigation.NavBar as NavBar exposing ( viewNavBar) 
+import Navigation.NavBar as NavBar exposing (viewNavBar)
 import Navigation.Route as Route exposing (Route(..))
 import Pages.AddInjury as AddInjury
 import Pages.EditInjury as EditInjury
@@ -24,7 +24,7 @@ type alias Model =
     { route : Route
     , page : Page
     , navKey : Nav.Key
-    , navBar: NavBar.Model
+    , navBar : NavBar.Model
     }
 
 
@@ -162,8 +162,8 @@ update msg model =
             ( { model | route = newRoute }, Cmd.none )
                 |> initCurrentPage
 
-        (NavBarMsg sub,_) -> 
-            ({model| navBar = NavBar.update sub model.navBar },Cmd.none)
+        ( NavBarMsg sub, _ ) ->
+            ( { model | navBar = NavBar.update sub model.navBar }, Cmd.none )
 
         ( _, _ ) ->
             ( model, Cmd.none )
@@ -202,7 +202,7 @@ currentView model =
     div [ A.css [ height (pct 100) ] ]
         [ stylesheet
         , fontAwesomeCDN
-        , map NavBarMsg (viewNavBar model.navBar )
+        , map NavBarMsg (viewNavBar model.navBar)
         , div [ A.css [ padding (px 20) ] ] [ content ]
         ]
 
