@@ -102,6 +102,13 @@
       "checkPoints": [
         {
           "id": -1,
+          "date": "2022-01-07",
+          "comment": "",
+          "painLevel": 2,
+          "trend": "better"
+        },
+        {
+          "id": -1,
           "date": "2020-01-03",
           "comment": "",
           "painLevel": 3,
@@ -143,6 +150,28 @@
       "injuryType": "Dislocation",
       "checkPoints": [],
       "id": 6
+    },
+    {
+      "id": 7,
+      "description": "bruise till the end",
+      "location": "Big bid bruise",
+      "bodyRegion": {
+        "region": "Leg",
+        "side": "Left"
+      },
+      "startDate": "2022-01-14",
+      "endDate": null,
+      "how": "blablab",
+      "injuryType": "Bruises",
+      "checkPoints": [
+        {
+          "id": -1,
+          "date": "2022-01-19",
+          "comment": "",
+          "painLevel": 3,
+          "trend": "better"
+        }
+      ]
     }
   ]
 }

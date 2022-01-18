@@ -72,7 +72,7 @@ viewInfo injury model =
             ]
         , div [ A.class "tile" ]
             [ div [ A.class "tile is-parent" ]
-                [ viewCheckPoints injury model.checkPoints
+                [ viewCheckPoints injury model.checkPoints model.editCheckPoints
                 ]
             ]
         ]
@@ -81,15 +81,15 @@ viewInfo injury model =
 viewCheckPointsHeader : Html Msg
 viewCheckPointsHeader =
     CM.modalCardTitle [ A.class "subtitle", A.css [ displayFlex, justifyContent flexEnd, alignItems center ] ]
-        [ span [ A.css [ flex (int 1) ] ] [ text "Checkpoints" ], C.addButton [ onClick OpenModal, A.css [ marginRight SP.medium ] ] [], C.simpleHoverIcon I.edit [] ]
+        [ span [ A.css [ flex (int 1) ] ] [ text "Checkpoints" ], C.addButton [ onClick OpenModal, A.css [ marginRight SP.medium ] ] [], C.simpleHoverIcon I.edit [onClick EditCheckPoints] ]
 
 
-viewCheckPoints : Injury -> CheckPoints.Model -> Html Msg
-viewCheckPoints injury checkPointsModel =
+viewCheckPoints : Injury -> CheckPoints.Model -> Bool -> Html Msg
+viewCheckPoints injury checkPointsModel editCheckPoints =
     article [ A.class "tile is-child notification is-primar", A.css [ important <| padding SP.medium ] ]
         [ viewCheckPointsHeader
         , div [ A.class "content", A.css [ displayFlex, flexDirection column ] ]
-            [ map CheckPointsMsg (CheckPoints.view checkPointsModel injury.checkPoints)
+            [ map CheckPointsMsg (CheckPoints.view checkPointsModel injury.checkPoints editCheckPoints)
             ]
         ]
 
@@ -98,7 +98,7 @@ viewCheckPointModal : Bool -> CheckPointModal.Model -> Html Msg
 viewCheckPointModal isOpen model =
     let
         header =
-            CM.modalCardHead [] [ CM.modalCardTitle [] [ text "Checkpoint", C.closeButton [ onClick CloseModal ] [] ] ]
+            CM.modalCardHead [] [ CM.modalCardTitle [] [ text "Checkpoint" ],C.closeButton [ onClick CloseModal ] [] ]
 
         footer =
             CM.modalCardFoot [ A.css [ flexDirection rowReverse ] ] [ C.saveButton [ onClick SaveCheckpoint ] [] ]

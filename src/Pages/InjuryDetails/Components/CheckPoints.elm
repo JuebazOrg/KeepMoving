@@ -15,6 +15,7 @@ import List.FlatMap exposing (flatMap)
 import Theme.Colors as ColorTheme
 import Theme.Icons as I
 import Util.Date as DateUtil
+import Components.Form exposing (controlCheckBox)
 
 
 type alias Model =
@@ -41,10 +42,10 @@ update msg model =
             { model | comment = Nothing }
 
 
-view : Model -> List CheckPoint -> Html Msg
-view model checkPoints =
+view : Model -> List CheckPoint -> Bool -> Html Msg
+view model checkPoints isEditMode=
     div []
-        [ viewTable checkPoints
+        [ viewTable checkPoints isEditMode
         , model.comment
             |> Maybe.map (\comment -> viewComment comment)
             |> Maybe.withDefault C.empty
@@ -60,18 +61,18 @@ viewComment comment =
     simpleModal True CloseComment header [ modalContent [] [ text comment ] ] header
 
 
-viewTable : List CheckPoint -> Html Msg
-viewTable checkPoints =
+viewTable : List CheckPoint -> Bool -> Html Msg
+viewTable checkPoints isEditMode=
     table tableModifiers
         []
         [ tableHead [] []
-        , myTableBody checkPoints
+        , myTableBody checkPoints isEditMode
         , tableFoot [] []
         ]
 
 
-myTableBody : List CheckPoint -> Html Msg
-myTableBody checkPoints =
+myTableBody : List CheckPoint -> Bool -> Html Msg
+myTableBody checkPoints isEditMode =
     let
         tableHeader =
             tableRow True
@@ -80,21 +81,22 @@ myTableBody checkPoints =
                 , tableCell [] [ text "pain" ]
                 , tableCell [] [ text "trend" ]
                 , tableCell [] [ C.simpleIcon "fa fa-comment" ColorTheme.white ]
+                , if isEditMode then tableCell [A.class "elem"] [ text "delete"] else C.empty 
                 ]
     in
     tableBody []
         (tableHeader
             :: (checkPoints
-                    |> List.map viewTableRow
+                    |> List.map (viewTableRow isEditMode)
                )
         )
 
 
-viewTableRow : CheckPoint -> TableRow Msg
-viewTableRow cp =
+viewTableRow : Bool -> CheckPoint -> TableRow Msg
+viewTableRow isEditMode cp=
     tableRow
         False
-        []
+        [A.class "elem"]
         [ tableCell [] [ text <| DateUtil.formatMMDY cp.date ]
         , tableCell [] [ text <| String.fromInt cp.painLevel ]
         , tableCell [] [ viewTrend cp.trend ]
@@ -105,6 +107,7 @@ viewTableRow cp =
               else
                 C.simpleHoverIcon I.comment [ onClick (OpenComment cp.comment) ]
             ]
+        , if isEditMode then tableCell [A.class "elem"] [C.deleteButton [] []] else C.empty
         ]
 
 

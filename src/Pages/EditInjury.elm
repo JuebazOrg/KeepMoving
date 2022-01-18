@@ -77,17 +77,18 @@ update model msg =
                 Just form ->
                     case model.injury of
                         RemoteData.Success injury ->
-                            let
-                                log =
-                                    Debug.log "injury" injury
-                            in
                             ( model, updateInjury <| createNewInjuryFromForm form injury )
 
                         _ ->
                             ( model, Cmd.none )
 
         CloseModal ->
-            ( model, Route.pushUrl Route.Injuries model.navKey )
+            case model.injury of
+                RemoteData.Success injury ->
+                    ( model, Route.pushUrl (Route.Injury injury.id) model.navKey )
+
+                _ ->
+                    ( model, Cmd.none )
 
 
 getInjury : Id -> Cmd Msg

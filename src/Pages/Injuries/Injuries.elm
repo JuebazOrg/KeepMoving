@@ -2,12 +2,8 @@ module Pages.Injuries.Injuries exposing (..)
 
 import Browser.Navigation as Nav
 import Clients.InjuryClient as Client
-import Compare exposing (Comparator)
 import Components.Card exposing (..)
-import Components.Dropdown as DD
 import Components.Elements as C
-import Components.Form exposing (controlCheckBox)
-import Components.SlidingPanel as CS
 import Css exposing (..)
 import Date exposing (..)
 import Dict as Dict
@@ -15,7 +11,7 @@ import Domain.Injury exposing (..)
 import Domain.Regions exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
-import Html.Styled.Events exposing (onCheck, onClick)
+import Html.Styled.Events exposing (onClick)
 import Navigation.Route as Route
 import Pages.Injuries.Filters as Filters
 import RemoteData exposing (RemoteData(..), WebData)
@@ -129,7 +125,7 @@ viewYear year =
 viewInjury : Injury -> Html Msg
 viewInjury injury =
     card
-        [ onClick <| OpenDetail injury, A.css [ borderRadius SP.small, marginTop SP.medium, important (maxWidth (px 500)) ] ]
+        [A.class "elem", onClick <| OpenDetail injury, A.css [ borderRadius SP.small, marginTop SP.medium, important (maxWidth (px 500)) ] ]
         [ cardHeader []
             [ cardTitle []
                 [ C.primaryTag [ text <| bodyRegionToString injury.bodyRegion ]

@@ -64,6 +64,17 @@ saveButton attributes messages =
     in
     Components.BulmaElements.button buttonProps attributes messages
 
+deleteButton : List (S.Attribute msg) -> List (S.Html msg) -> S.Html msg
+deleteButton attributes messages =
+    let
+        myIcon =
+            Just ( BM.small, [], icon [] [ S.i [ A.class I.delete ] [] ] )
+
+        buttonProps =
+            { defaultButtonProps | color = BM.danger, iconLeft = myIcon }
+    in
+    Components.BulmaElements.button buttonProps attributes messages
+
 
 dropDownButton : List (S.Attribute msg) -> List (S.Html msg) -> S.Html msg
 dropDownButton attributes messages =
