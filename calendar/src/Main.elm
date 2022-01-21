@@ -3,7 +3,7 @@ module Main exposing (..)
 import Browser
 import Calendar as C
 import Css exposing (..)
-import Date exposing (Date, fromCalendarDate)
+import Date as Date exposing (Date, fromCalendarDate)
 import Html
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
@@ -19,9 +19,9 @@ july14th2020 =
     fromCalendarDate 2020 Jul 14
 
 
-july14th2020calendar : List (List C.CalendarDate)
-july14th2020calendar =
-    C.fromDate Nothing july14th2020
+createCalendarFromDate : Date -> List (List C.CalendarDate)
+createCalendarFromDate date =
+    C.fromDate Nothing date
 
 
 type alias Calendar =
@@ -98,13 +98,18 @@ monthToString month =
             "december"
 
 
+dateFromMonth : Month -> Date
+dateFromMonth month =
+    fromCalendarDate 2020 month 1
+
+
 type alias Model =
-    { calendar : Calendar, selectedMonth : Month }
+    { currentCalendarDate : Date }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { calendar = july14th2020calendar, selectedMonth = Jul }, Cmd.none )
+    ( { currentCalendarDate = dateFromMonth Jul }, Cmd.none )
 
 
 
@@ -118,9 +123,20 @@ type Msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of 
-        Back -> (model, Cmd.none)
-        Next -> (model, Cmd.none)
+    case msg of
+        Back ->
+            let
+                previousMonth =
+                    Date.add Date.Months -1 model.currentCalendarDate
+            in
+            ( { model | currentCalendarDate = previousMonth }, Cmd.none )
+
+        Next ->
+            let
+                nextMonth =
+                    Date.add Date.Months 1 model.currentCalendarDate
+            in
+            ( { model | currentCalendarDate = nextMonth }, Cmd.none )
 
 
 
@@ -130,15 +146,15 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div [ A.css [ margin (px 40) ] ]
-        [ viewHeader model.selectedMonth
+        [ viewHeader model.currentCalendarDate
         , viewDayNames
-        , viewMonth model.calendar
+        , viewMonth <| createCalendarFromDate model.currentCalendarDate
         ]
 
 
-viewHeader : Month -> Html Msg
-viewHeader month =
-    div [] [ button [onClick Back][text "<"] , text <| monthToString month, button [onClick Next][text ">"] ]
+viewHeader : Date -> Html Msg
+viewHeader date =
+    div [] [ button [ onClick Back ] [ text "<" ], text <| monthToString (Date.month date), text <| String.fromInt (Date.year date), button [ onClick Next ] [ text ">" ] ]
 
 
 viewMonth : Calendar -> Html Msg
