@@ -67,7 +67,9 @@ view : Model -> Html Msg
 view model =
     div []
         [ div [ A.css [ displayFlex, justifyContent spaceBetween ] ]
-            [ C.h3Title [ A.css [ margin (px 0) ] ] [ text "Injuries" ]
+            [ C.h3Title [ A.css [ margin (px 0) ] ]
+                [ text "Injuries" ]
+
             , C.addButton [ A.href (Route.routeToString Route.NewInjury) ] [ text "injury" ]
             ]
         , map FiltersMsg <| Filters.view model.filters
@@ -125,7 +127,7 @@ viewYear year =
 viewInjury : Injury -> Html Msg
 viewInjury injury =
     card
-        [A.class "elem", onClick <| OpenDetail injury, A.css [ borderRadius SP.small, marginTop SP.medium, important (maxWidth (px 500)) ] ]
+        [ A.class "elem", onClick <| OpenDetail injury, A.css [ borderRadius SP.small, marginTop SP.medium, important (maxWidth (px 500)) ] ]
         [ cardHeader []
             [ cardTitle []
                 [ C.primaryTag [ text <| bodyRegionToString injury.bodyRegion ]

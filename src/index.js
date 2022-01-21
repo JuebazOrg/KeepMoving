@@ -1,6 +1,7 @@
 import "./main.css";
 import { Elm } from "./Main.elm";
 import * as serviceWorker from "./serviceWorker";
+import "../src/styles.css"
 
 Elm.Main.init({
   node: document.getElementById("root"),

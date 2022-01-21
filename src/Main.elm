@@ -2,8 +2,7 @@ module Main exposing (..)
 
 import Browser exposing (Document, UrlRequest)
 import Browser.Navigation as Nav
-import Bulma.Styled.CDN exposing (..)
-import Clients.InjuryClient as Client
+import Components.BulmaElements as C
 import Css exposing (..)
 import Domain.Injury exposing (Injury)
 import Html.Styled exposing (..)
@@ -200,8 +199,7 @@ currentView model =
                     map EditInjuryPageMsg (EditInjury.view pageModel)
     in
     div [ A.css [ height (pct 100) ] ]
-        [ stylesheet
-        , fontAwesomeCDN
+        [ fontAwesomeCDN
         , map NavBarMsg (viewNavBar model.navBar)
         , div [ A.css [ padding (px 20) ] ] [ content ]
         ]

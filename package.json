@@ -5,6 +5,8 @@
     "bulma-o-steps": "^1.1.0"
   },
   "scripts": {
-    "db" : "cd DB && json-server --watch db.json --port 3004"
+    "db": "cd DB && json-server --watch db.json --port 3004",
+    "css-build": "sass src/styles.scss src/styles.css",
+    "css-watch": "npm run css-build -- --watch"
   }
 }
