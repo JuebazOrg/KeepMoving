@@ -9,99 +9,17 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick)
 import Time exposing (Month(..), Weekday(..))
-
+import Util exposing (..)
 
 
 ---- MODEL ----
 
 
-july14th2020 =
-    fromCalendarDate 2020 Jul 14
 
-
-createCalendarFromDate : Date -> List (List C.CalendarDate)
-createCalendarFromDate date =
-    C.fromDate Nothing date
 
 
 type alias Calendar =
     List (List C.CalendarDate)
-
-
-daysOfWeek : List Weekday
-daysOfWeek =
-    [ Sun, Mon, Tue, Wed, Thu, Fri, Sat ]
-
-
-daysOfWeekToString : Weekday -> String
-daysOfWeekToString day =
-    case day of
-        Mon ->
-            "Mon"
-
-        Tue ->
-            "Tue"
-
-        Wed ->
-            "Wed"
-
-        Thu ->
-            "Thu"
-
-        Fri ->
-            "Fri"
-
-        Sat ->
-            "Sat"
-
-        Sun ->
-            "Sun"
-
-
-monthToString : Month -> String
-monthToString month =
-    case month of
-        Jan ->
-            "januar"
-
-        Feb ->
-            "februar"
-
-        Mar ->
-            "marts"
-
-        Apr ->
-            "april"
-
-        May ->
-            "maj"
-
-        Jun ->
-            "juni"
-
-        Jul ->
-            "juli"
-
-        Aug ->
-            "august"
-
-        Sep ->
-            "september"
-
-        Oct ->
-            "oktober"
-
-        Nov ->
-            "november"
-
-        Dec ->
-            "december"
-
-
-dateFromMonth : Month -> Date
-dateFromMonth month =
-    fromCalendarDate 2020 month 1
-
 
 type alias Model =
     { currentCalendarDate : Date }
@@ -112,6 +30,20 @@ init =
     ( { currentCalendarDate = dateFromMonth Jul }, Cmd.none )
 
 
+
+createCalendarFromDate : Date -> List (List C.CalendarDate)
+createCalendarFromDate date =
+    C.fromDate Nothing date
+
+
+daysOfWeek : List Weekday
+daysOfWeek =
+    [ Sun, Mon, Tue, Wed, Thu, Fri, Sat ]
+
+
+dateFromMonth : Month -> Date
+dateFromMonth month =
+    fromCalendarDate 2020 month 1
 
 ---- UPDATE ----
 
