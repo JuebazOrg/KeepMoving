@@ -2,7 +2,8 @@
   "dependencies": {
     "bulma": "^0.9.3",
     "bulma-calendar": "^6.1.15",
-    "bulma-o-steps": "^1.1.0"
+    "bulma-o-steps": "^1.1.0",
+    "elm-live": "^4.0.2"
   },
   "scripts": {
     "db": "cd DB && json-server --watch db.json --port 3004",
