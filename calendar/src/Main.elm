@@ -5,8 +5,9 @@ import Calendar as C exposing (CalendarDate)
 import Color as C exposing (color8)
 import Css exposing (..)
 import Date as Date exposing (Date, fromCalendarDate)
-import Event as E exposing (DayEvent, Event(..), MultiDayEvent)
+import Event as E exposing (Event)
 import EventModal as EventModal
+import Fake exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick)
@@ -23,21 +24,16 @@ import Util exposing (..)
 type alias Calendar =
     List (List C.CalendarDate)
 
-
-type alias Events =
-    { single : List E.DayEvent, multi : List E.MultiDayEvent }
-
-
 type alias Model =
-    { currentCalendarDate : Date, today : Date, events : Events, eventModal : Bool }
+    { currentCalendarDate : Date, today : Date, events : List Event, eventModal : Maybe Event }
 
 
 init : ( Model, Cmd Msg )
 init =
     ( { currentCalendarDate = dateFromMonth Jul
       , today = dateFromMonth Jul
-      , events = { single = E.fakeDayEvents, multi = E.fakeMultiDayEvents }
-      , eventModal = False
+      , events = fakeEvents
+      , eventModal = Nothing
       }
     , now
     )
@@ -101,9 +97,10 @@ update msg model =
                     ( { model | currentCalendarDate = date, today = date }, Cmd.none )
 
         EventTrigger event ->
-            ( { model | eventModal = not model.eventModal }, Cmd.none )
-        CloseModal -> 
-            ({model | eventModal = not model.eventModal}, Cmd.none)
+            ( { model | eventModal = Just event }, Cmd.none )
+
+        CloseModal ->
+            ( { model | eventModal = Nothing }, Cmd.none )
 
 
 
@@ -127,14 +124,14 @@ viewHeader date =
             [ h1 [] [ text <| monthToString (Date.month date) ]
             , h1 [ A.css [ marginLeft (px 5) ] ] [ text <| String.fromInt (Date.year date) ]
             ]
-        , i [ onClick Next, A.class "fas fa-angle-right", A.css [ S.iconStyle] ] []
+        , i [ onClick Next, A.class "fas fa-angle-right", A.css [ S.iconStyle ] ] []
         ]
 
 
 viewMonth : Model -> Html Msg
 viewMonth model =
     div [] <|
-        EventModal.view CloseModal model.eventModal 
+        EventModal.view CloseModal model.eventModal
             :: List.map
                 (\week ->
                     div [ A.css [ displayFlex ] ]
@@ -151,49 +148,55 @@ viewDayNames =
         List.map (\name -> div [ A.css [ flex (int 1) ] ] [ text <| daysOfWeekToString name ]) daysOfWeek
 
 
-viewDay : C.CalendarDate -> Date -> Events -> Html Msg
+viewDay : C.CalendarDate -> Date -> List Event -> Html Msg
 viewDay day today events =
     div [ A.css [ flex (int 1), width (px 100), height (px 100), displayFlex, flexDirection column, overflow hidden ] ] <|
         viewDayNumber day today
             :: viewEvents day events
 
 
-viewEvents : C.CalendarDate -> Events -> List (Html Msg)
+viewEvents : C.CalendarDate -> List Event -> List (Html Msg)
 viewEvents day events =
-    [ events.multi
+    let 
+        singleDayEvents = events |> List.filter (\e -> e.endDate == Nothing) 
+
+        multiDayEvents = events |> List.filter (\e -> e.endDate /= Nothing)
+
+    in 
+    [ multiDayEvents
         |> List.filter (\e -> E.isEventBetweenDate day.date e)
         |> viewMultiDayEvents day.date
-    , events.single
+    , singleDayEvents
         |> List.filter (\i -> E.isEventOnDate day.date i)
         |> viewDayEvents
     ]
 
 
-viewDayEvents : List DayEvent -> Html Msg
+viewDayEvents : List Event -> Html Msg
 viewDayEvents events =
     div []
         (events
             |> List.map
                 (\event ->
-                    div [ onClick <| EventTrigger (Single event), A.css [ S.event S.DayEvent event.color ] ] [ span [] [ text event.name ] ]
+                    div [ onClick <| EventTrigger (event), A.css [ S.event S.DayEvent event.color ] ] [ span [] [ text event.name ] ]
                 )
         )
 
 
-viewMultiDayEvents : Date -> List MultiDayEvent -> Html Msg
+viewMultiDayEvents : Date -> List Event -> Html Msg
 viewMultiDayEvents currentDate events =
     div []
         (events
             |> List.map
                 (\event ->
                     if event.startDate == currentDate then
-                        div [ onClick <| EventTrigger (Multi event), A.css [ S.event StartDate event.color ] ] [ text event.name ]
+                        div [ onClick <| EventTrigger event, A.css [ S.event StartDate event.color ] ] [ text event.name ]
 
-                    else if event.endDate == currentDate then
-                        div [ onClick <| EventTrigger (Multi event), A.css [ S.event EndDate event.color ] ] [ text event.name ]
+                    else if E.isEndDate currentDate event then
+                        div [ onClick <| EventTrigger  event, A.css [ S.event EndDate event.color ] ] [ text event.name ]
 
                     else
-                        div [ onClick <| EventTrigger (Multi event), A.css [ S.event Middle event.color ] ] [ text event.name ]
+                        div [ onClick <| EventTrigger event, A.css [ S.event Middle event.color ] ] [ text event.name ]
                 )
         )
 

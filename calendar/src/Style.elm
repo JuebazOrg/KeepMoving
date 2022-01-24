@@ -48,9 +48,10 @@ fontStyle =
         [ fontFamilies [ "Comfortaa" ]
         ]
 
-iconStyle : Style 
-iconStyle = 
-    batch [
-        fontSize (Css.em 2),
-         hover [ color C.grey ]
-    ]
+
+iconStyle : Style
+iconStyle =
+    batch
+        [ fontSize (Css.em 2)
+        , hover [ color C.grey ]
+        ]
