@@ -54,4 +54,5 @@ iconStyle =
     batch
         [ fontSize (Css.em 2)
         , hover [ color C.grey ]
+        , cursor pointer
         ]

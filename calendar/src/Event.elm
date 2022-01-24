@@ -21,17 +21,22 @@ isEventOnDate date event =
 
 isEventBetweenDate : Date -> Event -> Bool
 isEventBetweenDate date event =
-  case event.endDate of 
-    Nothing -> False 
-    Just date2 -> Date.isBetween event.startDate date2 date
+    case event.endDate of
+        Nothing ->
+            False
+
+        Just date2 ->
+            Date.isBetween event.startDate date2 date
 
 
 isEndDate : Date -> Event -> Bool
 isEndDate date event =
-    case event.endDate of 
-    Nothing -> False 
-    Just date2 -> date == date2
-    
+    case event.endDate of
+        Nothing ->
+            False
+
+        Just date2 ->
+            date == date2
 
 
 isStartDate : Date -> Event -> Bool
