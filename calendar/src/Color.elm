@@ -16,3 +16,7 @@ white =
 purple : Color
 purple =
     hex "b314fc"
+
+grey: Color 
+grey = 
+    hex "adb5bd"

@@ -2,6 +2,7 @@ module Util exposing (..)
 
 import Time exposing (Month(..), Weekday(..))
 
+
 daysOfWeekToString : Weekday -> String
 daysOfWeekToString day =
     case day of
@@ -31,37 +32,37 @@ monthToString : Month -> String
 monthToString month =
     case month of
         Jan ->
-            "januar"
+            "January"
 
         Feb ->
-            "februar"
+            "Feburay"
 
         Mar ->
-            "marts"
+            "Mars"
 
         Apr ->
-            "april"
+            "April"
 
         May ->
-            "maj"
+            "May"
 
         Jun ->
-            "juni"
+            "June"
 
         Jul ->
-            "juli"
+            "July"
 
         Aug ->
-            "august"
+            "August"
 
         Sep ->
-            "september"
+            "September"
 
         Oct ->
-            "oktober"
+            "October"
 
         Nov ->
-            "november"
+            "November"
 
         Dec ->
-            "december"
+            "December"

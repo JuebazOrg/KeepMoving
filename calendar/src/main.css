@@ -5,6 +5,9 @@
   More context in the issue:
     https://github.com/halfzebra/create-elm-app/issues/320
 */
+
+@import "../node_modules/@fortawesome/fontawesome-free/css/all.css";
+
 [data-elm-hot="true"] {
   height: inherit;
 }
