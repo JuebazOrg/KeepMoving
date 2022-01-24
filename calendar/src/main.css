@@ -27,3 +27,15 @@ img {
   margin: 20px 0;
   max-width: 200px;
 }
+
+
+.floating {
+  box-shadow:
+    0px 3px 5px -1px rgba(0, 0, 0, 0.2),
+    0px 6px 10px 0px rgba(0, 0, 0, 0.14),
+    0px 1px 18px 0px rgba(0,0,0,.12);
+}
+
+.drop-shadow {
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 4px 0px;
+}

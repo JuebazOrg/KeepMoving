@@ -11,13 +11,14 @@ type EventStyle
     | DayEvent
 
 
-event :  EventStyle-> Color -> Style
-event eventStyle eventColor=
+event : EventStyle -> Color -> Style
+event eventStyle eventColor =
     batch
         [ padding (px 2)
         , marginBottom (px 2)
         , backgroundColor eventColor
         , fontSize small
+        , cursor pointer
         , if eventStyle == Middle then
             color eventColor
 
@@ -46,3 +47,10 @@ fontStyle =
     batch
         [ fontFamilies [ "Comfortaa" ]
         ]
+
+iconStyle : Style 
+iconStyle = 
+    batch [
+        fontSize (Css.em 2),
+         hover [ color C.grey ]
+    ]

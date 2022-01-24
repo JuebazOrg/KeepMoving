@@ -1,16 +1,21 @@
 module Event exposing (..)
 
+import Color as C
+import Css exposing (..)
 import Date as Date exposing (Date)
 import Time exposing (Month(..))
-import Css exposing (..)
-import Color as C
+
+
+type Event
+    = Multi MultiDayEvent
+    | Single DayEvent
+
 
 type alias DayEvent =
     { name : String
     , color : Color
     , description : String
     , date : Date
-    
     }
 
 
@@ -23,8 +28,15 @@ type alias MultiDayEvent =
     }
 
 
-fakeEvents : List DayEvent
+fakeEvents : List Event
 fakeEvents =
+    fakeMultiDayEvents
+        |> List.map (\e -> Multi e)
+        |> List.append (List.map (\e -> Single e) fakeDayEvents)
+
+
+fakeDayEvents : List DayEvent
+fakeDayEvents =
     [ { name = "Event1"
       , date = Date.fromCalendarDate 2022 Jan 3
       , description = "blablablabal"
