@@ -2,17 +2,21 @@ module Event exposing (..)
 
 import Date as Date exposing (Date)
 import Time exposing (Month(..))
-
+import Css exposing (..)
+import Color as C
 
 type alias DayEvent =
     { name : String
+    , color : Color
     , description : String
     , date : Date
+    
     }
 
 
 type alias MultiDayEvent =
     { name : String
+    , color : Color
     , description : String
     , startDate : Date
     , endDate : Date
@@ -24,14 +28,17 @@ fakeEvents =
     [ { name = "Event1"
       , date = Date.fromCalendarDate 2022 Jan 3
       , description = "blablablabal"
+      , color = C.color11
       }
     , { name = "Event1.1"
       , date = Date.fromCalendarDate 2022 Jan 3
       , description = "blablablabal"
+      , color = C.color10
       }
     , { name = "Event2"
       , date = Date.fromCalendarDate 2022 Feb 9
       , description = "blablablabal"
+      , color = C.color12
       }
     ]
 
@@ -42,16 +49,19 @@ fakeMultiDayEvents =
       , startDate = Date.fromCalendarDate 2022 Jan 3
       , endDate = Date.fromCalendarDate 2022 Jan 4
       , description = "blablablabal"
+      , color = C.color5
       }
     , { name = "Event3.2"
       , startDate = Date.fromCalendarDate 2022 Jan 3
       , endDate = Date.fromCalendarDate 2022 Jan 4
       , description = "blablablabal"
+      , color = C.color18
       }
     , { name = "Event4"
       , startDate = Date.fromCalendarDate 2022 Feb 9
       , endDate = Date.fromCalendarDate 2022 Feb 24
       , description = "blablablabal"
+      , color = C.color8
       }
     ]
 

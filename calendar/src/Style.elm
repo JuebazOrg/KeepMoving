@@ -11,17 +11,18 @@ type EventStyle
     | DayEvent
 
 
-event : EventStyle -> Style
-event eventStyle =
+event :  EventStyle-> Color -> Style
+event eventStyle eventColor=
     batch
         [ padding (px 2)
         , marginBottom (px 2)
-        , backgroundColor C.blue
+        , backgroundColor eventColor
+        , fontSize small
         , if eventStyle == Middle then
-            color C.blue
+            color eventColor
 
           else if eventStyle == EndDate then
-            color C.blue
+            color eventColor
 
           else
             color C.white
@@ -40,9 +41,8 @@ event eventStyle =
         ]
 
 
-title : Style
-title =
+fontStyle : Style
+fontStyle =
     batch
         [ fontFamilies [ "Comfortaa" ]
-        , fontSize (px 30)
         ]

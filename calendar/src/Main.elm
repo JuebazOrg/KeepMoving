@@ -94,7 +94,7 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div [ A.css [ margin (px 40) ] ]
+    div [ A.css [ margin (px 40), S.fontStyle ] ]
         [ viewHeader model.currentCalendarDate
         , viewDayNames
         , viewMonth model
@@ -105,13 +105,13 @@ view model =
 
 viewHeader : Date -> Html Msg
 viewHeader date =
-    div [ A.css [ S.title, displayFlex, justifyContent center, alignItems center ] ]
-        [ i [ onClick Back, A.class "fas fa-angle-left", A.css [hover [color C.grey]] ] []
-        , div [A.css [displayFlex, margin2 (px 0) (Css.em 5)]]
+    div [ A.css [  displayFlex, justifyContent center, alignItems center ] ]
+        [ i [ onClick Back, A.class "fas fa-angle-left", A.css [ fontSize (Css.em 2), hover [ color C.grey ] ] ] []
+        , div [ A.css [ displayFlex, margin2 (px 0) (Css.em 5) ] ]
             [ h1 [] [ text <| monthToString (Date.month date) ]
             , h1 [ A.css [ marginLeft (px 5) ] ] [ text <| String.fromInt (Date.year date) ]
             ]
-        , i [ onClick Next, A.class "fas fa-angle-right",  A.css [hover [color C.grey] ]] []
+        , i [ onClick Next, A.class "fas fa-angle-right", A.css [fontSize (Css.em 2), hover [ color C.grey ] ] ] []
         ]
 
 
@@ -147,14 +147,9 @@ viewDay day today events multiDayEvents =
         ]
 
 
-empty : Html msg
-empty =
-    div [] []
-
-
 viewDayEvents : List DayEvent -> Html Msg
 viewDayEvents events =
-    div [] <| List.map (\event -> div [ A.css [ S.event S.DayEvent ] ] [ span [] [ text event.name ] ]) events
+    div [] <| List.map (\event -> div [ A.css [ S.event S.DayEvent event.color] ] [ span [] [ text event.name ] ]) events
 
 
 viewMultiDayEvents : CalendarDate -> List MultiDayEvent -> Html Msg
@@ -163,13 +158,13 @@ viewMultiDayEvents currentDay events =
         List.map
             (\event ->
                 if event.startDate == currentDay.date then
-                    div [ A.css [ S.event StartDate ] ] [ text event.name ]
+                    div [ A.css [ S.event StartDate event.color ] ] [ text event.name ]
 
                 else if event.endDate == currentDay.date then
-                    div [ A.css [ S.event EndDate ] ] [ text event.name ]
+                    div [ A.css [ S.event EndDate event.color ] ] [ text event.name ]
 
                 else
-                    div [ A.css [ S.event Middle ] ] [ text event.name ]
+                    div [ A.css [ S.event Middle event.color] ] [ text event.name ]
             )
             events
 
@@ -183,14 +178,9 @@ viewDayNumber date today =
         div [ A.css [ displayFlex, justifyContent center ] ] [ text date.dayDisplay ]
 
 
-
--- fontAwesomeCDN =
---     node "link"
---         [ A.rel "stylesheet"
---         , A.href "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
---         ]
---         []
----- PROGRAM ----
+empty : Html msg
+empty =
+    div [] []
 
 
 main : Program () Model Msg
