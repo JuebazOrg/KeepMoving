@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Browser
-import Calendar as C exposing (CalendarDate)
+import Calendar exposing (CalendarDate, fromDate)
 import Color as C exposing (color8)
 import Css exposing (..)
 import Date as Date exposing (Date, fromCalendarDate)
@@ -19,15 +19,13 @@ import Time exposing (Month(..), Weekday(..))
 import Util exposing (..)
 
 
-
----- MODEL ----
-
-
 type alias Calendar =
-    List (List C.CalendarDate)
+    List (List CalendarDate)
 
 
-type alias EventModal = {event: Event, dayClicked: Date}
+type alias EventModal =
+    { event : Event, dayClicked : Date }
+
 
 type alias Model =
     { currentCalendarDate : Date, today : Date, events : List Event, eventModal : Maybe EventModal }
@@ -44,9 +42,9 @@ init =
     )
 
 
-createCalendarFromDate : Date -> List (List C.CalendarDate)
+createCalendarFromDate : Date -> List (List CalendarDate)
 createCalendarFromDate date =
-    C.fromDate Nothing date
+    fromDate Nothing date
 
 
 daysOfWeek : List Weekday
@@ -152,14 +150,14 @@ viewDayNames =
         List.map (\name -> div [ A.css [ flex (int 1) ] ] [ text <| daysOfWeekToString name ]) daysOfWeek
 
 
-viewDay : C.CalendarDate -> Model -> Html Msg
+viewDay : CalendarDate -> Model -> Html Msg
 viewDay day model =
-    div [ A.css [ flex (int 1), width (px 100), height (px 100), displayFlex, flexDirection column, overflow hidden ] ] <|
+    div [ A.css [ flex (int 1), width (px 100), height (px 150), displayFlex, flexDirection column, overflow hidden ] ] <|
         viewDayNumber day model.today
             :: viewEvents day model
 
 
-viewEvents : C.CalendarDate -> Model -> List (Html Msg)
+viewEvents : CalendarDate -> Model -> List (Html Msg)
 viewEvents day model =
     let
         singleDayEvents =
@@ -170,6 +168,7 @@ viewEvents day model =
     in
     [ multiDayEvents
         |> List.filter (\e -> E.isEventBetweenDate day.date e)
+        |> List.sortWith (E.eventComparator day.date)
         |> viewMultiDayEvents day.date model.eventModal
     , singleDayEvents
         |> List.filter (\i -> E.isEventOnDate day.date i)
@@ -184,27 +183,28 @@ viewDayEvents maybeEventClicked events =
             |> List.map
                 (\e ->
                     div []
-                        [ div [ onClick <| EventTrigger {event = e, dayClicked = e.startDate}, A.css [ S.event S.DayEvent e.color ] ] [ span [] [ text e.name ] ]
+                        [ div [ onClick <| EventTrigger { event = e, dayClicked = e.startDate }, A.css [ S.event S.DayEvent e.color ] ] [ span [] [ text e.name ] ]
                         , viewEventModal maybeEventClicked e e.startDate
                         ]
                 )
         )
 
 
-viewEventModal : Maybe EventModal -> Event -> Date -> Html Msg 
-viewEventModal maybeEvent event day= 
-        EventModal.view CloseModal
-                            (maybeEvent
-                                |> Maybe.map
-                                    (\e ->
-                                        if e.event == event && e.dayClicked == day then
-                                            Just e.event
+viewEventModal : Maybe EventModal -> Event -> Date -> Html Msg
+viewEventModal maybeEvent event day =
+    EventModal.view CloseModal
+        (maybeEvent
+            |> Maybe.map
+                (\e ->
+                    if e.event == event && e.dayClicked == day then
+                        Just e.event
 
-                                        else
-                                            Nothing
-                                    )
-                                |> join
-                            )
+                    else
+                        Nothing
+                )
+            |> join
+        )
+
 
 viewMultiDayEvents : Date -> Maybe EventModal -> List Event -> Html Msg
 viewMultiDayEvents currentDate eventModal events =
@@ -214,32 +214,35 @@ viewMultiDayEvents currentDate eventModal events =
                 |> List.map
                     (\event ->
                         let
-                            style =
-                                if event.startDate == currentDate then
-                                    S.event StartDate event.color
-
-                                else if E.isEndDate currentDate event then
-                                    S.event EndDate event.color
-
-                                else
-                                    S.event Middle event.color
+                            style = retreiveMultiDayEventStyle event currentDate
                         in
                         div []
-                            [ div [ onClick <| EventTrigger {event = event, dayClicked = currentDate}, A.css [ style ] ] [ text event.name ]
+                            [ div [ onClick <| EventTrigger { event = event, dayClicked = currentDate }, A.css [ style ], A.class "drop-shadow" ] [ text event.name ]
                             , viewEventModal eventModal event currentDate
                             ]
                     )
     in
-    div [] viewMuliEventsStyled 
+    div [] viewMuliEventsStyled
 
 
-viewDayNumber : C.CalendarDate -> Date -> Html Msg
+viewDayNumber : CalendarDate -> Date -> Html Msg
 viewDayNumber date today =
     if date.date == today then
         div [ A.css [ displayFlex, justifyContent center ] ] [ span [ A.css [ backgroundColor C.blue, color C.white, padding (px 10), borderRadius (pct 50) ] ] [ text date.dayDisplay ] ]
 
     else
         div [ A.css [ displayFlex, justifyContent center ] ] [ text date.dayDisplay ]
+
+
+retreiveMultiDayEventStyle : Event-> Date -> Style
+retreiveMultiDayEventStyle event currentDate = 
+    if event.startDate == currentDate then
+        S.event StartDate event.color
+    else if E.isEndDate currentDate event then
+        S.event EndDate event.color
+    else
+        S.event Middle event.color
+    
 
 
 empty : Html msg

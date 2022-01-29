@@ -1,5 +1,6 @@
 module Event exposing (..)
 
+import Compare exposing (Comparator)
 import Css exposing (Color)
 import Date as Date exposing (Date)
 import Time exposing (Month(..))
@@ -42,3 +43,18 @@ isEndDate date event =
 isStartDate : Date -> Event -> Bool
 isStartDate date event =
     date == event.startDate
+
+
+eventComparator : Date -> Comparator Event
+eventComparator date =
+    Compare.compose
+        (\e ->
+            case e.endDate of
+                Nothing ->
+                    date
+
+                Just d ->
+                    d
+        )
+        Date.compare
+        |> Compare.reverse

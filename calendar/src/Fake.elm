@@ -12,13 +12,13 @@ fakeEvents =
       , startDate = Date.fromCalendarDate 2022 Jan 3
       , endDate = Just <| Date.fromCalendarDate 2022 Jan 4
       , description = "blablablabal"
-      , color = C.color5
+      , color = C.color6
       }
     , { name = "Event3.2"
       , startDate = Date.fromCalendarDate 2022 Jan 3
-      , endDate = Just <| Date.fromCalendarDate 2022 Jan 4
+      , endDate = Just <| Date.fromCalendarDate 2022 Jan 5
       , description = "blablablabal"
-      , color = C.color18
+      , color = C.color7
       }
     , { name = "Event4"
       , startDate = Date.fromCalendarDate 2022 Feb 9
@@ -30,12 +30,12 @@ fakeEvents =
       , startDate = Date.fromCalendarDate 2022 Jan 3
       , endDate = Nothing
       , description = "blablablabal"
-      , color = C.color1
+      , color = C.color16
       }
     , { name = "Event5"
       , startDate = Date.fromCalendarDate 2022 Jan 7
       , endDate = Nothing
       , description = "blablablabal"
-      , color = C.color2
+      , color = C.color10
       }
     ]
