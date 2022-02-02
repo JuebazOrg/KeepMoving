@@ -14,7 +14,7 @@ fakeEvents =
       , description = "blablablabal"
       , color = C.color6
       }
-    , { name = "Event3.2"
+    , { name = "EventMultidayWithVeryLongName"
       , startDate = Date.fromCalendarDate 2022 Jan 3
       , endDate = Just <| Date.fromCalendarDate 2022 Jan 5
       , description = "blablablabal"
@@ -26,7 +26,7 @@ fakeEvents =
       , description = "blablablabal"
       , color = C.color8
       }
-    , { name = "Event1"
+    , { name = "EventWithVeryLongName"
       , startDate = Date.fromCalendarDate 2022 Jan 3
       , endDate = Nothing
       , description = "blablablabal"

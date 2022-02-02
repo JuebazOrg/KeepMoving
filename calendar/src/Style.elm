@@ -16,9 +16,11 @@ event eventStyle eventColor =
     batch
         [ padding (px 2)
         , marginBottom (px 2)
+        , height spacing.small
         , backgroundColor eventColor
-        , fontSize small
         , cursor pointer
+        , overflow hidden
+        , textOverflow ellipsis
         , if eventStyle == Middle then
             color eventColor
 
@@ -56,3 +58,26 @@ iconStyle =
         , hover [ color C.grey ]
         , cursor pointer
         ]
+
+
+type alias Spacing a =
+    { xsmall : LengthOrAuto a
+    , small : LengthOrAuto a
+    , medium : LengthOrAuto a
+    , large : LengthOrAuto a
+    , xlarge : LengthOrAuto a
+    , xxlarge : LengthOrAuto a
+    , xxxlarge : LengthOrAuto a
+    }
+
+
+spacing : Spacing Em
+spacing =
+    { xsmall = Css.em 0.5
+    , small = Css.em 1
+    , medium = Css.em 2
+    , large = Css.em 3
+    , xlarge = Css.em 5
+    , xxlarge = Css.em 7
+    , xxxlarge = Css.em 10
+    }

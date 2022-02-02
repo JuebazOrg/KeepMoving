@@ -1,7 +1,7 @@
 module Pages.InjuryForm exposing (..)
 
 import Cmd.Extra as Cmd
-import Components.Calendar.DatePicker as DP
+import Components.DatePicker as DP
 import Components.Card exposing (..)
 import Components.Dropdown as DD
 import Components.Elements as C

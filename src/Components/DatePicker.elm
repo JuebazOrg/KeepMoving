@@ -1,12 +1,10 @@
-module Components.Calendar.DatePicker exposing (..)
+module Components.DatePicker exposing (..)
 
 import Date as Date exposing (Date)
-import DatePicker
 import Html.Attributes exposing (type_)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (on, onInput)
-import Json.Decode as Decode
 
 
 type alias Model =

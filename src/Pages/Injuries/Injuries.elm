@@ -20,7 +20,6 @@ import Theme.Icons as I
 import Theme.Spacing as SP
 import Util.Date exposing (formatMMDD)
 
-
 type alias Model =
     { injuries : WebData (List Injury), filters : Filters.Model, navKey : Nav.Key }
 
