@@ -1,6 +1,6 @@
 module EventModal exposing (..)
 
-import Color as C
+import CalendarColor as C
 import Css exposing (..)
 import Date as Date exposing (Date)
 import Event exposing (..)
@@ -25,7 +25,7 @@ view parentMsg maybeEvent =
                     , position fixed
                     ]
                 ]
-                [ div [ A.css [ displayFlex, justifyContent flexEnd ] ] [ i [ onClick parentMsg, A.class "fas fa-times", A.css [ S.iconStyle, fontSize (em 1.2) ] ] [] ]
+                [ div [ A.css [ displayFlex, justifyContent flexEnd ] ] [ i [ onClick parentMsg, A.class "fa fa-times", A.css [ S.iconStyle, fontSize (em 1.2) ] ] [] ]
                 , div [ A.css [ displayFlex, flexDirection column ] ]
                     [ div [ A.css [ displayFlex, alignItems center ] ] [ circleColor event.color, h3 [] [ text event.name ] ]
                     , viewDates event.startDate event.endDate

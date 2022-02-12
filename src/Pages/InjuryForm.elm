@@ -1,8 +1,8 @@
 module Pages.InjuryForm exposing (..)
 
 import Cmd.Extra as Cmd
-import Components.DatePicker as DP
 import Components.Card exposing (..)
+import Components.DatePicker as DP
 import Components.Dropdown as DD
 import Components.Elements as C
 import Components.Form exposing (..)

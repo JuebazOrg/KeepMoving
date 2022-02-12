@@ -1,6 +1,6 @@
 module Fake exposing (..)
 
-import Color as C
+import CalendarColor as C
 import Date as Date
 import Event exposing (..)
 import Time exposing (..)

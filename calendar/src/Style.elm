@@ -1,6 +1,6 @@
 module Style exposing (..)
 
-import Color as C
+import CalendarColor as C
 import Css exposing (..)
 
 
@@ -14,13 +14,16 @@ type EventStyle
 event : EventStyle -> Color -> Style
 event eventStyle eventColor =
     batch
-        [ padding (px 2)
-        , marginBottom (px 2)
-        , height spacing.small
+        [ 
+         marginBottom (px 2)
+        , height (em 1.5)
         , backgroundColor eventColor
         , cursor pointer
         , overflow hidden
         , textOverflow ellipsis
+        , displayFlex
+        , justifyContent center
+        , alignItems center
         , if eventStyle == Middle then
             color eventColor
 
@@ -59,6 +62,19 @@ iconStyle =
         , cursor pointer
         ]
 
+
+currentDay : Style 
+currentDay = 
+    batch [
+        backgroundColor C.blue
+        , color C.white
+        , borderRadius (pct 50)
+        , height (spacing.medium)
+        , width (spacing.medium)
+        , displayFlex
+        , justifyContent center
+        , alignItems center
+    ]
 
 type alias Spacing a =
     { xsmall : LengthOrAuto a

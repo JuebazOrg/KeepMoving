@@ -81,7 +81,7 @@ viewInfo injury model =
 viewCheckPointsHeader : Html Msg
 viewCheckPointsHeader =
     CM.modalCardTitle [ A.class "subtitle", A.css [ displayFlex, justifyContent flexEnd, alignItems center ] ]
-        [ span [ A.css [ flex (int 1) ] ] [ text "Checkpoints" ], C.addButton [ onClick OpenModal, A.css [ marginRight SP.medium ] ] [], C.simpleHoverIcon I.edit [onClick EditCheckPoints] ]
+        [ span [ A.css [ flex (int 1) ] ] [ text "Checkpoints" ], C.addButton [ onClick OpenModal, A.css [ marginRight SP.medium ] ] [], C.simpleHoverIcon I.edit [ onClick EditCheckPoints ] ]
 
 
 viewCheckPoints : Injury -> CheckPoints.Model -> Bool -> Html Msg
@@ -98,7 +98,7 @@ viewCheckPointModal : Bool -> CheckPointModal.Model -> Html Msg
 viewCheckPointModal isOpen model =
     let
         header =
-            CM.modalCardHead [] [ CM.modalCardTitle [] [ text "Checkpoint" ],C.closeButton [ onClick CloseModal ] [] ]
+            CM.modalCardHead [] [ CM.modalCardTitle [] [ text "Checkpoint" ], C.closeButton [ onClick CloseModal ] [] ]
 
         footer =
             CM.modalCardFoot [ A.css [ flexDirection rowReverse ] ] [ C.saveButton [ onClick SaveCheckpoint ] [] ]

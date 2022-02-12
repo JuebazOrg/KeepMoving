@@ -64,6 +64,7 @@ saveButton attributes messages =
     in
     Components.BulmaElements.button buttonProps attributes messages
 
+
 deleteButton : List (S.Attribute msg) -> List (S.Html msg) -> S.Html msg
 deleteButton attributes messages =
     let
@@ -72,6 +73,18 @@ deleteButton attributes messages =
 
         buttonProps =
             { defaultButtonProps | color = BM.danger, iconLeft = myIcon }
+    in
+    Components.BulmaElements.button buttonProps attributes messages
+
+
+primaryIconButton : String -> List (S.Attribute msg) -> List (S.Html msg) -> S.Html msg
+primaryIconButton classNameIcon attributes messages =
+    let
+        myIcon =
+            Just ( BM.small, [], icon [] [ S.i [ A.class classNameIcon ] [] ] )
+
+        buttonProps =
+            { defaultButtonProps | color = BM.primary, iconLeft = myIcon }
     in
     Components.BulmaElements.button buttonProps attributes messages
 

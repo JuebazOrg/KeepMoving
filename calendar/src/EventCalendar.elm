@@ -1,7 +1,7 @@
 module  EventCalendar exposing (Model, view, update, Msg, init)
 
 import Calendar exposing (CalendarDate, fromDate)
-import Color as C
+import CalendarColor as C
 import Css exposing (..)
 import Date as Date exposing (Date, fromCalendarDate)
 import Event as E exposing (Event)
@@ -24,14 +24,13 @@ type alias EventModal =
 
 
 type alias Model =
-    { currentCalendarDate : Date, today : Date, events : List Event, eventModal : Maybe EventModal }
+    { currentCalendarDate : Date, today : Date, eventModal : Maybe EventModal }
 
 
 init : ( Model, Cmd Msg )
-init =
+init  =
     ( { currentCalendarDate = dateFromMonth Jul
       , today = dateFromMonth Jul
-      , events = fakeEvents
       , eventModal = Nothing
       }
     , now
@@ -106,35 +105,35 @@ update msg model =
 ---- VIEW ----
 
 
-view : Model -> Html Msg
-view model =
+view : List Event -> Model -> Html Msg
+view events model =
     div [ A.css [ margin (px 10), S.fontStyle ] ]
         [ viewHeader model.currentCalendarDate
         , viewDayNames
-        , viewMonth model
+        , viewMonth model events
         ]
 
 
 viewHeader : Date -> Html Msg
 viewHeader date =
     div [ A.css [ displayFlex, justifyContent center, alignItems center, marginBottom (spacing.xsmall) ] ]
-        [ i [ onClick Back, A.class "fas fa-angle-left", A.css [ S.iconStyle ] ] []
+        [ i [ onClick Back, A.class "fa fa-angle-left", A.css [ S.iconStyle ] ] []
         , div [ A.css [ displayFlex, margin2 (px 0) (spacing.small) ] ]
             [ h1 [] [ text <| monthToString (Date.month date) ]
             , h1 [ A.css [ marginLeft spacing.xsmall ] ] [ text <| String.fromInt (Date.year date) ]
             ]
-        , i [ onClick Next, A.class "fas fa-angle-right", A.css [ S.iconStyle ] ] []
+        , i [ onClick Next, A.class "fa fa-angle-right", A.css [ S.iconStyle ] ] []
         ]
 
 
-viewMonth : Model -> Html Msg
-viewMonth model =
+viewMonth : Model -> List Event -> Html Msg
+viewMonth model events =
     div [] <|
         List.map
             (\week ->
                 div [ A.css [ displayFlex ] ]
                     (week
-                        |> List.map (\day -> viewDay day model)
+                        |> List.map (\day -> viewDay day events model)
                     )
             )
             (createCalendarFromDate model.currentCalendarDate)
@@ -158,21 +157,21 @@ dayStyle =
         ]
 
 
-viewDay : CalendarDate -> Model -> Html Msg
-viewDay day model =
+viewDay : CalendarDate -> List Event -> Model -> Html Msg
+viewDay day events model =
     div [ A.css [ dayStyle ] ] <|
         viewDayNumber day model.today
-            :: viewEvents day model
+            :: viewEvents day events model
 
 
-viewEvents : CalendarDate -> Model -> List (Html Msg)
-viewEvents day model =
+viewEvents : CalendarDate -> List Event -> Model -> List (Html Msg)
+viewEvents day events model =
     let
         singleDayEvents =
-            model.events |> List.filter (\e -> e.endDate == Nothing)
+            events |> List.filter (\e -> e.endDate == Nothing)
 
         multiDayEvents =
-            model.events |> List.filter (\e -> e.endDate /= Nothing)
+            events |> List.filter (\e -> e.endDate /= Nothing)
     in
     [ multiDayEvents
         |> List.filter (\e -> E.isEventBetweenDate day.date e)
@@ -227,7 +226,7 @@ viewMultiDayEvents currentDate eventModal events =
                                 retreiveMultiDayEventStyle event currentDate
                         in
                         div []
-                            [ div [ onClick <| EventTrigger { event = event, dayClicked = currentDate }, A.css [ style ], A.class "drop-shadow" ] [ text event.name ]
+                            [ div [ onClick <| EventTrigger { event = event, dayClicked = currentDate }, A.css [ style ] ] [ text event.name ]
                             , viewEventModal eventModal event currentDate
                             ]
                     )
@@ -238,7 +237,7 @@ viewMultiDayEvents currentDate eventModal events =
 viewDayNumber : CalendarDate -> Date -> Html Msg
 viewDayNumber date today =
     if date.date == today then
-        div [ A.css [ displayFlex, justifyContent center ] ] [ span [ A.css [ backgroundColor C.blue, color C.white, padding spacing.xsmall, borderRadius (pct 50) ] ] [ text date.dayDisplay ] ]
+        div [ A.css [ displayFlex, justifyContent center ] ] [ span [ A.css [ S.currentDay] ] [ text date.dayDisplay ] ]
 
     else
         div [ A.css [ displayFlex, justifyContent center ] ] [ text date.dayDisplay ]

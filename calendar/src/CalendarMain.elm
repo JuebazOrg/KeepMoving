@@ -1,4 +1,4 @@
-module Main exposing (..)
+module CalendarMain exposing (..)
 
 import Browser
 import Html.Styled exposing (..)

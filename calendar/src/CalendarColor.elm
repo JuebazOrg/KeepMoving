@@ -1,4 +1,4 @@
-module Color exposing (..)
+module CalendarColor exposing (..)
 
 import Css exposing (Color, hex)
 
