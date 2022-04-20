@@ -62,10 +62,6 @@ init =
 
 update : Msg -> Model -> Model
 update msg model =
-    let
-        order =
-            model.order
-    in
     case msg of
         OrderMsg subMsg ->
             { model | order = DD.update model.order subMsg }
@@ -128,29 +124,33 @@ filterInjuries filters injuries =
         region =
             DD.getSelectedValue filters.region
 
-        side =
+        maybeSide =
             DD.getSelectedValue filters.side
     in
     let
-        filterByRegion =
-            Maybe.map
-                (\r -> injuries |> List.filter (\i -> i.bodyRegion.region == r))
-                region
-                |> Maybe.withDefault injuries
-    in
-    let
-        filterBySide =
-            if side == Nothing then
-                filterByRegion
+        filterByRegion injs =
+            if region == Nothing then
+                injs
 
             else
-                List.filter (\i -> i.bodyRegion.side == side) filterByRegion
+                region
+                    |> Maybe.map
+                        (\r -> injs |> List.filter (\i -> i.bodyRegion.region == r))
+                    |> Maybe.withDefault injs
     in
-    if filters.active then
-        filterBySide |> List.filter (\i -> Domain.Injury.isActive i)
+    let
+        filterBySide injs =
+            if maybeSide == Nothing then
+                injs
 
-    else
-        filterBySide
+            else
+                injs
+                    |> List.filter (\i -> i.bodyRegion.side == maybeSide)
+    in
+    injuries
+        |> filterBySide
+        |> filterByRegion
+        |> List.filter (\i -> Domain.Injury.isActive i)
 
 
 orderInjuries : DD.Model Order -> List Injury -> List Injury
