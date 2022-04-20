@@ -40,7 +40,7 @@ sides =
 bodyRegionToString : BodyRegion -> String
 bodyRegionToString bodyRegion =
     (Maybe.map
-        fromSide
+        sideToString
         bodyRegion.side
         |> withDefault ""
     )
@@ -48,8 +48,8 @@ bodyRegionToString bodyRegion =
         ++ fromRegion bodyRegion.region
 
 
-fromSide : Side -> String
-fromSide side =
+sideToString : Side -> String
+sideToString side =
     case side of
         Right ->
             "Right"

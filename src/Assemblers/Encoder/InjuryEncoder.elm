@@ -4,7 +4,7 @@ import Assemblers.Encoder.CheckPointEncoder as CheckPointEncoder
 import Assemblers.Encoder.IdEncoder exposing (idEncoder)
 import Date exposing (Date)
 import Domain.Injury exposing (Injury, InjuryType(..), NewInjury)
-import Domain.Regions exposing (..)
+import Domain.Regions as Region exposing (..)
 import Json.Encode as Encode
 import Json.Encode.Extra as EncodeExtra
 
@@ -18,7 +18,7 @@ encode injury =
         , ( "bodyRegion"
           , Encode.object
                 [ ( "region", Encode.string <| fromRegion injury.bodyRegion.region )
-                , ( "side", EncodeExtra.maybe Encode.string (Maybe.map fromSide injury.bodyRegion.side) )
+                , ( "side", EncodeExtra.maybe Encode.string (Maybe.map Region.sideToString injury.bodyRegion.side) )
                 ]
           )
         , ( "startDate", encodeDate injury.startDate )
@@ -36,8 +36,12 @@ encodeNew injury =
         , ( "location", Encode.string injury.location )
         , ( "bodyRegion"
           , Encode.object
-                [ ( "region", encodeRegion injury.bodyRegion.region ) -- todo: fct to encode dans encoder
-                , ( "side", EncodeExtra.maybe Encode.string (Maybe.map fromSide injury.bodyRegion.side) ) -- todo fct encode dans encoder
+                [ ( "region", encodeRegion injury.bodyRegion.region ) -- todo:  mettre dans un bodyRegion encoder
+                , ( "side"
+                  , injury.bodyRegion.side
+                        |> Maybe.map Region.sideToString
+                        |> EncodeExtra.maybe Encode.string
+                  )
                 ]
           )
         , ( "startDate", encodeDate injury.startDate )

@@ -9,15 +9,6 @@ import Id exposing (Id)
 import Time exposing (Month(..))
 
 
-type InjuryType
-    = Bruises
-    | Dislocation
-    | Fracture
-    | Sprains --ligaments
-    | Strains --tendon ou muscle
-    | OtherInjuryType
-
-
 type alias Injury =
     { id : Id
     , description : String
@@ -43,26 +34,13 @@ type alias NewInjury =
     }
 
 
-injuryTypeToString : InjuryType -> String
-injuryTypeToString injuryType =
-    case injuryType of
-        Bruises ->
-            "Bruise"
-
-        Dislocation ->
-            "Dislocation"
-
-        Fracture ->
-            "Facture"
-
-        Sprains ->
-            "Muscle or Tendon"
-
-        Strains ->
-            "Ligament"
-
-        OtherInjuryType ->
-            "Other"
+type InjuryType
+    = Bruises
+    | Dislocation
+    | Fracture
+    | Sprains --ligaments
+    | Strains --tendon ou muscle
+    | OtherInjuryType -- String type constructor
 
 
 injuryTypes : List InjuryType
@@ -87,12 +65,29 @@ isActive injury =
 
 
 injuriesByYear : List Injury -> Dict Int (List Injury)
-injuriesByYear injuries =
-    injuries
-        |> List.map
-            (\i ->
-                { date = Date.year i.startDate, injuries = [ i ] }
-            )
-        |> Dict.groupBy (\i -> i.date)
-        |> Dict.map (\_ -> List.map .injuries)
-        |> Dict.map (\_ -> List.concat)
+injuriesByYear =
+    Dict.groupBy (.startDate >> Date.year)
+
+
+injuryTypeToString :
+    InjuryType
+    -> String -- package formatter
+injuryTypeToString injuryType =
+    case injuryType of
+        Bruises ->
+            "Bruise"
+
+        Dislocation ->
+            "Dislocation"
+
+        Fracture ->
+            "Facture"
+
+        Sprains ->
+            "Muscle or Tendon"
+
+        Strains ->
+            "Ligament"
+
+        OtherInjuryType ->
+            "Other"

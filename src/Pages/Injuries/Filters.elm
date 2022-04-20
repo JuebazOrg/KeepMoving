@@ -107,8 +107,8 @@ viewContent model =
     div [ A.css [ displayFlex, M.onMobile [ flexDirection column ] ] ]
         [ div [ A.css [ displayFlex, flexDirection rowReverse, margin SP.small ] ] [ C.closeButton [ onClick Trigger ] [] ]
         , div [ A.css [ displayFlex ] ]
-            [ span [ A.css [ marginRight SP.small ] ] [ regionFilter model.filters ]
-            , span [ A.css [ marginRight SP.small ] ] [ sideFilter model.filters ]
+            [ span [ A.css [ marginRight SP.small ] ] [ regionFilterView model.filters ]
+            , span [ A.css [ marginRight SP.small ] ] [ sideFilterView model.filters ]
             , span [ A.css [ marginRight SP.small ] ] [ viewOrderDropDown model ]
             ]
         , hr [] []
@@ -116,6 +116,10 @@ viewContent model =
         , hr [] []
         , a [ onClick ClearAll ] [ text "clear all" ]
         ]
+
+
+
+-- todo : ne pas filtrer toute la liste quand maybe == Nothing
 
 
 filterInjuries : Filters -> List Injury -> List Injury
@@ -173,8 +177,8 @@ regionDropdownOptions =
         |> List.map (\region -> { label = fromRegion region, value = region })
 
 
-regionFilter : Filters -> Html Msg
-regionFilter filters =
+regionFilterView : Filters -> Html Msg
+regionFilterView filters =
     map RegionFilterMsg (DD.viewDropDown filters.region) |> map Filter
 
 
@@ -186,7 +190,7 @@ viewOrderDropDown model =
 sideDropdownOptions : List (DD.Option Side)
 sideDropdownOptions =
     sides
-        |> List.map (\side -> { label = fromSide side, value = side })
+        |> List.map (\side -> { label = sideToString side, value = side })
 
 
 ordersDropdownOptions : List (DD.Option Order)
@@ -206,6 +210,6 @@ ordersDropdownOptions =
             )
 
 
-sideFilter : Filters -> Html Msg
-sideFilter filters =
+sideFilterView : Filters -> Html Msg
+sideFilterView filters =
     map SideFilterMsg (DD.viewDropDown filters.side) |> map Filter

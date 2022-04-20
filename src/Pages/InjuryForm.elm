@@ -9,7 +9,7 @@ import Components.Form exposing (..)
 import Css exposing (..)
 import Date as Date
 import Domain.Injury exposing (Injury, InjuryType, injuryTypeToString, injuryTypes)
-import Domain.Regions exposing (Region, Side, fromRegion, fromSide, regions, sides)
+import Domain.Regions exposing (Region, Side, fromRegion, regions, sideToString, sides)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (on, onClick, onInput)
@@ -127,7 +127,8 @@ regionDropdownOptions =
 
 sideDropDownOptions : List (DD.Option Side)
 sideDropDownOptions =
-    sides |> List.map (\side -> { label = fromSide side, value = side })
+    sides 
+        |> List.map (\side -> { label = sideToString side, value = side })
 
 
 injuryTypeDropDownOptions : List (DD.Option InjuryType)

@@ -22,6 +22,10 @@ type alias Model =
     { form : Form.Model, navKey : Nav.Key }
 
 
+
+-- passer la navkey dans le update a la place
+
+
 init : Nav.Key -> Model
 init navKey =
     { form = Form.initEmpty
@@ -30,7 +34,7 @@ init navKey =
 
 
 type Msg
-    = CloseModal
+    = CloseForm
     | Save
     | InjuryCreated (Result Http.Error ())
     | FormMsg Form.Msg
@@ -39,7 +43,7 @@ type Msg
 update : Model -> Msg -> ( Model, Cmd Msg )
 update model msg =
     case msg of
-        CloseModal ->
+        CloseForm ->
             ( model, Route.pushUrl Route.Injuries model.navKey )
 
         Save ->
@@ -61,7 +65,7 @@ createNewInjury : NewInjury -> Cmd Msg
 createNewInjury newInjury =
     Client.createInjury newInjury InjuryCreated
 
-
+-- todo: fct build dans le formulaire
 createNewInjuryFromForm : Form.Model -> NewInjury
 createNewInjuryFromForm model =
     { bodyRegion =
@@ -88,10 +92,18 @@ view model =
     div [ A.css [ height (pct 100), displayFlex, flexDirection column, justifyContent spaceBetween ] ]
         [ viewHeader
         , Form.view model.form |> map FormMsg
-        , cardFooter [ A.css [ padding (px 10), important displayFlex, important <| justifyContent flexEnd ] ] [ C.lightButton [ A.css [ marginRight (px 10) ], onClick CloseModal ] [ text "cancel" ], C.saveButton [ onClick Save ] [ text "save" ] ]
+        , cardFooter [ A.css [ padding (px 10), important displayFlex, important <| justifyContent flexEnd ] ]
+            [ C.lightButton [ A.css [ marginRight (px 10) ], onClick CloseForm ]
+                [ text "cancel" ]
+            , C.saveButton [ onClick Save ] [ text "save" ]
+            ]
         ]
 
 
 viewHeader : Html Msg
 viewHeader =
-    cardHeader [ A.css [ important <| alignItems center ] ] [ cardTitle [ A.css [ displayFlex, justifyContent spaceBetween ] ] [ C.h3Title [] [ text "New injury" ] ], C.closeButton [ onClick CloseModal ] [] ]
+    cardHeader [ A.css [ important <| alignItems center ] ]
+        [ cardTitle [ A.css [ displayFlex, justifyContent spaceBetween ] ]
+            [ C.h3Title [] [ text "New injury" ] ]
+        , C.closeButton [ onClick CloseForm ] []
+        ]

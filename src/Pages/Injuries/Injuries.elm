@@ -107,18 +107,17 @@ viewInjuries injuries filterModel =
 
 viewInjuriesByYear : List Injury -> Html Msg
 viewInjuriesByYear injuries =
-    div []
-        (injuriesByYear injuries
-            |> Dict.toList
-            |> List.map
-                (\( k, v ) ->
-                    div [ A.css [ margin SP.medium ] ]
-                        [ viewYear k
-                        , div [] <| List.map (\i -> viewInjury i) v
-                        ]
-                )
-            |> List.reverse
-        )
+    injuriesByYear injuries
+        |> Dict.toList
+        |> List.map
+            (\( year, yearInjuries ) ->
+                div [ A.css [ margin SP.medium ] ]
+                    [ viewYear year
+                    , div [] <| List.map viewInjury yearInjuries
+                    ]
+            )
+        |> List.reverse
+        |> div []
 
 
 viewYear : Int -> Html msg
@@ -128,22 +127,25 @@ viewYear year =
 
 viewInjury : Injury -> Html Msg
 viewInjury injury =
+    let
+        activeTag =
+            if isActive injury then
+                C.warningTag [ A.css [ marginLeft SP.small ] ] [ text "active" ]
+
+            else
+                C.empty
+    in
     card
-        [ onClick <| OpenDetail injury, A.css [ borderRadius SP.small, marginTop SP.medium, important (maxWidth (px 500)) ] ]
+        [ onClick <| OpenDetail injury
+        , A.css [ borderRadius SP.small, marginTop SP.medium, important (maxWidth (px 500)) ]
+        ]
         [ cardHeader []
             [ cardTitle []
                 [ C.primaryTag [ text <| bodyRegionToString injury.bodyRegion ]
-                , if isActive injury then
-                    C.warningTag [ A.css [ marginLeft SP.small ] ] [ text "active" ]
-
-                  else
-                    C.empty
+                , activeTag
                 ]
             , cardIcon []
-                [ C.icon
-                    []
-                    [ i [ A.class I.calendar ] []
-                    ]
+                [ C.icon [] [ i [ A.class I.calendar ] [] ]
                 , span [] [ text <| formatMMDD injury.startDate ]
                 ]
             ]

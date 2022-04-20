@@ -56,8 +56,8 @@ injuryTypeDecoder =
 bodyRegionDecoder : D.Decoder BodyRegion
 bodyRegionDecoder =
     D.map2 BodyRegion
-        (D.field "region" <| regionDecoder)
-        (D.field "side" <| sideDecoder)
+        (D.field "region" regionDecoder)
+        (D.field "side" sideDecoder)
 
 
 regionDecoder : D.Decoder Region

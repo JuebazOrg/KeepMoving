@@ -4,6 +4,7 @@ import Browser exposing (Document, UrlRequest)
 import Browser.Navigation as Nav
 import Bulma.Styled.CDN exposing (..)
 import Clients.InjuryClient as Client
+import Cmd.Extra exposing (pure)
 import Css exposing (..)
 import Domain.Injury exposing (Injury)
 import Html.Styled exposing (..)
@@ -36,10 +37,6 @@ type Page
     | EditInjuryPage EditInjury.Model
 
 
-type DomainMsg
-    = InjuryReceived (WebData Injury)
-
-
 type Msg
     = InjuriesMsg Injuries.Msg
     | LinkClicked UrlRequest
@@ -63,6 +60,20 @@ init flags url navKey =
     initCurrentPage ( model, Cmd.none )
 
 
+
+-- todo :  sortir dans un autre Module U
+
+
+mapModel : (bebeModel -> papaModel) -> ( bebeModel, Cmd msg ) -> ( papaModel, Cmd msg )
+mapModel fct ( bebeModel, cmd ) =
+    ( fct bebeModel, cmd )
+
+
+mapCmd : (subCmd -> cmd) -> ( model, Cmd subCmd ) -> ( model, Cmd cmd )
+mapCmd fct ( model, subCmd ) =
+    ( model, Cmd.map fct subCmd )
+
+
 initCurrentPage : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
 initCurrentPage ( model, existingCmds ) =
     let
@@ -72,30 +83,22 @@ initCurrentPage ( model, existingCmds ) =
                     ( NotFoundPage, Cmd.none )
 
                 Route.Injuries ->
-                    let
-                        ( pageModel, pageCmds ) =
-                            Injuries.init model.navKey
-                    in
-                    ( InjuriesPage pageModel, Cmd.map InjuriesMsg pageCmds )
+                    Injuries.init model.navKey
+                        |> mapModel InjuriesPage
+                        |> mapCmd InjuriesMsg
 
                 Route.Injury id ->
-                    let
-                        ( pageModel, pageCmds ) =
-                            InjuryDetail.init model.navKey id
-                    in
-                    ( InjuryPage pageModel, Cmd.map InjuryDetailMsg pageCmds )
+                    InjuryDetail.init model.navKey id
+                        |> mapModel InjuryPage
+                        |> mapCmd InjuryDetailMsg
 
                 Route.NewInjury ->
-                    ( NewInjuryPage <| AddInjury.init model.navKey, Cmd.none )
+                    pure (NewInjuryPage <| AddInjury.init model.navKey)
 
                 Route.EditInjury id ->
-                    let
-                        ( pageModel, pageCmd ) =
-                            EditInjury.init model.navKey id
-                    in
-                    ( EditInjuryPage <| pageModel
-                    , Cmd.map EditInjuryPageMsg pageCmd
-                    )
+                    EditInjury.init model.navKey id
+                        |> mapModel EditInjuryPage
+                        |> mapCmd EditInjuryPageMsg
     in
     ( { model | page = currentPage }
     , Cmd.batch [ existingCmds, mappedPageCmds ]
