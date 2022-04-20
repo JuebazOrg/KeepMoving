@@ -3,7 +3,6 @@ module Main exposing (..)
 import Browser exposing (Document, UrlRequest)
 import Browser.Navigation as Nav
 import Bulma.Styled.CDN exposing (..)
-import Clients.InjuryClient as Client
 import Cmd.Extra exposing (pure)
 import Css exposing (..)
 import Domain.Injury exposing (Injury)

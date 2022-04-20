@@ -143,6 +143,48 @@
       "injuryType": "Dislocation",
       "checkPoints": [],
       "id": 6
+    },
+    {
+      "description": "Blocage du coter gauche ",
+      "location": "Haut du coup",
+      "bodyRegion": {
+        "region": "Hand",
+        "side": "Right"
+      },
+      "startDate": "2022-04-09",
+      "endDate": "2022-04-15",
+      "how": "??",
+      "injuryType": "Sprains",
+      "checkPoints": [],
+      "id": 7
+    },
+    {
+      "description": "test",
+      "location": "Test",
+      "bodyRegion": {
+        "region": "Leg",
+        "side": "Left"
+      },
+      "startDate": "2022-04-21",
+      "endDate": null,
+      "how": "test",
+      "injuryType": "Dislocation",
+      "checkPoints": [],
+      "id": 8
+    },
+    {
+      "description": "",
+      "location": "Coup",
+      "bodyRegion": {
+        "region": "Neck",
+        "side": "Right"
+      },
+      "startDate": "2022-04-09",
+      "endDate": "2022-04-15",
+      "how": "",
+      "injuryType": "Other",
+      "checkPoints": [],
+      "id": 9
     }
   ]
 }

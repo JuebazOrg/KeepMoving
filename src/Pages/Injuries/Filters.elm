@@ -115,42 +115,43 @@ viewContent model =
 
 
 
--- todo : ne pas filtrer toute la liste quand maybe == Nothing
+-- todo : filter not working. Missing items when no filters. Implement tests 
 
 
 filterInjuries : Filters -> List Injury -> List Injury
 filterInjuries filters injuries =
-    let
-        region =
-            DD.getSelectedValue filters.region
-
-        maybeSide =
-            DD.getSelectedValue filters.side
-    in
-    let
-        filterByRegion injs =
-            if region == Nothing then
-                injs
-
-            else
-                region
-                    |> Maybe.map
-                        (\r -> injs |> List.filter (\i -> i.bodyRegion.region == r))
-                    |> Maybe.withDefault injs
-    in
-    let
-        filterBySide injs =
-            if maybeSide == Nothing then
-                injs
-
-            else
-                injs
-                    |> List.filter (\i -> i.bodyRegion.side == maybeSide)
-    in
     injuries
-        |> filterBySide
-        |> filterByRegion
-        |> List.filter (\i -> Domain.Injury.isActive i)
+
+
+
+-- let
+--     region =
+--         DD.getSelectedValue filters.region
+--     maybeSide =
+--         DD.getSelectedValue filters.side
+-- in
+-- let
+--     filterByRegion injs =
+--         if region == Nothing then
+--             injs
+--         else
+--             region
+--                 |> Maybe.map
+--                     (\r -> injs |> List.filter (\i -> i.bodyRegion.region == r))
+--                 |> Maybe.withDefault injs
+-- in
+-- let
+--     filterBySide injs =
+--         if maybeSide == Nothing then
+--             injs
+--         else
+--             injs
+--                 |> List.filter (\i -> i.bodyRegion.side == maybeSide)
+-- in
+-- injuries
+--     |> filterBySide
+--     |> filterByRegion
+--     |> List.filter (\i -> Domain.Injury.isActive i)
 
 
 orderInjuries : DD.Model Order -> List Injury -> List Injury
