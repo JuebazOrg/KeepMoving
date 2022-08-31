@@ -1,4 +1,5 @@
 {
+  "user": {"name": "remoteNiceUser", "email": "user@user.com"},
   "injuries": [
     {
       "id": 1,

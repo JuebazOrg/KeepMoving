@@ -2,7 +2,6 @@ module Main exposing (..)
 
 import Browser exposing (Document, UrlRequest)
 import Browser.Navigation as Nav
-
 import Bulma.Styled.CDN exposing (..)
 import Clients.InjuryClient as Client
 import Css exposing (..)
@@ -51,6 +50,7 @@ type Msg
     | NewInjuryPageMsg AddInjury.Msg
     | EditInjuryPageMsg EditInjury.Msg
     | NavBarMsg NavBar.Msg
+    | AccountPageMsg UserAccount.Msg
 
 
 init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -99,8 +99,13 @@ initCurrentPage ( model, existingCmds ) =
                     ( EditInjuryPage <| pageModel
                     , Cmd.map EditInjuryPageMsg pageCmd
                     )
+
                 Route.Account ->
-                    (AccountPage <| UserAccount.init, Cmd.none)
+                    let
+                        ( pageModel, pageCmd ) =
+                            UserAccount.init
+                    in
+                    ( AccountPage pageModel, Cmd.map AccountPageMsg pageCmd )
     in
     ( { model | page = currentPage }
     , Cmd.batch [ existingCmds, mappedPageCmds ]
@@ -110,6 +115,13 @@ initCurrentPage ( model, existingCmds ) =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case ( msg, model.page ) of
+        (AccountPageMsg subMsg, AccountPage pageModel) ->
+            let
+                (updatedPageModel, updatedCmd) = UserAccount.update subMsg pageModel
+            in
+            ({model| page = AccountPage updatedPageModel}, Cmd.map AccountPageMsg updatedCmd)
+            
+
         ( InjuriesMsg subMsg, InjuriesPage pageModel ) ->
             let
                 ( updatedPageModel, updatedCmd ) =
@@ -169,9 +181,9 @@ update msg model =
 
         ( NavBarMsg sub, _ ) ->
             let
-                (pageModel, pageCmd) = NavBar.update sub model.navBar
+                ( pageModel, pageCmd ) =
+                    NavBar.update sub model.navBar
             in
-        
             ( { model | navBar = pageModel }, Cmd.map NavBarMsg pageCmd )
 
         ( _, _ ) ->
@@ -207,8 +219,9 @@ currentView model =
 
                 EditInjuryPage pageModel ->
                     map EditInjuryPageMsg (EditInjury.view pageModel)
+
                 AccountPage pageModel ->
-                    (UserAccount.view pageModel)
+                    map AccountPageMsg (UserAccount.view pageModel)
     in
     div [ A.css [ height (pct 100) ] ]
         [ stylesheet

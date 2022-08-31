@@ -61,5 +61,6 @@ routeToString route =
 
         EditInjury id ->
             Id.toString id ++ "/edit"
-        Account -> 
+
+        Account ->
             "/account"

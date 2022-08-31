@@ -1,36 +1,37 @@
 module Navigation.NavBar exposing (..)
 
+import Browser.Navigation as Nav
 import Bulma.Styled.Components as BC
 import Bulma.Styled.Modifiers as BM
-import Components.Elements exposing (h4Title, roundButton)
+import Components.Elements exposing (h4Title, lightButton, roundButton)
 import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Events exposing (onClick)
-import Components.Elements exposing (lightButton)
-import Browser.Navigation as Nav
 import Navigation.Route as Route
 
 
 type alias Model =
-    {navKey : Nav.Key, isOpen: Bool}
+    { navKey : Nav.Key, isOpen : Bool }
 
 
-init : Nav.Key ->Model
+init : Nav.Key -> Model
 init navKey =
-    {navKey = navKey, isOpen = False}
+    { navKey = navKey, isOpen = False }
 
 
 type Msg
-    = BurgerMenuTrigger | GoToAccount
+    = BurgerMenuTrigger
+    | GoToAccount
 
 
-update : Msg -> Model -> (Model, Cmd Msg)
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of 
+    case msg of
         GoToAccount ->
-            ( model, Route.pushUrl (Route.Account) model.navKey )
+            ( model, Route.pushUrl Route.Account model.navKey )
+
         BurgerMenuTrigger ->
-            (model, Cmd.none)
+            ( model, Cmd.none )
 
 
 myNavbarBurger : Bool -> Html Msg
@@ -64,6 +65,6 @@ viewNavBar model =
                 , BC.navbarItemLink False [] [ text "About" ]
                 ]
             , BC.navbarEnd []
-                [ BC.navbarItem False [] [ lightButton [onClick GoToAccount] [ text "Account" ] ] ]
+                [ BC.navbarItem False [] [ lightButton [ onClick GoToAccount ] [ text "Account" ] ] ]
             ]
         ]

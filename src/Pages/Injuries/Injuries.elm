@@ -125,7 +125,7 @@ viewYear year =
 viewInjury : Injury -> Html Msg
 viewInjury injury =
     card
-        [A.class "elem", onClick <| OpenDetail injury, A.css [ borderRadius SP.small, marginTop SP.medium, important (maxWidth (px 500)) ] ]
+        [ A.class "elem", onClick <| OpenDetail injury, A.css [ borderRadius SP.small, marginTop SP.medium, important (maxWidth (px 500)) ] ]
         [ cardHeader []
             [ cardTitle []
                 [ C.primaryTag [ text <| bodyRegionToString injury.bodyRegion ]
