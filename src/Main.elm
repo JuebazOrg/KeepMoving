@@ -2,6 +2,7 @@ module Main exposing (..)
 
 import Browser exposing (Document, UrlRequest)
 import Browser.Navigation as Nav
+
 import Bulma.Styled.CDN exposing (..)
 import Clients.InjuryClient as Client
 import Css exposing (..)
@@ -16,6 +17,7 @@ import Pages.EditInjury as EditInjury
 import Pages.Injuries.Injuries as Injuries exposing (Msg, view)
 import Pages.InjuryDetails.Update as InjuryDetail
 import Pages.InjuryDetails.View as InjuryDetailView
+import Pages.UserAccount as UserAccount
 import RemoteData exposing (WebData)
 import Url exposing (Url)
 
@@ -34,6 +36,7 @@ type Page
     | InjuryPage InjuryDetail.Model
     | NewInjuryPage AddInjury.Model
     | EditInjuryPage EditInjury.Model
+    | AccountPage UserAccount.Model
 
 
 type DomainMsg
@@ -57,7 +60,7 @@ init flags url navKey =
             { route = Route.parseUrl url
             , page = NotFoundPage
             , navKey = navKey
-            , navBar = NavBar.init
+            , navBar = NavBar.init navKey
             }
     in
     initCurrentPage ( model, Cmd.none )
@@ -96,6 +99,8 @@ initCurrentPage ( model, existingCmds ) =
                     ( EditInjuryPage <| pageModel
                     , Cmd.map EditInjuryPageMsg pageCmd
                     )
+                Route.Account ->
+                    (AccountPage <| UserAccount.init, Cmd.none)
     in
     ( { model | page = currentPage }
     , Cmd.batch [ existingCmds, mappedPageCmds ]
@@ -163,7 +168,11 @@ update msg model =
                 |> initCurrentPage
 
         ( NavBarMsg sub, _ ) ->
-            ( { model | navBar = NavBar.update sub model.navBar }, Cmd.none )
+            let
+                (pageModel, pageCmd) = NavBar.update sub model.navBar
+            in
+        
+            ( { model | navBar = pageModel }, Cmd.map NavBarMsg pageCmd )
 
         ( _, _ ) ->
             ( model, Cmd.none )
@@ -198,6 +207,8 @@ currentView model =
 
                 EditInjuryPage pageModel ->
                     map EditInjuryPageMsg (EditInjury.view pageModel)
+                AccountPage pageModel ->
+                    (UserAccount.view pageModel)
     in
     div [ A.css [ height (pct 100) ] ]
         [ stylesheet

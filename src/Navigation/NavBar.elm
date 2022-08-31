@@ -6,24 +6,31 @@ import Components.Elements exposing (h4Title, roundButton)
 import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Events exposing (onClick)
+import Components.Elements exposing (lightButton)
+import Browser.Navigation as Nav
+import Navigation.Route as Route
 
 
 type alias Model =
-    Bool
+    {navKey : Nav.Key, isOpen: Bool}
 
 
-init : Model
-init =
-    False
+init : Nav.Key ->Model
+init navKey =
+    {navKey = navKey, isOpen = False}
 
 
 type Msg
-    = BurgerMenuTrigger
+    = BurgerMenuTrigger | GoToAccount
 
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
-    not model
+    case msg of 
+        GoToAccount ->
+            ( model, Route.pushUrl (Route.Account) model.navKey )
+        BurgerMenuTrigger ->
+            (model, Cmd.none)
 
 
 myNavbarBurger : Bool -> Html Msg
@@ -37,18 +44,18 @@ myNavbarBurger isOpen =
 
 
 viewNavBar : Model -> Html Msg
-viewNavBar isOpen =
+viewNavBar model =
     BC.fixedNavbar BM.top
         BC.navbarModifiers
         []
         [ BC.navbarBrand []
-            (myNavbarBurger isOpen)
+            (myNavbarBurger model.isOpen)
             [ BC.navbarItem False
                 []
                 [ h4Title [] [ text "Keep Moving" ]
                 ]
             ]
-        , BC.navbarMenu isOpen
+        , BC.navbarMenu model.isOpen
             []
             [ BC.navbarStart []
                 [ BC.navbarItemLink False [] [ text "Home" ]
@@ -57,6 +64,6 @@ viewNavBar isOpen =
                 , BC.navbarItemLink False [] [ text "About" ]
                 ]
             , BC.navbarEnd []
-                [ BC.navbarItem False [] [ roundButton 45 [] [ text "JB" ] ] ]
+                [ BC.navbarItem False [] [ lightButton [onClick GoToAccount] [ text "Account" ] ] ]
             ]
         ]
