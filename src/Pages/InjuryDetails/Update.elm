@@ -106,8 +106,9 @@ update msg model =
                 |> Maybe.map (\i -> updateInjury model.checkPointModal i)
                 |> Maybe.withDefault Cmd.none
             )
-        EditCheckPoints -> 
-            ({ model| editCheckPoints = not model.editCheckPoints }, Cmd.none)
+
+        EditCheckPoints ->
+            ( { model | editCheckPoints = not model.editCheckPoints }, Cmd.none )
 
 
 updateInjury : CheckPointModal.Model -> Injury -> Cmd Msg

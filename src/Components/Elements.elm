@@ -64,6 +64,7 @@ saveButton attributes messages =
     in
     Components.BulmaElements.button buttonProps attributes messages
 
+
 deleteButton : List (S.Attribute msg) -> List (S.Html msg) -> S.Html msg
 deleteButton attributes messages =
     let
