@@ -3,7 +3,7 @@ module Navigation.NavBar exposing (..)
 import Browser.Navigation as Nav
 import Bulma.Styled.Components as BC
 import Bulma.Styled.Modifiers as BM
-import Components.Elements exposing (h4Title, lightButton, roundButton)
+import Components.Elements exposing (h4Title, lightButton)
 import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Events exposing (onClick)
@@ -31,7 +31,7 @@ update msg model =
             ( model, Route.pushUrl Route.Account model.navKey )
 
         BurgerMenuTrigger ->
-            ( model, Cmd.none )
+            ( {model| isOpen = not model.isOpen}, Cmd.none )
 
 
 myNavbarBurger : Bool -> Html Msg

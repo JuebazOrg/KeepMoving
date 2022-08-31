@@ -5,6 +5,7 @@ import Domain.User exposing (User)
 import Html.Styled exposing (..)
 import RemoteData exposing (RemoteData(..), WebData)
 import Cmd.Extra as Cmd
+import Components.Elements as C
 
 type alias Model =
     WebData User
@@ -46,7 +47,16 @@ viewRemoteDataPage model =
             h3 [] [ text "Loading..." ]
 
         RemoteData.Success user ->
-            div [] [ text user.name ]
+            viewContent user
 
         RemoteData.Failure httpError ->
             div [] [ text <| Client.client.defaultErrorMessage httpError ]
+
+
+viewContent: User -> Html Msg
+viewContent user = 
+    div [] [ 
+        C.h2Title [] [ text user.name]
+        , C.h4Title [][text user.email]
+        
+     ]
