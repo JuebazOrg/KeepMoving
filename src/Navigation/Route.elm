@@ -14,6 +14,7 @@ type Route
     | NewInjury
     | EditInjury Id
     | Account
+    | Login
 
 
 parseUrl : Url -> Route
@@ -35,6 +36,7 @@ matchRoute =
         , map NewInjury (s "injuries" </> s "new")
         , map EditInjury (s "injuries" </> idParser </> s "edit")
         , map Account (s "account")
+        , map Login (s "login")
         ]
 
 
@@ -64,3 +66,6 @@ routeToString route =
 
         Account ->
             "/account"
+
+        Login -> 
+            "/login"

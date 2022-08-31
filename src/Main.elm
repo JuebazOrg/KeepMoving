@@ -16,6 +16,7 @@ import Pages.EditInjury as EditInjury
 import Pages.Injuries.Injuries as Injuries exposing (Msg, view)
 import Pages.InjuryDetails.Update as InjuryDetail
 import Pages.InjuryDetails.View as InjuryDetailView
+import Pages.Login as Login
 import Pages.UserAccount as UserAccount
 import RemoteData exposing (WebData)
 import Url exposing (Url)
@@ -36,6 +37,7 @@ type Page
     | NewInjuryPage AddInjury.Model
     | EditInjuryPage EditInjury.Model
     | AccountPage UserAccount.Model
+    | LoginPage Login.Model
 
 
 type DomainMsg
@@ -106,6 +108,12 @@ initCurrentPage ( model, existingCmds ) =
                             UserAccount.init
                     in
                     ( AccountPage pageModel, Cmd.map AccountPageMsg pageCmd )
+                Route.Login ->
+                    let
+                        ( pageModel, pageCmd ) =
+                            Login.init
+                    in
+                    ( LoginPage pageModel, Cmd.map AccountPageMsg pageCmd )                
     in
     ( { model | page = currentPage }
     , Cmd.batch [ existingCmds, mappedPageCmds ]
@@ -222,6 +230,8 @@ currentView model =
 
                 AccountPage pageModel ->
                     map AccountPageMsg (UserAccount.view pageModel)
+                LoginPage pageModel -> 
+                    Login.view pageModel
     in
     div [ A.css [ height (pct 100) ] ]
         [ stylesheet
