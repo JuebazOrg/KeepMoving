@@ -23,6 +23,7 @@ type alias Model =
     , isModalOpen : Bool
     , checkPoints : CheckPoints.Model
     , today : Maybe Date.Date
+    , editCheckPoints : Bool
     }
 
 
@@ -34,6 +35,7 @@ init navKey id =
       , isModalOpen = False
       , checkPoints = CheckPoints.init
       , today = Nothing
+      , editCheckPoints = False
       }
     , Cmd.batch [ getInjury id, now ]
     )
@@ -51,6 +53,7 @@ type Msg
     | CheckPointsMsg CheckPoints.Msg
     | SetDate (Maybe Date.Date)
     | EditInjury Injury
+    | EditCheckPoints
 
 
 getInjury : Id -> Cmd Msg
@@ -103,6 +106,9 @@ update msg model =
                 |> Maybe.map (\i -> updateInjury model.checkPointModal i)
                 |> Maybe.withDefault Cmd.none
             )
+
+        EditCheckPoints ->
+            ( { model | editCheckPoints = not model.editCheckPoints }, Cmd.none )
 
 
 updateInjury : CheckPointModal.Model -> Injury -> Cmd Msg

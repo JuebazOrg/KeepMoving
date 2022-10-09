@@ -1,4 +1,5 @@
 {
+  "user": {"name": "remoteNiceUser", "email": "user@user.com"},
   "injuries": [
     {
       "id": 1,
@@ -102,6 +103,13 @@
       "checkPoints": [
         {
           "id": -1,
+          "date": "2022-01-07",
+          "comment": "",
+          "painLevel": 2,
+          "trend": "better"
+        },
+        {
+          "id": -1,
           "date": "2020-01-03",
           "comment": "",
           "painLevel": 3,
@@ -145,46 +153,26 @@
       "id": 6
     },
     {
-      "description": "Blocage du coter gauche ",
-      "location": "Haut du coup",
-      "bodyRegion": {
-        "region": "Hand",
-        "side": "Right"
-      },
-      "startDate": "2022-04-09",
-      "endDate": "2022-04-15",
-      "how": "??",
-      "injuryType": "Sprains",
-      "checkPoints": [],
-      "id": 7
-    },
-    {
-      "description": "test",
-      "location": "Test",
+      "id": 7,
+      "description": "bruise till the end",
+      "location": "Big bid bruise",
       "bodyRegion": {
         "region": "Leg",
         "side": "Left"
       },
-      "startDate": "2022-04-21",
+      "startDate": "2022-01-14",
       "endDate": null,
-      "how": "test",
-      "injuryType": "Dislocation",
-      "checkPoints": [],
-      "id": 8
-    },
-    {
-      "description": "",
-      "location": "Coup",
-      "bodyRegion": {
-        "region": "Neck",
-        "side": "Right"
-      },
-      "startDate": "2022-04-09",
-      "endDate": "2022-04-15",
-      "how": "",
-      "injuryType": "Other",
-      "checkPoints": [],
-      "id": 9
+      "how": "blablab",
+      "injuryType": "Bruises",
+      "checkPoints": [
+        {
+          "id": -1,
+          "date": "2022-01-19",
+          "comment": "",
+          "painLevel": 3,
+          "trend": "better"
+        }
+      ]
     }
   ]
 }

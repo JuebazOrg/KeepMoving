@@ -2,9 +2,12 @@
   "dependencies": {
     "bulma": "^0.9.3",
     "bulma-calendar": "^6.1.15",
-    "bulma-o-steps": "^1.1.0"
+    "bulma-o-steps": "^1.1.0",
+    "serve": "^14.0.1",
+    "create-elm-app": "^5.22.0"
   },
   "scripts": {
-    "db" : "cd DB && json-server --watch db.json --port 3004"
+    "db": "cd DB && json-server --watch db.json --port 3004",
+    "build": "npm i && elm-app build"
   }
 }

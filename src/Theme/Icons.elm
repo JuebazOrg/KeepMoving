@@ -102,3 +102,8 @@ filter =
 comment : String
 comment =
     "fa fa-comment"
+
+
+delete : String
+delete =
+    "fa fa-trash"

@@ -52,3 +52,21 @@ html {
   right: 0px;
   width: 100%;
 }
+
+
+.elem {
+  animation: slidein 0.5s forwards;
+}
+
+@keyframes slidein {
+  from {
+    height: 0px;
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    height:var(--h); /*This will change for each element */
+    transform: scale(1);
+    opacity: 1;
+  }
+}

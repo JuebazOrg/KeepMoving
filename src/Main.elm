@@ -16,6 +16,7 @@ import Pages.EditInjury as EditInjury
 import Pages.Injuries.Injuries as Injuries exposing (Msg, view)
 import Pages.InjuryDetails.Update as InjuryDetail
 import Pages.InjuryDetails.View as InjuryDetailView
+import Pages.UserAccount as UserAccount
 import RemoteData exposing (WebData)
 import Url exposing (Url)
 
@@ -34,6 +35,7 @@ type Page
     | InjuryPage InjuryDetail.Model
     | NewInjuryPage AddInjury.Model
     | EditInjuryPage EditInjury.Model
+    | AccountPage UserAccount.Model
 
 
 type Msg
@@ -44,6 +46,7 @@ type Msg
     | NewInjuryPageMsg AddInjury.Msg
     | EditInjuryPageMsg EditInjury.Msg
     | NavBarMsg NavBar.Msg
+    | AccountPageMsg UserAccount.Msg
 
 
 init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -53,7 +56,7 @@ init flags url navKey =
             { route = Route.parseUrl url
             , page = NotFoundPage
             , navKey = navKey
-            , navBar = NavBar.init
+            , navBar = NavBar.init navKey
             }
     in
     initCurrentPage ( model, Cmd.none )
@@ -95,9 +98,20 @@ initCurrentPage ( model, existingCmds ) =
                     pure (NewInjuryPage <| AddInjury.init model.navKey)
 
                 Route.EditInjury id ->
-                    EditInjury.init model.navKey id
-                        |> mapModel EditInjuryPage
-                        |> mapCmd EditInjuryPageMsg
+                    let
+                        ( pageModel, pageCmd ) =
+                            EditInjury.init model.navKey id
+                    in
+                    ( EditInjuryPage <| pageModel
+                    , Cmd.map EditInjuryPageMsg pageCmd
+                    )
+
+                Route.Account ->
+                    let
+                        ( pageModel, pageCmd ) =
+                            UserAccount.init
+                    in
+                    ( AccountPage pageModel, Cmd.map AccountPageMsg pageCmd )
     in
     ( { model | page = currentPage }
     , Cmd.batch [ existingCmds, mappedPageCmds ]
@@ -107,6 +121,13 @@ initCurrentPage ( model, existingCmds ) =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case ( msg, model.page ) of
+        (AccountPageMsg subMsg, AccountPage pageModel) ->
+            let
+                (updatedPageModel, updatedCmd) = UserAccount.update subMsg pageModel
+            in
+            ({model| page = AccountPage updatedPageModel}, Cmd.map AccountPageMsg updatedCmd)
+            
+
         ( InjuriesMsg subMsg, InjuriesPage pageModel ) ->
             let
                 ( updatedPageModel, updatedCmd ) =
@@ -165,7 +186,11 @@ update msg model =
                 |> initCurrentPage
 
         ( NavBarMsg sub, _ ) ->
-            ( { model | navBar = NavBar.update sub model.navBar }, Cmd.none )
+            let
+                ( pageModel, pageCmd ) =
+                    NavBar.update sub model.navBar
+            in
+            ( { model | navBar = pageModel }, Cmd.map NavBarMsg pageCmd )
 
         ( _, _ ) ->
             ( model, Cmd.none )
@@ -200,6 +225,9 @@ currentView model =
 
                 EditInjuryPage pageModel ->
                     map EditInjuryPageMsg (EditInjury.view pageModel)
+
+                AccountPage pageModel ->
+                    map AccountPageMsg (UserAccount.view pageModel)
     in
     div [ A.css [ height (pct 100) ] ]
         [ stylesheet
