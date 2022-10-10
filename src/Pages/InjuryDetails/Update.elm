@@ -7,7 +7,6 @@ import Date as Date
 import Domain.CheckPoint exposing (CheckPoint)
 import Domain.Injury exposing (..)
 import Domain.Regions exposing (..)
-import Id exposing (Id)
 import Navigation.Route as Route
 import Pages.InjuryDetails.Components.AddCheckPoint as CheckPointModal
 import Pages.InjuryDetails.Components.CheckPoints as CheckPoints
@@ -27,7 +26,7 @@ type alias Model =
     }
 
 
-init : Nav.Key -> Id -> ( Model, Cmd Msg )
+init : Nav.Key -> String -> ( Model, Cmd Msg )
 init navKey id =
     ( { injury = RemoteData.Loading
       , navKey = navKey
@@ -56,7 +55,7 @@ type Msg
     | EditCheckPoints
 
 
-getInjury : Id -> Cmd Msg
+getInjury : String -> Cmd Msg
 getInjury id =
     Client.getInjury id (RemoteData.fromResult >> InjuryReceived)
 

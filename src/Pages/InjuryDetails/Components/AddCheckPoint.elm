@@ -73,7 +73,7 @@ getNewCheckPoint model =
     , trend = Maybe.withDefault Stable <| DD.getSelectedValue model.trend
     , painLevel = Maybe.withDefault 5 <| DD.getSelectedValue model.level
     , date = Maybe.withDefault (Date.fromCalendarDate 2 Jan 2020) model.date
-    , id = Id.noId
+    , id = "todo"
     }
 
 

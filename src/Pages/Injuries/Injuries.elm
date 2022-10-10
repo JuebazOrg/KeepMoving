@@ -85,7 +85,11 @@ viewInjuriesOrError model =
             h3 [] [ text "Loading..." ]
 
         RemoteData.Success injuries ->
-            viewInjuries injuries model.filters
+            if List.length injuries == 0 then
+                h3 [] [ text "No Injuries yet... keep going like that :) " ]
+
+            else
+                viewInjuries injuries model.filters
 
         RemoteData.Failure httpError ->
             div [] [ text <| Client.client.defaultErrorMessage httpError ]

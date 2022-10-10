@@ -25,7 +25,7 @@ type alias Model =
     { form : Maybe Form.Model, navKey : Nav.Key, injury : WebData Injury }
 
 
-init : Nav.Key -> Id -> ( Model, Cmd Msg )
+init : Nav.Key -> String -> ( Model, Cmd Msg )
 init navKey id =
     ( { navKey = navKey, form = Nothing, injury = RemoteData.Loading }, getInjury id )
 
@@ -91,7 +91,7 @@ update model msg =
                     ( model, Cmd.none )
 
 
-getInjury : Id -> Cmd Msg
+getInjury : String -> Cmd Msg
 getInjury id =
     Client.getInjury id (RemoteData.fromResult >> InjuryReceived)
 

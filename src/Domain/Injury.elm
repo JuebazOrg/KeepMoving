@@ -10,7 +10,7 @@ import Time exposing (Month(..))
 
 
 type alias Injury =
-    { id : Id
+    { id : String
     , description : String
     , bodyRegion : BodyRegion
     , location : String

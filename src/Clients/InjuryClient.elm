@@ -17,9 +17,9 @@ client =
     }
 
 
-injuryPath : Id -> String
+injuryPath : String -> String
 injuryPath id =
-    client.route ++ Id.toString id
+    client.route ++ id
 
 
 getInjuries : (Result Http.Error (List Injury) -> msg) -> Cmd msg
@@ -32,10 +32,10 @@ getInjuries onResult =
         }
 
 
-getInjury : Id -> (Result Http.Error Injury -> msg) -> Cmd msg
+getInjury : String -> (Result Http.Error Injury -> msg) -> Cmd msg
 getInjury id onResult =
     Http.get
-        { url = client.baseRoute ++ client.route ++ Id.toString id
+        { url = client.baseRoute ++ client.route ++ id
         , expect =
             InjuryDecoder.decode
                 |> Http.expectJson onResult
@@ -56,7 +56,7 @@ updateInjury injury onResult =
     Http.request
         { method = "PUT"
         , headers = []
-        , url = client.baseRoute ++ client.route ++ Id.toString injury.id
+        , url = client.baseRoute ++ client.route ++ injury.id
         , body = Http.jsonBody (InjuryEncoder.encode injury)
         , expect =
             InjuryDecoder.decode

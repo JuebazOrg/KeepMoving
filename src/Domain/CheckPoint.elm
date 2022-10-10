@@ -6,7 +6,7 @@ import Id exposing (Id)
 
 
 type alias CheckPoint =
-    { id : Id, date : Date, comment : String, painLevel : Int, trend : Trend }
+    { id : String, date : Date, comment : String, painLevel : Int, trend : Trend }
 
 
 type alias NewCheckPoint =

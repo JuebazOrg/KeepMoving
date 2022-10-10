@@ -26,6 +26,12 @@ type alias Model =
     , page : Page
     , navKey : Nav.Key
     , navBar : NavBar.Model
+    , config : Config
+    }
+
+
+type alias Config =
+    { url : String
     }
 
 
@@ -49,14 +55,15 @@ type Msg
     | AccountPageMsg UserAccount.Msg
 
 
-init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
-init flags url navKey =
+init : Config -> Url -> Nav.Key -> ( Model, Cmd Msg )
+init config url navKey =
     let
         model =
             { route = Route.parseUrl url
             , page = NotFoundPage
             , navKey = navKey
             , navBar = NavBar.init navKey
+            , config = config
             }
     in
     initCurrentPage ( model, Cmd.none )
@@ -121,12 +128,12 @@ initCurrentPage ( model, existingCmds ) =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case ( msg, model.page ) of
-        (AccountPageMsg subMsg, AccountPage pageModel) ->
+        ( AccountPageMsg subMsg, AccountPage pageModel ) ->
             let
-                (updatedPageModel, updatedCmd) = UserAccount.update subMsg pageModel
+                ( updatedPageModel, updatedCmd ) =
+                    UserAccount.update subMsg pageModel
             in
-            ({model| page = AccountPage updatedPageModel}, Cmd.map AccountPageMsg updatedCmd)
-            
+            ( { model | page = AccountPage updatedPageModel }, Cmd.map AccountPageMsg updatedCmd )
 
         ( InjuriesMsg subMsg, InjuriesPage pageModel ) ->
             let
@@ -254,7 +261,7 @@ fontAwesomeCDN =
 ---- PROGRAM ----
 
 
-main : Program () Model Msg
+main : Program Config Model Msg
 main =
     Browser.application
         { init = init

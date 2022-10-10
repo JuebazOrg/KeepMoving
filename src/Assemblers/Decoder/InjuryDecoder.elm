@@ -2,7 +2,6 @@ module Assemblers.Decoder.InjuryDecoder exposing (decode)
 
 import Assemblers.Decoder.CheckPointDecoder as CheckPointDecoder
 import Assemblers.Decoder.DateDecoder exposing (dateDecoder)
-import Assemblers.Decoder.IdDecoder exposing (idDecoder)
 import Date exposing (..)
 import Domain.Injury exposing (..)
 import Domain.Regions exposing (BodyRegion, Region(..), Side(..))
@@ -13,7 +12,7 @@ import Json.Decode.Pipeline exposing (required)
 decode : D.Decoder Injury
 decode =
     D.succeed Injury
-        |> required "id" idDecoder
+        |> required "id" D.string
         |> required "description" D.string
         |> required "bodyRegion" bodyRegionDecoder
         |> required "location" D.string
