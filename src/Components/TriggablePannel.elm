@@ -1,6 +1,6 @@
 module Components.TriggablePannel exposing (..)
 
-import Components.Card as Card
+import Bulma.Styled.Components as BC
 import Components.Dropdown exposing (Msg)
 import Components.Elements as C
 import Css exposing (..)
@@ -12,15 +12,15 @@ import Theme.Icons as I
 
 view : Bool -> msg -> List (Html msg) -> String -> Html msg
 view isOpen msg content title =
-    Card.staticCard []
-        [ Card.cardHeader [ A.css [ displayFlex ] ]
-            [ Card.cardTitle [] [ text title ]
+    BC.card []
+        [ BC.cardHeader [ A.css [ displayFlex ] ]
+            [ BC.cardTitle [] [ text title ]
             , button [ A.class "card-header-icon", onClick msg ]
                 [ C.icon [] [ i [ A.class I.caretDown ] [] ]
                 ]
             ]
         , if isOpen then
-            Card.cardContent [] content
+            BC.cardContent [] content
 
           else
             C.empty

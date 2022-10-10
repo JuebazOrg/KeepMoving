@@ -2,7 +2,6 @@ module Domain.CheckPoint exposing (..)
 
 import Bulma.Styled.Layout exposing (Level)
 import Date exposing (Date)
-import Id exposing (Id)
 
 
 type alias CheckPoint =

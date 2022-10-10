@@ -5,7 +5,6 @@ import Assemblers.Encoder.InjuryEncoder as InjuryEncoder
 import Clients.Client exposing (Client, baseRoute, buildErrorMessage)
 import Domain.Injury exposing (Injury, NewInjury)
 import Http
-import Id as Id exposing (Id)
 import Json.Decode as Decode
 
 

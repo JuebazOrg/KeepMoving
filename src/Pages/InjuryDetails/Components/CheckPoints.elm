@@ -1,18 +1,12 @@
 module Pages.InjuryDetails.Components.CheckPoints exposing (..)
 
-import Bulma.Styled.Elements exposing (..)
-import Bulma.Styled.Modifiers as BM
+import Bulma.Styled.Components exposing (easyModal, modalContent)
+import Bulma.Styled.Elements exposing (TableRow, table, tableBody, tableCell, tableFoot, tableHead, tableModifiers, tableRow)
 import Components.Elements as C
-import Components.Form exposing (controlCheckBox)
-import Components.Modal exposing (modalContent, simpleModal)
-import Css exposing (displayFlex, maxWidth)
-import Date as Date
 import Domain.CheckPoint exposing (CheckPoint, Trend(..))
-import Html.Styled exposing (Html, div, input, text)
+import Html.Styled exposing (Html, div, text)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (..)
-import Json.Decode exposing (bool)
-import List.FlatMap exposing (flatMap)
 import Theme.Colors as ColorTheme
 import Theme.Icons as I
 import Util.Date as DateUtil
@@ -48,17 +42,13 @@ view model checkPoints isEditMode =
         [ viewTable checkPoints isEditMode
         , model.comment
             |> Maybe.map (\comment -> viewComment comment)
-            |> Maybe.withDefault C.empty
+            |> Maybe.withDefault (text "")
         ]
 
 
 viewComment : String -> Html Msg
 viewComment comment =
-    let
-        header =
-            C.empty
-    in
-    simpleModal True CloseComment header [ modalContent [] [ text comment ] ] header
+    easyModal True [] CloseComment [ modalContent [] [ text comment ] ]
 
 
 viewTable : List CheckPoint -> Bool -> Html Msg

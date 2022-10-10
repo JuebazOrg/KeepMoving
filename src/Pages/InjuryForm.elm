@@ -1,18 +1,15 @@
 module Pages.InjuryForm exposing (..)
 
-import Cmd.Extra as Cmd
+import Bulma.Styled.Components as BC
+import Bulma.Styled.Form as BF
 import Components.Calendar.DatePicker as DP
-import Components.Card exposing (..)
 import Components.Dropdown as DD
-import Components.Elements as C
-import Components.Form exposing (..)
 import Css exposing (..)
-import Date as Date
 import Domain.Injury exposing (Injury, InjuryType, injuryTypeToString, injuryTypes)
 import Domain.Regions exposing (Region, Side, fromRegion, regions, sideToString, sides)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
-import Html.Styled.Events exposing (on, onClick, onInput)
+import Html.Styled.Events exposing (onInput)
 import Theme.Mobile as M
 import Theme.Spacing as SP
 import Time exposing (Month(..))
@@ -127,7 +124,7 @@ regionDropdownOptions =
 
 sideDropDownOptions : List (DD.Option Side)
 sideDropDownOptions =
-    sides 
+    sides
         |> List.map (\side -> { label = sideToString side, value = side })
 
 
@@ -145,7 +142,7 @@ selectedToOption element values =
 
 view : Model -> Html Msg
 view model =
-    cardContent [ A.css [ flex (int 1), M.onMobile [ important <| padding (px 0) ] ] ]
+    BC.cardContent [ A.css [ flex (int 1), M.onMobile [ important <| padding (px 0) ] ] ]
         [ div [ A.css [ displayFlex, alignItems center, M.onMobile [ flexDirection column, alignItems flexStart ] ] ]
             [ span [ A.css [ margin SP.small ] ] [ map DropDownMsg (DD.viewDropDown model.regionDropdown) ]
             , span [ A.css [ margin SP.small ] ] [ map SideDropDownMsg (DD.viewDropDown model.sideDropDown) ]
@@ -163,20 +160,20 @@ view model =
 
 viewStartDate : Model -> Html Msg
 viewStartDate model =
-    field [] [ controlLabel [] [ text "Start date" ], map StartDateChange (DP.view model.startDate) ]
+    BF.field [] [ BF.controlLabel [] [ text "Start date" ], map StartDateChange (DP.view model.startDate) ]
 
 
 viewEndDate : Model -> Html Msg
 viewEndDate model =
-    field [ A.css [ marginLeft (px 10) ] ] [ controlLabel [] [ text "End date" ], map EndDateChange (DP.view model.endDate) ]
+    BF.field [ A.css [ marginLeft (px 10) ] ] [ BF.controlLabel [] [ text "End date" ], map EndDateChange (DP.view model.endDate) ]
 
 
 viewDescriptionInput : String -> Html Msg
 viewDescriptionInput content =
-    field []
-        [ controlLabel [] [ text "description" ]
-        , controlTextArea
-            defaultTextAreaProps
+    BF.field []
+        [ BF.controlLabel [] [ text "description" ]
+        , BF.controlTextArea
+            BF.controlTextAreaModifiers
             [ onInput UpdateDescription ]
             []
             [ text content ]
@@ -185,10 +182,10 @@ viewDescriptionInput content =
 
 viewHowInput : String -> Html Msg
 viewHowInput content =
-    field []
-        [ controlLabel [] [ text "how it happen" ]
-        , controlTextArea
-            defaultTextAreaProps
+    BF.field []
+        [ BF.controlLabel [] [ text "how it happen" ]
+        , BF.controlTextArea
+            BF.controlTextAreaModifiers
             []
             [ onInput UpdateHow ]
             [ text content ]
@@ -197,7 +194,7 @@ viewHowInput content =
 
 viewLocationInput : String -> Html Msg
 viewLocationInput content =
-    field [ A.css [ flex (int 3), marginRight (px 10) ] ]
-        [ controlLabel [] [ text "location details" ]
-        , controlInput defaultControlInputProps [ onInput UpdateLocation ] [ A.value content ] []
+    BF.field [ A.css [ flex (int 3), marginRight (px 10) ] ]
+        [ BF.controlLabel [] [ text "location details" ]
+        , BF.controlInput BF.controlInputModifiers [ onInput UpdateLocation ] [ A.value content ] []
         ]

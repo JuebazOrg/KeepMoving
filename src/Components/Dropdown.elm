@@ -1,8 +1,8 @@
 module Components.Dropdown exposing (..)
 
-import Components.BulmaElements exposing (..)
+import Bulma.Styled.Components as BC
 import Components.Elements as C
-import Css exposing (Style, batch, maxHeight, overflow, overflowY, px, scroll)
+import Css exposing (Style, batch, maxHeight, overflowY, px, scroll)
 import Domain.Regions exposing (Side(..))
 import Html.Styled exposing (Html, a, option, text)
 import Html.Styled.Attributes as A
@@ -75,7 +75,7 @@ myDropdownTrigger model =
                 |> Maybe.map (\option -> option.label)
                 |> Maybe.withDefault model.defaultTitle
     in
-    dropdownTrigger []
+    BC.dropdownTrigger []
         [ C.dropDownButton
             [ onClick ToggleDropdown ]
             [ text title
@@ -93,19 +93,19 @@ myDropdownMenu model =
                         case model.selectedOption of
                             Just active ->
                                 if item == active then
-                                    dropdownItemLink True [ onClick <| UpdateOption item ] [ text item.label ]
+                                    BC.dropdownItemLink True [ onClick <| UpdateOption item ] [ text item.label ]
 
                                 else
-                                    dropdownItemLink False [ onClick <| UpdateOption item ] [ text item.label ]
+                                    BC.dropdownItemLink False [ onClick <| UpdateOption item ] [ text item.label ]
 
                             _ ->
-                                dropdownItemLink False [ onClick <| UpdateOption item ] [ text item.label ]
+                                BC.dropdownItemLink False [ onClick <| UpdateOption item ] [ text item.label ]
                     )
     in
-    dropdownMenu [ A.css [ styled model.props.maxSize ] ]
+    BC.dropdownMenu [ A.css [ styled model.props.maxSize ] ]
         []
         (if model.props.hasDefaulTitleOption then
-            dropdownItemLink
+            BC.dropdownItemLink
                 False
                 [ onClick <| Reset ]
                 [ text model.defaultTitle ]
@@ -118,8 +118,8 @@ myDropdownMenu model =
 
 viewDropDown : Model a -> Html (Msg a)
 viewDropDown model =
-    dropdown model.isActive
-        dropdownModifiers
+    BC.dropdown model.isActive
+        BC.dropdownModifiers
         []
         [ myDropdownTrigger model
         , myDropdownMenu model

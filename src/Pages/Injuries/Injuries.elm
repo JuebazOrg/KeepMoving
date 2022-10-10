@@ -1,8 +1,8 @@
 module Pages.Injuries.Injuries exposing (..)
 
 import Browser.Navigation as Nav
+import Bulma.Styled.Components as BC
 import Clients.InjuryClient as Client
-import Components.Card exposing (..)
 import Components.Elements as C
 import Css exposing (..)
 import Date exposing (..)
@@ -135,17 +135,17 @@ viewInjury injury =
             else
                 C.empty
     in
-    card
+    BC.card
         [ A.class "elem", onClick <| OpenDetail injury, A.css [ borderRadius SP.small, marginTop SP.medium, important (maxWidth (px 500)) ] ]
-        [ cardHeader []
-            [ cardTitle []
+        [ BC.cardHeader []
+            [ BC.cardTitle []
                 [ C.primaryTag [ text <| bodyRegionToString injury.bodyRegion ]
                 , activeTag
                 ]
-            , cardIcon []
+            , BC.cardIcon []
                 [ C.icon [] [ i [ A.class I.calendar ] [] ]
                 , span [] [ text <| formatMMDD injury.startDate ]
                 ]
             ]
-        , cardContent [] [ text <| injury.location ]
+        , BC.cardContent [] [ text <| injury.location ]
         ]

@@ -1,9 +1,9 @@
 module Pages.Injuries.Filters exposing (..)
 
-import Compare exposing (Comparator)
+import Bulma.Styled.Form as BF
+import Compare as Compare
 import Components.Dropdown as DD exposing (defaultProps)
 import Components.Elements as C
-import Components.Form exposing (controlCheckBox)
 import Components.SlidingPanel as CS
 import Css exposing (..)
 import Date exposing (..)
@@ -108,14 +108,14 @@ viewContent model =
             , span [ A.css [ marginRight SP.small ] ] [ viewOrderDropDown model ]
             ]
         , hr [] []
-        , span [] [ controlCheckBox False [] [] [ onCheck ActiveFilterChecked ] [ text "actif injuries" ] ] |> map Filter
+        , span [] [ BF.controlCheckBox False [] [] [ onCheck ActiveFilterChecked ] [ text "actif injuries" ] ] |> map Filter
         , hr [] []
         , a [ onClick ClearAll ] [ text "clear all" ]
         ]
 
 
 
--- todo : filter not working. Missing items when no filters. Implement tests 
+-- todo : filter not working. Missing items when no filters. Implement tests
 
 
 filterInjuries : Filters -> List Injury -> List Injury

@@ -8,7 +8,6 @@ import Css exposing (..)
 import Domain.Injury exposing (Injury)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
-import Id exposing (Id)
 import Navigation.NavBar as NavBar exposing (viewNavBar)
 import Navigation.Route as Route exposing (Route(..))
 import Pages.AddInjury as AddInjury

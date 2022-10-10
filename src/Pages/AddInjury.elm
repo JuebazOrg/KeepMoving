@@ -1,8 +1,8 @@
 module Pages.AddInjury exposing (..)
 
 import Browser.Navigation as Nav
+import Bulma.Styled.Components as BC
 import Clients.InjuryClient as Client
-import Components.Card exposing (cardFooter, cardHeader, cardTitle)
 import Components.Dropdown as DD
 import Components.Elements as C
 import Css exposing (..)
@@ -65,7 +65,11 @@ createNewInjury : NewInjury -> Cmd Msg
 createNewInjury newInjury =
     Client.createInjury newInjury InjuryCreated
 
+
+
 -- todo: fct build dans le formulaire
+
+
 createNewInjuryFromForm : Form.Model -> NewInjury
 createNewInjuryFromForm model =
     { bodyRegion =
@@ -92,7 +96,7 @@ view model =
     div [ A.css [ height (pct 100), displayFlex, flexDirection column, justifyContent spaceBetween ] ]
         [ viewHeader
         , Form.view model.form |> map FormMsg
-        , cardFooter [ A.css [ padding (px 10), important displayFlex, important <| justifyContent flexEnd ] ]
+        , BC.cardFooter [ A.css [ padding (px 10), important displayFlex, important <| justifyContent flexEnd ] ]
             [ C.lightButton [ A.css [ marginRight (px 10) ], onClick CloseForm ]
                 [ text "cancel" ]
             , C.saveButton [ onClick Save ] [ text "save" ]
@@ -102,8 +106,8 @@ view model =
 
 viewHeader : Html Msg
 viewHeader =
-    cardHeader [ A.css [ important <| alignItems center ] ]
-        [ cardTitle [ A.css [ displayFlex, justifyContent spaceBetween ] ]
+    BC.cardHeader [ A.css [ important <| alignItems center ] ]
+        [ BC.cardTitle [ A.css [ displayFlex, justifyContent spaceBetween ] ]
             [ C.h3Title [] [ text "New injury" ] ]
         , C.closeButton [ onClick CloseForm ] []
         ]

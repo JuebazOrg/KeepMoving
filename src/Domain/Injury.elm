@@ -5,7 +5,6 @@ import Dict exposing (Dict)
 import Dict.Extra as Dict
 import Domain.CheckPoint exposing (CheckPoint)
 import Domain.Regions exposing (BodyRegion, Region(..))
-import Id exposing (Id)
 import Time exposing (Month(..))
 
 
