@@ -1,4 +1,4 @@
-module Pages.InjuryForm exposing (..)
+module CreateInjury.InjuryForm exposing (..)
 
 import Bulma.Styled.Components as BC
 import Bulma.Styled.Form as BF

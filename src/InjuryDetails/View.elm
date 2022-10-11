@@ -1,4 +1,4 @@
-module Pages.InjuryDetails.View exposing (..)
+module InjuryDetails.View exposing (..)
 
 import Bulma.Styled.Components as BM
 import Clients.InjuryClient as Client
@@ -9,10 +9,10 @@ import Domain.Regions exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (..)
-import Pages.InjuryDetails.Components.AddCheckPoint as CheckPointModal
-import Pages.InjuryDetails.Components.CheckPoints as CheckPoints
-import Pages.InjuryDetails.Components.InjuryInfoCard exposing (..)
-import Pages.InjuryDetails.Update exposing (Model, Msg(..))
+import InjuryDetails.Components.AddCheckPoint as CheckPointModal
+import InjuryDetails.Components.CheckPoints as CheckPoints
+import InjuryDetails.Components.InjuryInfoCard exposing (..)
+import InjuryDetails.Update exposing (Model, Msg(..))
 import RemoteData as RemoteData exposing (RemoteData(..))
 import Theme.Icons as I
 import Theme.Spacing as SP

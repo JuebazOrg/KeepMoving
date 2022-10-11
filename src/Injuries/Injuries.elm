@@ -1,8 +1,9 @@
-module Pages.Injuries.Injuries exposing (..)
+module Injuries.Injuries exposing (..)
 
 import Browser.Navigation as Nav
 import Bulma.Styled.Components as BC
 import Clients.InjuryClient as Client
+import Compare as Compare
 import Components.Elements as C
 import Css exposing (..)
 import Date exposing (..)
@@ -12,8 +13,8 @@ import Domain.Regions exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick)
+import Injuries.Filter as Filters
 import Navigation.Route as Route
-import Pages.Injuries.Filters as Filters
 import RemoteData exposing (RemoteData(..), WebData)
 import Theme.Colors exposing (grey)
 import Theme.Icons as I
@@ -96,13 +97,41 @@ viewInjuriesOrError model =
 
 
 viewInjuries : List Injury -> Filters.Model -> Html Msg
-viewInjuries injuries filterModel =
+viewInjuries injuries filters =
     div [ A.css [ displayFlex, flexDirection column ] ]
         [ injuries
-            |> Filters.filterInjuries filterModel.filters
-            |> Filters.orderInjuries filterModel.order
+            |> filterWith filters.filters
+            |> orderBy filters.order.value
             |> viewInjuriesByYear
         ]
+
+
+filterWith : Filters.Filters -> List Injury -> List Injury
+filterWith filters injuries =
+    if filters.region.value == Nothing then
+        injuries
+
+    else
+        injuries
+            |> List.filter (\i -> Just i.bodyRegion.region == filters.region.value)
+
+
+orderBy : Maybe Filters.Order -> List Injury -> List Injury
+orderBy order injuries =
+    order
+        |> Maybe.map
+            (\o ->
+                case o of
+                    Filters.LeastRecent ->
+                        injuries
+                            |> List.sortWith (Compare.compose .startDate Date.compare)
+
+                    Filters.MostRecent ->
+                        injuries
+                            |> List.sortWith (Compare.compose .startDate Date.compare)
+                            |> List.reverse
+            )
+        |> Maybe.withDefault injuries
 
 
 viewInjuriesByYear : List Injury -> Html Msg

@@ -1,4 +1,4 @@
-module Pages.EditInjury exposing (..)
+module EditInjury.EditInjury exposing (..)
 
 import Browser.Navigation as Nav
 import Bulma.Styled.Components as BC
@@ -14,7 +14,7 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick)
 import Navigation.Route as Route
-import Pages.InjuryForm as Form
+import CreateInjury.InjuryForm as Form
 import RemoteData exposing (RemoteData(..), WebData)
 import Time exposing (Month(..))
 

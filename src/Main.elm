@@ -10,11 +10,11 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Navigation.NavBar as NavBar exposing (viewNavBar)
 import Navigation.Route as Route exposing (Route(..))
-import Pages.AddInjury as AddInjury
-import Pages.EditInjury as EditInjury
-import Pages.Injuries.Injuries as Injuries exposing (Msg, view)
-import Pages.InjuryDetails.Update as InjuryDetail
-import Pages.InjuryDetails.View as InjuryDetailView
+import CreateInjury.AddInjury as AddInjury
+import EditInjury.EditInjury as EditInjury
+import Injuries.Injuries as Injuries exposing (Msg, view)
+import InjuryDetails.Update as InjuryDetail
+import InjuryDetails.View as InjuryDetailView
 import Pages.UserAccount as UserAccount
 import RemoteData exposing (WebData)
 import Url exposing (Url)

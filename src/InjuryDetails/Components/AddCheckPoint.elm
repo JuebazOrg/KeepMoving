@@ -1,4 +1,4 @@
-module Pages.InjuryDetails.Components.AddCheckPoint exposing (Model, Msg, getNewCheckPoint, init, update, view)
+module InjuryDetails.Components.AddCheckPoint exposing (Model, Msg, getNewCheckPoint, init, update, view)
 
 import Bulma.Styled.Form as BF
 import Components.Calendar.DatePicker as DP

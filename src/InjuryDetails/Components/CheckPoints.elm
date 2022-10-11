@@ -1,4 +1,4 @@
-module Pages.InjuryDetails.Components.CheckPoints exposing (..)
+module InjuryDetails.Components.CheckPoints exposing (..)
 
 import Bulma.Styled.Components exposing (easyModal, modalContent)
 import Bulma.Styled.Elements exposing (TableRow, table, tableBody, tableCell, tableFoot, tableHead, tableModifiers, tableRow)

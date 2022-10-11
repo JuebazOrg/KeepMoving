@@ -1,4 +1,4 @@
-module Pages.InjuryDetails.Components.InjuryInfoCard exposing (..)
+module InjuryDetails.Components.InjuryInfoCard exposing (..)
 
 import Components.Elements as C
 import Css exposing (..)

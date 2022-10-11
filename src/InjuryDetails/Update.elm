@@ -1,4 +1,4 @@
-module Pages.InjuryDetails.Update exposing (..)
+module InjuryDetails.Update exposing (..)
 
 import Browser.Navigation as Nav
 import Clients.InjuryClient as Client
@@ -8,9 +8,9 @@ import Domain.CheckPoint exposing (CheckPoint)
 import Domain.Injury exposing (..)
 import Domain.Regions exposing (..)
 import Navigation.Route as Route
-import Pages.InjuryDetails.Components.AddCheckPoint as CheckPointModal
-import Pages.InjuryDetails.Components.CheckPoints as CheckPoints
-import Pages.InjuryDetails.Components.InjuryInfoCard exposing (..)
+import InjuryDetails.Components.AddCheckPoint as CheckPointModal
+import InjuryDetails.Components.CheckPoints as CheckPoints
+import InjuryDetails.Components.InjuryInfoCard exposing (..)
 import RemoteData as RemoteData exposing (RemoteData(..), WebData)
 import Task
 
