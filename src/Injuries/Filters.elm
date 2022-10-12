@@ -1,8 +1,10 @@
-module Injuries.Filter exposing (..)
+module Injuries.Filters exposing (..)
 
 import Components.Dropdown2 as DD
+import Css exposing (em, margin)
 import Domain.Regions exposing (Region, fromRegion, regions)
 import Html.Styled exposing (..)
+import Html.Styled.Attributes as A
 
 
 type alias Model =
@@ -48,7 +50,7 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div []
-        [ orderDropDown model
+        [ span [ A.css [ margin (Css.em 0.2) ] ] [ orderDropDown model ]
         , regionFilterDropdown model
         ]
 

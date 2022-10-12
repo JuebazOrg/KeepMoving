@@ -7,19 +7,21 @@ import Compare as Compare
 import Components.Elements as C
 import Css exposing (..)
 import Date exposing (..)
-import Dict as Dict
+import Dict exposing (Dict)
+import Dict.Extra as Dict
 import Domain.Injury exposing (..)
 import Domain.Regions exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick)
-import Injuries.Filter as Filters
+import Injuries.Filters as Filters
 import Navigation.Route as Route
 import RemoteData exposing (RemoteData(..), WebData)
 import Theme.Colors exposing (grey)
 import Theme.Icons as I
 import Theme.Spacing as SP
 import Util.Date exposing (formatMMDD)
+import Util.ListExtra exposing (applyIf)
 
 
 type alias Model =
@@ -71,7 +73,7 @@ view model =
             [ C.h3Title [ A.css [ margin (px 0) ] ] [ text "Injuries" ]
             , C.addButton [ A.href (Route.routeToString Route.NewInjury) ] [ text "injury" ]
             ]
-        , map FiltersMsg <| Filters.view model.filters
+        , div [ A.css [ displayFlex, justifyContent flexStart ] ] [ map FiltersMsg <| Filters.view model.filters ]
         , viewInjuriesOrError model
         ]
 
@@ -101,8 +103,7 @@ viewInjuries injuries filters =
     div [ A.css [ displayFlex, flexDirection column ] ]
         [ injuries
             |> filterWith filters.filters
-            |> orderBy filters.order.value
-            |> viewInjuriesByYear
+            |> viewInjuriesByYear filters.order.value
         ]
 
 
@@ -134,18 +135,27 @@ orderBy order injuries =
         |> Maybe.withDefault injuries
 
 
-viewInjuriesByYear : List Injury -> Html Msg
-viewInjuriesByYear injuries =
+injuriesByYear : List Injury -> Dict Int (List Injury)
+injuriesByYear =
+    Dict.groupBy (.startDate >> Date.year)
+
+
+viewInjuriesByYear : Maybe Filters.Order -> List Injury -> Html Msg
+viewInjuriesByYear order injuries =
     injuriesByYear injuries
         |> Dict.toList
         |> List.map
             (\( year, yearInjuries ) ->
                 div [ A.css [ margin SP.medium ] ]
                     [ viewYear year
-                    , div [] <| List.map viewInjury yearInjuries
+                    , div []
+                        (yearInjuries
+                            |> orderBy order
+                            |> List.map viewInjury
+                        )
                     ]
             )
-        |> List.reverse
+        |> applyIf (order == Just Filters.MostRecent) List.reverse
         |> div []
 
 

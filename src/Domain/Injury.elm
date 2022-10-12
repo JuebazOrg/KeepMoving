@@ -1,8 +1,6 @@
 module Domain.Injury exposing (..)
 
 import Date exposing (Date)
-import Dict exposing (Dict)
-import Dict.Extra as Dict
 import Domain.CheckPoint exposing (CheckPoint)
 import Domain.Regions exposing (BodyRegion, Region(..))
 import Time exposing (Month(..))
@@ -61,11 +59,6 @@ isActive injury =
 
         Nothing ->
             True
-
-
-injuriesByYear : List Injury -> Dict Int (List Injury)
-injuriesByYear =
-    Dict.groupBy (.startDate >> Date.year)
 
 
 injuryTypeToString :
