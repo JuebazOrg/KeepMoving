@@ -184,6 +184,7 @@ viewInjury injury =
             , BC.cardIcon []
                 [ C.icon [] [ i [ A.class I.calendar ] [] ]
                 , span [] [ text <| formatMMDD injury.startDate ]
+                , span [] [ injury.endDate |> Maybe.map (\d -> text ("-" ++ formatMMDD d)) |> Maybe.withDefault C.empty ]
                 ]
             ]
         , BC.cardContent [] [ text <| injury.location ]

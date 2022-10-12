@@ -10,7 +10,7 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Navigation.NavBar as NavBar exposing (viewNavBar)
 import Navigation.Route as Route exposing (Route(..))
-import CreateInjury.AddInjury as AddInjury
+import CreateInjury.FormHandler as AddInjury
 import EditInjury.EditInjury as EditInjury
 import Injuries.Injuries as Injuries exposing (Msg, view)
 import InjuryDetails.Update as InjuryDetail

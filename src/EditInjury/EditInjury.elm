@@ -14,7 +14,7 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick)
 import Navigation.Route as Route
-import CreateInjury.InjuryForm as Form
+import CreateInjury.Form as Form
 import RemoteData exposing (RemoteData(..), WebData)
 import Time exposing (Month(..))
 
