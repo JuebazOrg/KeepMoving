@@ -1,18 +1,18 @@
-module Pages.InjuryDetails.View exposing (..)
+module InjuryDetails.View exposing (..)
 
+import Bulma.Styled.Components as BM
 import Clients.InjuryClient as Client
 import Components.Elements as C
-import Components.Modal as CM
 import Css exposing (..)
 import Domain.Injury exposing (..)
 import Domain.Regions exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (..)
-import Pages.InjuryDetails.Components.AddCheckPoint as CheckPointModal
-import Pages.InjuryDetails.Components.CheckPoints as CheckPoints
-import Pages.InjuryDetails.Components.InjuryInfoCard exposing (..)
-import Pages.InjuryDetails.Update exposing (Model, Msg(..))
+import InjuryDetails.Components.AddCheckPoint as CheckPointModal
+import InjuryDetails.Components.CheckPoints as CheckPoints
+import InjuryDetails.Components.InjuryInfoCard exposing (..)
+import InjuryDetails.Update exposing (Model, Msg(..))
 import RemoteData as RemoteData exposing (RemoteData(..))
 import Theme.Icons as I
 import Theme.Spacing as SP
@@ -80,7 +80,7 @@ viewInfo injury model =
 
 viewCheckPointsHeader : Html Msg
 viewCheckPointsHeader =
-    CM.modalCardTitle [ A.class "subtitle", A.css [ displayFlex, justifyContent flexEnd, alignItems center ] ]
+    BM.modalCardTitle [ A.class "subtitle", A.css [ displayFlex, justifyContent flexEnd, alignItems center ] ]
         [ span [ A.css [ flex (int 1) ] ] [ text "Checkpoints" ], C.addButton [ onClick OpenModal, A.css [ marginRight SP.medium ] ] [], C.simpleHoverIcon I.edit [ onClick EditCheckPoints ] ]
 
 
@@ -98,9 +98,9 @@ viewCheckPointModal : Bool -> CheckPointModal.Model -> Html Msg
 viewCheckPointModal isOpen model =
     let
         header =
-            CM.modalCardHead [] [ CM.modalCardTitle [] [ text "Checkpoint" ], C.closeButton [ onClick CloseModal ] [] ]
+            BM.modalCardHead [] [ BM.modalCardTitle [] [ text "Checkpoint" ], C.closeButton [ onClick CloseModal ] [] ]
 
         footer =
-            CM.modalCardFoot [ A.css [ flexDirection rowReverse ] ] [ C.saveButton [ onClick SaveCheckpoint ] [] ]
+            BM.modalCardFoot [ A.css [ flexDirection rowReverse ] ] [ C.saveButton [ onClick SaveCheckpoint ] [] ]
     in
-    CM.simpleModal isOpen CloseModal header [ map CheckPointModalMsg <| CheckPointModal.view model ] footer
+    C.simpleModal isOpen CloseModal header [ map CheckPointModalMsg <| CheckPointModal.view model ] footer

@@ -1,8 +1,6 @@
 module Assemblers.Decoder.CheckPointDecoder exposing (..)
 
 import Assemblers.Decoder.DateDecoder exposing (dateDecoder)
-import Assemblers.Decoder.IdDecoder exposing (idDecoder)
-import Date as Date
 import Domain.CheckPoint exposing (CheckPoint, Trend(..))
 import Json.Decode as D
 import Json.Decode.Pipeline exposing (required)
@@ -11,7 +9,7 @@ import Json.Decode.Pipeline exposing (required)
 decode : D.Decoder CheckPoint
 decode =
     D.succeed CheckPoint
-        |> required "id" idDecoder
+        |> required "id" D.string
         |> required "date" dateDecoder
         |> required "comment" D.string
         |> required "painLevel" D.int

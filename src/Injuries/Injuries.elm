@@ -1,24 +1,27 @@
-module Pages.Injuries.Injuries exposing (..)
+module Injuries.Injuries exposing (..)
 
 import Browser.Navigation as Nav
+import Bulma.Styled.Components as BC
 import Clients.InjuryClient as Client
-import Components.Card exposing (..)
+import Compare as Compare
 import Components.Elements as C
 import Css exposing (..)
 import Date exposing (..)
-import Dict as Dict
+import Dict exposing (Dict)
+import Dict.Extra as Dict
 import Domain.Injury exposing (..)
 import Domain.Regions exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick)
+import Injuries.Filters as Filters
 import Navigation.Route as Route
-import Pages.Injuries.Filters as Filters
 import RemoteData exposing (RemoteData(..), WebData)
 import Theme.Colors exposing (grey)
 import Theme.Icons as I
 import Theme.Spacing as SP
 import Util.Date exposing (formatMMDD)
+import Util.ListExtra exposing (applyIf)
 
 
 type alias Model =
@@ -70,7 +73,7 @@ view model =
             [ C.h3Title [ A.css [ margin (px 0) ] ] [ text "Injuries" ]
             , C.addButton [ A.href (Route.routeToString Route.NewInjury) ] [ text "injury" ]
             ]
-        , map FiltersMsg <| Filters.view model.filters
+        , div [ A.css [ displayFlex, justifyContent flexStart ] ] [ map FiltersMsg <| Filters.view model.filters ]
         , viewInjuriesOrError model
         ]
 
@@ -85,34 +88,74 @@ viewInjuriesOrError model =
             h3 [] [ text "Loading..." ]
 
         RemoteData.Success injuries ->
-            viewInjuries injuries model.filters
+            if List.length injuries == 0 then
+                h3 [] [ text "No Injuries yet... keep going like that :) " ]
+
+            else
+                viewInjuries injuries model.filters
 
         RemoteData.Failure httpError ->
             div [] [ text <| Client.client.defaultErrorMessage httpError ]
 
 
 viewInjuries : List Injury -> Filters.Model -> Html Msg
-viewInjuries injuries filterModel =
+viewInjuries injuries filters =
     div [ A.css [ displayFlex, flexDirection column ] ]
         [ injuries
-            |> Filters.filterInjuries filterModel.filters
-            |> Filters.orderInjuries filterModel.order
-            |> viewInjuriesByYear
+            |> filterWith filters.filters
+            |> viewInjuriesByYear filters.order.value
         ]
 
 
-viewInjuriesByYear : List Injury -> Html Msg
-viewInjuriesByYear injuries =
+filterWith : Filters.Filters -> List Injury -> List Injury
+filterWith filters injuries =
+    if filters.region.value == Nothing then
+        injuries
+
+    else
+        injuries
+            |> List.filter (\i -> Just i.bodyRegion.region == filters.region.value)
+
+
+orderBy : Maybe Filters.Order -> List Injury -> List Injury
+orderBy order injuries =
+    order
+        |> Maybe.map
+            (\o ->
+                case o of
+                    Filters.LeastRecent ->
+                        injuries
+                            |> List.sortWith (Compare.compose .startDate Date.compare)
+
+                    Filters.MostRecent ->
+                        injuries
+                            |> List.sortWith (Compare.compose .startDate Date.compare)
+                            |> List.reverse
+            )
+        |> Maybe.withDefault injuries
+
+
+injuriesByYear : List Injury -> Dict Int (List Injury)
+injuriesByYear =
+    Dict.groupBy (.startDate >> Date.year)
+
+
+viewInjuriesByYear : Maybe Filters.Order -> List Injury -> Html Msg
+viewInjuriesByYear order injuries =
     injuriesByYear injuries
         |> Dict.toList
         |> List.map
             (\( year, yearInjuries ) ->
                 div [ A.css [ margin SP.medium ] ]
                     [ viewYear year
-                    , div [] <| List.map viewInjury yearInjuries
+                    , div []
+                        (yearInjuries
+                            |> orderBy order
+                            |> List.map viewInjury
+                        )
                     ]
             )
-        |> List.reverse
+        |> applyIf (order == Just Filters.MostRecent) List.reverse
         |> div []
 
 
@@ -131,17 +174,18 @@ viewInjury injury =
             else
                 C.empty
     in
-    card
+    BC.card
         [ A.class "elem", onClick <| OpenDetail injury, A.css [ borderRadius SP.small, marginTop SP.medium, important (maxWidth (px 500)) ] ]
-        [ cardHeader []
-            [ cardTitle []
+        [ BC.cardHeader []
+            [ BC.cardTitle []
                 [ C.primaryTag [ text <| bodyRegionToString injury.bodyRegion ]
                 , activeTag
                 ]
-            , cardIcon []
+            , BC.cardIcon []
                 [ C.icon [] [ i [ A.class I.calendar ] [] ]
                 , span [] [ text <| formatMMDD injury.startDate ]
+                , span [] [ injury.endDate |> Maybe.map (\d -> text ("-" ++ formatMMDD d)) |> Maybe.withDefault C.empty ]
                 ]
             ]
-        , cardContent [] [ text <| injury.location ]
+        , BC.cardContent [] [ text <| injury.location ]
         ]

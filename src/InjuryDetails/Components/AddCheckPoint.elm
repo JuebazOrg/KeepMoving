@@ -1,14 +1,13 @@
-module Pages.InjuryDetails.Components.AddCheckPoint exposing (Model, Msg, getNewCheckPoint, init, update, view)
+module InjuryDetails.Components.AddCheckPoint exposing (Model, Msg, getNewCheckPoint, init, update, view)
 
+import Bulma.Styled.Form as BF
 import Components.Calendar.DatePicker as DP
 import Components.Dropdown as DD exposing (defaultProps)
-import Components.Form as CF
 import Css exposing (..)
 import Date
 import Domain.CheckPoint exposing (CheckPoint, Trend(..), levels, trendToString)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
-import Id
 import Theme.Spacing as SP
 import Time exposing (Month(..))
 
@@ -51,9 +50,9 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div [ A.css [ displayFlex, flexDirection column ] ]
-        [ CF.field [ fieldAttribute ] [ CF.controlLabel [] [ text "Trend" ], map TrendDropDownMsg <| DD.viewDropDown model.trend ]
-        , CF.field [ fieldAttribute ] [ CF.controlLabel [] [ text "Pain Level" ], map LevelDropDownMsg <| DD.viewDropDown model.level ]
-        , CF.field [ fieldAttribute ] [ CF.controlLabel [] [ text "Date" ], map DateChange <| DP.view model.date ]
+        [ BF.field [ fieldAttribute ] [ BF.controlLabel [] [ text "Trend" ], map TrendDropDownMsg <| DD.viewDropDown model.trend ]
+        , BF.field [ fieldAttribute ] [ BF.controlLabel [] [ text "Pain Level" ], map LevelDropDownMsg <| DD.viewDropDown model.level ]
+        , BF.field [ fieldAttribute ] [ BF.controlLabel [] [ text "Date" ], map DateChange <| DP.view model.date ]
         ]
 
 
@@ -73,7 +72,7 @@ getNewCheckPoint model =
     , trend = Maybe.withDefault Stable <| DD.getSelectedValue model.trend
     , painLevel = Maybe.withDefault 5 <| DD.getSelectedValue model.level
     , date = Maybe.withDefault (Date.fromCalendarDate 2 Jan 2020) model.date
-    , id = Id.noId
+    , id = "todo"
     }
 
 

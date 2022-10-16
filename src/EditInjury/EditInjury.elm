@@ -1,22 +1,23 @@
-module Pages.EditInjury exposing (..)
+module EditInjury.EditInjury exposing (..)
+
+-- import CreateInjury.Form as Form
 
 import Browser.Navigation as Nav
+import Bulma.Styled.Components as BC
 import Clients.InjuryClient as Client
 import Cmd.Extra as Cmd
-import Components.Card exposing (..)
+import Components.Calendar.DatePicker as DP
 import Components.Dropdown as DD
 import Components.Elements as C
-import Components.Form exposing (..)
 import Css exposing (..)
 import Date as Date
 import Domain.Injury exposing (..)
 import Domain.Regions exposing (..)
+import EditInjury.Form as Form
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick)
-import Id exposing (Id)
 import Navigation.Route as Route
-import Pages.InjuryForm as Form
 import RemoteData exposing (RemoteData(..), WebData)
 import Time exposing (Month(..))
 
@@ -25,14 +26,9 @@ type alias Model =
     { form : Maybe Form.Model, navKey : Nav.Key, injury : WebData Injury }
 
 
-init : Nav.Key -> Id -> ( Model, Cmd Msg )
+init : Nav.Key -> String -> ( Model, Cmd Msg )
 init navKey id =
     ( { navKey = navKey, form = Nothing, injury = RemoteData.Loading }, getInjury id )
-
-
-initForm : Injury -> Form.Model
-initForm injury =
-    Form.init injury
 
 
 type Msg
@@ -49,7 +45,7 @@ update model msg =
         InjuryReceived response ->
             case response of
                 RemoteData.Success injury ->
-                    Cmd.pure { model | form = Just (initForm injury), injury = response }
+                    Cmd.pure { model | form = Just (Form.init injury), injury = response }
 
                 _ ->
                     Cmd.pure model
@@ -91,7 +87,7 @@ update model msg =
                     ( model, Cmd.none )
 
 
-getInjury : Id -> Cmd Msg
+getInjury : String -> Cmd Msg
 getInjury id =
     Client.getInjury id (RemoteData.fromResult >> InjuryReceived)
 
@@ -104,15 +100,15 @@ updateInjury injury =
 createNewInjuryFromForm : Form.Model -> Injury -> Injury
 createNewInjuryFromForm model oldInjury =
     { bodyRegion =
-        { region = Maybe.withDefault Other (DD.getSelectedValue model.regionDropdown)
-        , side = DD.getSelectedValue model.sideDropDown
+        { region = Maybe.withDefault Other model.region.value
+        , side = model.side.value
         }
     , location = model.location
     , description = model.description
     , startDate = Maybe.withDefault defaultDate model.startDate
     , endDate = model.endDate
     , how = model.how
-    , injuryType = Maybe.withDefault OtherInjuryType (DD.getSelectedValue model.injuryTypeDropDown)
+    , injuryType = Maybe.withDefault OtherInjuryType model.injuryType.value
     , checkPoints = oldInjury.checkPoints
     , id = oldInjury.id
     }
@@ -135,10 +131,10 @@ viewContent formModel =
     div [ A.css [ height (pct 100), displayFlex, flexDirection column, justifyContent spaceBetween ] ]
         [ viewHeader
         , Form.view formModel |> map FormMsg
-        , cardFooter [ A.css [ padding (px 10), important displayFlex, important <| justifyContent flexEnd ] ] [ C.lightButton [ A.css [ marginRight (px 10) ], onClick CloseModal ] [ text "cancel" ], C.saveButton [ onClick Save ] [ text "save" ] ]
+        , BC.cardFooter [ A.css [ padding (px 10), important displayFlex, important <| justifyContent flexEnd ] ] [ C.lightButton [ A.css [ marginRight (px 10) ], onClick CloseModal ] [ text "cancel" ], C.saveButton [ onClick Save ] [ text "save" ] ]
         ]
 
 
 viewHeader : Html Msg
 viewHeader =
-    cardHeader [ A.css [ important <| alignItems center ] ] [ cardTitle [ A.css [ displayFlex, justifyContent spaceBetween ] ] [ C.h3Title [] [ text "New injury" ] ], C.closeButton [ onClick CloseModal ] [] ]
+    BC.cardHeader [ A.css [ important <| alignItems center ] ] [ BC.cardTitle [ A.css [ displayFlex, justifyContent spaceBetween ] ] [ C.h3Title [] [ text "New injury" ] ], C.closeButton [ onClick CloseModal ] [] ]

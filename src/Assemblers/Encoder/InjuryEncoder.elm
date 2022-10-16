@@ -1,7 +1,6 @@
 module Assemblers.Encoder.InjuryEncoder exposing (..)
 
 import Assemblers.Encoder.CheckPointEncoder as CheckPointEncoder
-import Assemblers.Encoder.IdEncoder exposing (idEncoder)
 import Date exposing (Date)
 import Domain.Injury exposing (Injury, InjuryType(..), NewInjury)
 import Domain.Regions as Region exposing (..)
@@ -12,7 +11,7 @@ import Json.Encode.Extra as EncodeExtra
 encode : Injury -> Encode.Value
 encode injury =
     Encode.object
-        [ ( "id", Encode.int <| idEncoder injury.id )
+        [ ( "id", Encode.string injury.id )
         , ( "description", Encode.string injury.description )
         , ( "location", Encode.string injury.location )
         , ( "bodyRegion"

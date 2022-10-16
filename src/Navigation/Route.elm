@@ -1,8 +1,6 @@
 module Navigation.Route exposing (..)
 
 import Browser.Navigation as Nav
-import Css exposing (nwResize)
-import Id exposing (Id, idParser)
 import Url exposing (Url)
 import Url.Parser exposing (..)
 
@@ -10,9 +8,9 @@ import Url.Parser exposing (..)
 type Route
     = NotFound
     | Injuries
-    | Injury Id
+    | Injury String
     | NewInjury
-    | EditInjury Id
+    | EditInjury String
     | Account
 
 
@@ -31,9 +29,9 @@ matchRoute =
     oneOf
         [ map Injuries top
         , map Injuries (s "injuries")
-        , map Injury (s "injuries" </> idParser)
-        , map NewInjury (s "injuries" </> s "new")
-        , map EditInjury (s "injuries" </> idParser </> s "edit")
+        , map Injury (s "injuries" </> string)
+        , map NewInjury (s "new")
+        , map EditInjury (s "injuries" </> string </> s "edit")
         , map Account (s "account")
         ]
 
@@ -54,13 +52,13 @@ routeToString route =
             "/injuries"
 
         Injury id ->
-            "/injuries/" ++ Id.toString id
+            "/injuries/" ++ id
 
         NewInjury ->
-            "injuries/new"
+            "/new"
 
         EditInjury id ->
-            Id.toString id ++ "/edit"
+            "/injuries/" ++ id ++ "/edit"
 
         Account ->
             "/account"

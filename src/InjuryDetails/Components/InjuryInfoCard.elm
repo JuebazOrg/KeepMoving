@@ -1,4 +1,4 @@
-module Pages.InjuryDetails.Components.InjuryInfoCard exposing (..)
+module InjuryDetails.Components.InjuryInfoCard exposing (..)
 
 import Components.Elements as C
 import Css exposing (..)
@@ -8,7 +8,6 @@ import Domain.Regions exposing (bodyRegionToString)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (..)
-import Theme.Icons as I
 import Theme.Spacing as SP
 import Util.Date exposing (formatMMMMDY)
 
@@ -75,7 +74,7 @@ viewDates injury today =
             [ div [ A.css [ displayFlex, flexDirection column, alignItems flexStart ] ]
                 [ viewDateField (formatMMMMDY injury.startDate) "Start date"
                 , viewDateField (endDateToString injury.endDate) "End date"
-                , viewDateField (diffInDaysOfInjury injury.startDate endDate) "Days of injury"
+                , viewDateField (diffInDaysOfInjury injury.startDate endDate) "Duration"
                 ]
             ]
         ]
