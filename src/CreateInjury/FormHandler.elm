@@ -26,7 +26,7 @@ type alias Model =
 
 init : Nav.Key -> Model
 init navKey =
-    { form = Form.initEmpty
+    { form = Form.init
     , formErrors = Nothing
     , navKey = navKey
     }
@@ -89,7 +89,7 @@ validateForm form =
     if form.startDate == Nothing then
         Just StartDateEmpty
 
-    else if form.regionDropdown.selectedOption == Nothing then
+    else if form.region.value == Nothing then
         Just RegionEmpty
 
     else
@@ -116,15 +116,15 @@ buildNewInjury model =
         Nothing ->
             Ok
                 { bodyRegion =
-                    { region = Maybe.withDefault Other (DD.getSelectedValue model.regionDropdown)
-                    , side = DD.getSelectedValue model.sideDropDown
+                    { region = Maybe.withDefault Other model.region.value
+                    , side = model.side.value
                     }
                 , location = model.location
                 , description = model.description
                 , startDate = Maybe.withDefault defaultDate model.startDate
                 , endDate = model.endDate
                 , how = model.how
-                , injuryType = Maybe.withDefault OtherInjuryType (DD.getSelectedValue model.injuryTypeDropDown)
+                , injuryType = Maybe.withDefault OtherInjuryType model.injuryType.value
                 , checkPoints = []
                 }
 

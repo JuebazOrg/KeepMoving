@@ -1,7 +1,7 @@
 module Injuries.Filters exposing (..)
 
 import Components.Dropdown2 as DD
-import Css exposing (em, margin)
+import Css exposing (margin)
 import Domain.Regions exposing (Region, fromRegion, regions)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A

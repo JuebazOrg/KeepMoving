@@ -36,6 +36,11 @@ init =
     { value = Nothing, isOpen = False }
 
 
+initWithDefault : Maybe a -> Model a
+initWithDefault initialValue =
+    { value = initialValue, isOpen = False }
+
+
 view : Model a -> List (Option a) -> String -> Html (Msg (Maybe a))
 view model options title =
     let

@@ -1,11 +1,11 @@
-module CreateInjury.Form exposing (..)
+module EditInjury.Form exposing (..)
 
 import Bulma.Styled.Components as BC
 import Bulma.Styled.Form as BF
 import Components.Calendar.DatePicker as DP
 import Components.Dropdown2 as DD
 import Css exposing (..)
-import Domain.Injury exposing (InjuryType, injuryTypeToString, injuryTypes)
+import Domain.Injury exposing (Injury, InjuryType, injuryTypeToString, injuryTypes)
 import Domain.Regions exposing (Region, Side, fromRegion, regions, sideToString, sides)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
@@ -27,11 +27,11 @@ type alias Model =
     }
 
 
-init : Model
-init =
-    { region = DD.init
-    , side = DD.init
-    , injuryType = DD.init
+init : Injury -> Model
+init injury =
+    { region = DD.initWithDefault (Just injury.bodyRegion.region)
+    , side = DD.initWithDefault injury.bodyRegion.side
+    , injuryType = DD.initWithDefault (Just injury.injuryType)
     , startDate = DP.init Nothing
     , endDate = DP.init Nothing
     , description = ""
