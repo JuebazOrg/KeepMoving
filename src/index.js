@@ -1,6 +1,7 @@
 import "./main.css";
 import { Elm } from "./Main.elm";
 import * as serviceWorker from "./serviceWorker";
+import "../src/styles.css"
 
 const url = process.env.NODE_ENV === 'development' ? 'localhost:8000/': 'https://morning-shelf-98431.herokuapp.com/';
 
