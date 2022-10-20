@@ -4,17 +4,17 @@ import Browser exposing (Document, UrlRequest)
 import Browser.Navigation as Nav
 import Bulma.Styled.CDN exposing (..)
 import Cmd.Extra exposing (pure)
+import CreateInjury.FormHandler as AddInjury
 import Css exposing (..)
 import Domain.Injury exposing (Injury)
+import EditInjury.EditInjury as EditInjury
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
-import Navigation.NavBar as NavBar exposing (viewNavBar)
-import Navigation.Route as Route exposing (Route(..))
-import CreateInjury.FormHandler as AddInjury
-import EditInjury.EditInjury as EditInjury
 import Injuries.Injuries as Injuries exposing (Msg, view)
 import InjuryDetails.Update as InjuryDetail
 import InjuryDetails.View as InjuryDetailView
+import Navigation.NavBar as NavBar exposing (viewNavBar)
+import Navigation.Route as Route exposing (Route(..))
 import Pages.UserAccount as UserAccount
 import RemoteData exposing (WebData)
 import Url exposing (Url)
@@ -236,8 +236,7 @@ currentView model =
                     map AccountPageMsg (UserAccount.view pageModel)
     in
     div [ A.css [ height (pct 100) ] ]
-        [ stylesheet
-        , fontAwesomeCDN
+        [ fontAwesomeCDN
         , map NavBarMsg (viewNavBar model.navBar)
         , div [ A.css [ padding (px 20) ] ] [ content ]
         ]

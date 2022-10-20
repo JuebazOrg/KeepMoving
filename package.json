@@ -9,6 +9,11 @@
   },
   "scripts": {
     "db": "cd DB && json-server --watch db.json --port 3004",
-    "build": "npm i && elm-app build"
+    "build": "npm i && elm-app build",
+    "css-build": "sass src/styles.scss src/styles.css", 
+    "css-watch": "npm run css-build -- --watch"
+  },
+  "devDependencies": {
+    "sass": "^1.55.0"
   }
 }
